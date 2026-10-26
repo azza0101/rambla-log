@@ -4,7 +4,11 @@ Web app in italiano per iPhone: registro di ripresa, lettura ottica del timecode
 
 **Apri l’app:** [RAMBLA Log](https://azza0101.github.io/rambla-log/)
 
-## Versione 1.2
+## Versione 1.3
+
+Il pulsante del timecode è più compatto e ha una riga separata dai numeri. In alto compare il logo originale RAMBLA Studio. Le sessioni hanno un menu **⋯**, disponibile anche tenendo premuto per mezzo secondo, con **Rinomina sessione** ed **Elimina sessione**; l’eliminazione chiede conferma e offre **Annulla** per 8 secondi. La sessione che sta registrando non può essere eliminata. Il selettore Speaker A/B e i campi delle voci sono rimossi; le attribuzioni già presenti negli archivi restano conservate.
+
+Il pulsante **Aggiorna app** (freccia circolare in alto) controlla la versione pubblicata, salva l’archivio e ricarica la nuova versione quando disponibile. Durante una registrazione occorre prima premere **Pausa** e chiudere eventuali note vocali o fotocamera. Le sessioni salvate restano disponibili dopo l’aggiornamento. Se non c’è una nuova versione, l’app lo segnala senza ricaricarsi. Il pulsante richiede una connessione internet e non compare nella copia HTML portatile.
 
 Interfaccia compatta per iPhone, con sei pulsanti colorati in una griglia 3×2 e altezza minima di 70 px sugli schermi più piccoli. Il **Registro** parte chiuso: mostra il numero di marker e note e si apre quando serve consultare i contenuti. **Nota vocale** permette di dettare un commento riferito al momento scelto. **Aggiorna timecode** applica il nuovo riferimento ai momenti successivi, conservando i marker precedenti.
 
@@ -17,7 +21,7 @@ Apri la versione HTTPS in Safari. Condividi → Aggiungi alla schermata Home →
 1. Crea una sessione, imposta FPS e lingua. Scegli **Ora iPhone** per ore, minuti e secondi del telefono, oppure **Timecode** per il riferimento della camera con i frame. Le nuove sessioni partono da Ora iPhone; quelle precedenti conservano il loro riferimento.
 2. Se usi Timecode, premi **Leggi timecode** e consenti la fotocamera. Porta tutti i numeri HH:MM:SS:FF nel rettangolo fisso; avvicina o allontana il telefono per inquadrarli. L’unico cursore regola l’**Esposizione**. Il timecode deve avanzare. Prima di iniziare puoi anche inserire il valore manualmente nelle impostazioni.
 3. Il riconoscimento attende 3, 4 o 5 letture coerenti, secondo confidenza e separatori riconosciuti. Con l’allineamento automatico la fotocamera si chiude dopo la conferma. L’app compensa il tempo trascorso dall’acquisizione del fotogramma OCR all’aggancio. Con Ora iPhone il riferimento viene acquisito quando premi Inizia.
-4. Scegli **Voce · browser**, **Whisper · locale** o **Solo marker**. Sugli schermi più bassi, la modalità e la voce assegnata si trovano in **Impostazioni**, accessibili dall’icona in alto. Premi **Inizia sessione**. I permessi sono richiesti quando servono.
+4. Scegli **Voce · browser**, **Whisper · locale** o **Solo marker**. Sugli schermi più bassi, la modalità si trova in **Impostazioni**, accessibile dall’icona in alto. Premi **Inizia sessione**. I permessi sono richiesti quando servono.
 5. I pulsanti segnano gli ultimi 5/10/20 secondi. Apri il **Registro** per selezionare frasi e segnare quell’intervallo. **Nota** aggiunge un appunto scritto; **Nota vocale** fissa l’intervallo al tocco, poi avvia la dettatura. Puoi correggere testo, categoria e tempi delle note.
 6. Usa **Pausa** e **Riprendi** per sospendere e continuare nella stessa sessione. Il riferimento orario avanza anche durante la pausa, così i marker successivi mantengono il loro allineamento.
 7. Premi **Termina** e attendi gli ultimi risultati. Esporta EDL, SRT e un backup JSON.
@@ -82,7 +86,7 @@ L’export segnala marker coincidenti (Resolve può conservarne uno solo per fra
 - **Browser:** usa SpeechRecognition/webkitSpeechRecognition, quando realmente disponibile. Supporto e comportamento variano tra versioni iOS, Safari e Home Screen. Può usare il servizio vocale del sistema e internet. Le frasi hanno timestamp stimati, non un allineamento parola per parola.
 - **Whisper locale:** Transformers.js 3.8.1, Whisper tiny multilingue q8 (circa 41 MB di pesi, oltre al runtime), eseguito in un worker WASM. Il modello viene scaricato al primo utilizzo. Elabora blocchi di circa 8 secondi; memoria, velocità e cache dipendono dal dispositivo. Se resta indietro, interrompe il microfono, conserva la coda già catturata e mostra il riavvio. Modalità sperimentale su iPhone.
 - **OCR:** Tesseract.js 6.0.1, core 6.0.0 e modello inglese 1.0.0. Legge numeri dal solo riquadro sul dispositivo. Le immagini non vengono caricate a un nostro server.
-- **Speaker:** assegnazione manuale dal selettore; non diarizzazione automatica.
+- **Voci:** le nuove trascrizioni usano un’unica etichetta Voce. Le attribuzioni storiche vengono conservate; non c’è diarizzazione automatica.
 - **Audio:** non viene conservata una registrazione audio. Il microfono serve alla trascrizione continua o alla dettatura separata delle note.
 - **Salvataggio:** immediato sulle modifiche e sugli eventi di uscita, nel browser corrente, senza backend o sincronizzazione. La cache PWA permette il logger manuale offline dopo il primo caricamento riuscito, inclusi i font. OCR/Whisper hanno risorse aggiuntive da scaricare e non sono garantiti offline. iOS può cancellare dati di siti: esporta il JSON regolarmente. Gli archivi Safari/Home Screen possono essere distinti.
 - **Ripresa:** pausa esplicita o automatica quando l’app viene nascosta, con ripresa nella stessa sessione. L’app richiede Wake Lock se disponibile mentre è attiva. Il riferimento orario continua durante la pausa; l’audio non viene registrato in background.
@@ -104,7 +108,7 @@ Il modulo core gestisce 23.976, 24, 25, 29.97 NDF/DF, 30, 50, 59.94 NDF/DF e 60 
 
 La suite automatica copre formati, frame rate, drop-frame, import malformati, recupero delle risorse, PCM/resampling, finalizzazione, trascrizione tardiva, note vocali e aggiornamenti progressivi del timecode. Include il passaggio del microfono fra trascrizione e nota, i callback tardivi, l’esposizione e le condizioni di stabilità dell’OCR. Stato delle verifiche e prove storiche: [docs/verification.md](docs/verification.md).
 
-Il benchmark 1.2 usa Tesseract reale nel browser su dieci immagini sintetiche: **8/10** letture esatte senza preprocessing e **9/10** con la pipeline corrente, senza timecode errati accettati nei dieci casi. Il caso limite a sette segmenti viene rifiutato. I risultati sono in `output/ocr-benchmark-results.json`. Il confronto usa lo stesso parser e misura il trattamento delle immagini; non è un confronto completo tra release né una prova di sincronizzazione su video fisico.
+Il benchmark 1.2 usa Tesseract reale nel browser su dieci immagini sintetiche: **8/10** letture esatte senza preprocessing e **9/10** con la pipeline corrente, senza timecode errati accettati nei dieci casi. Il caso limite a sette segmenti viene rifiutato. I risultati sono in `docs/ocr-benchmark-results.json`. Il confronto usa lo stesso parser e misura il trattamento delle immagini; non è un confronto completo tra release né una prova di sincronizzazione su video fisico.
 
 Nelle verifiche precedenti, il worker Whisper ha trascritto un WAV pubblico di 11 secondi in 4,41 secondi nel browser di test. Questa misura non descrive le prestazioni di un iPhone.
 
