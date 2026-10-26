@@ -1,23 +1,34 @@
 # RAMBLA Log
 
-## GitHub Pages
-
-Questo repository contiene la versione web pronta all’uso. La pubblicazione usa il branch `main`, cartella `/ (root)`. Il file di ingresso è `index.html`; tutti i percorsi sono relativi e compatibili con il sottopercorso del progetto.
-
-`RAMBLA-Log-PWA.zip` contiene anche i sorgenti e la suite di test. `RAMBLA-Log.html` è la copia portatile in un singolo file. Per usare fotocamera e microfono su iPhone, apri la versione HTTPS in Safari.
-
 Web app in italiano per iPhone: registro di ripresa, lettura ottica del timecode, trascrizione e marker per DaVinci Resolve. Il codice dell’app è MIT e non richiede API a pagamento.
+
+**Apri l’app:** https://azza0101.github.io/rambla-log/
+
+## Versione 1.1
+
+Interfaccia RAMBLA in dark mode, fondo #0a0a0a e accenti teal/viola, con Space Grotesk e Unbounded Bold incorporati. La scelta **Ora iPhone / Timecode** è nella schermata principale. I sei pulsanti hanno colori pieni e almeno 84 px di altezza su mobile. **Da tenere** usa il verde acqua e **SCARTA** il rosso; SCARTA sostituisce Svolta, mantenendo inalterate le note e i colori dei marker storici. Sono disponibili pausa, ripresa e salvataggio immediato delle modifiche.
 
 ## Uso su iPhone
 
 Apri la versione HTTPS in Safari. Condividi → Aggiungi alla schermata Home → attiva Apri come app web, se presente → Aggiungi. Il file HTML in File è una copia portatile: l’anteprima di iOS non è un browser completo e non installa una PWA.
 
-1. Crea una sessione, imposta FPS e lingua.
-2. Premi **Leggi TC dalla camera** e consenti la fotocamera. Inquadra il display; regola larghezza, altezza e posizione del riquadro sul solo HH:MM:SS:FF. Il timecode deve avanzare.
-3. Dopo tre letture coerenti il clock viene allineato. La fotocamera si chiude; puoi spostare il telefono e iniziare. L’app compensa il tempo trascorso dall’acquisizione del fotogramma OCR al momento dell’aggancio.
-4. Scegli **Voce · browser**, **Whisper · locale** o **Solo marker**. Premi Inizia sessione. I permessi sono richiesti quando servono.
+1. Crea una sessione, imposta FPS e lingua. Scegli **Ora iPhone** per ore, minuti e secondi del telefono, oppure **Timecode** per il riferimento della camera con i frame. Le nuove sessioni partono da Ora iPhone; quelle precedenti conservano il loro riferimento.
+2. Se usi Timecode, premi **Leggi TC dalla camera** e consenti la fotocamera. Inquadra il display e regola il riquadro sul solo HH:MM:SS:FF. Il timecode deve avanzare. Puoi anche inserire il valore manualmente nelle impostazioni.
+3. Dopo tre letture coerenti il clock ottico viene allineato. La fotocamera si chiude; puoi spostare il telefono e iniziare. L’app compensa il tempo trascorso dall’acquisizione del fotogramma OCR all’aggancio. Con Ora iPhone il riferimento viene acquisito quando premi Inizia.
+4. Scegli **Voce · browser**, **Whisper · locale** o **Solo marker**. Premi **Inizia sessione**. I permessi sono richiesti quando servono.
 5. I pulsanti segnano gli ultimi 5/10/20 secondi. Selezionando le frasi, i pulsanti segnano l’intervallo selezionato. Puoi aggiungere o correggere una nota e i suoi tempi.
-6. Termina e attendi gli ultimi risultati. Esporta EDL, SRT e un backup JSON.
+6. Usa **Pausa** e **Riprendi** per sospendere e continuare nella stessa sessione. Il riferimento orario avanza anche durante la pausa, così i marker successivi mantengono il loro allineamento.
+7. Premi **Termina** e attendi gli ultimi risultati. Esporta EDL, SRT e un backup JSON.
+
+### Pausa, cambio app e salvataggio
+
+Ogni marker, frase confermata, modifica e cambio di stato viene salvato nel browser. Il salvataggio non riscrive l’archivio a ogni tick dell’orologio. Quando la pagina diventa nascosta o viene lasciata, l’app salva subito lo stato e mette in pausa la cattura. Al ritorno, anche dopo un ricaricamento, **Riprendi** mantiene la stessa sessione.
+
+La pausa non comprime il tempo: una pausa di due minuti lascia un intervallo di due minuti prima dei nuovi marker e dei nuovi sottotitoli. Questo è necessario per mantenere il riferimento a una ripresa continua o a un orologio FREE RUN. Il primo marker dopo la ripresa parte al più presto dall’istante di ripresa, evitando di includere il tratto in pausa.
+
+Safari/iOS può interrompere o sospendere l’ascolto in background. L’app conserva i dati già acquisiti e ricostruisce l’orario trascorso; non può garantire la trascrizione mentre usi un’altra app o lo schermo è bloccato. Per una trascrizione continua, resta nell’app con lo schermo acceso.
+
+Ora iPhone usa l’orologio locale del telefono e mostra HH:MM:SS. Gli esportatori mantengono il timecode con frame agli FPS selezionati. Questo non sincronizza automaticamente l’orologio della camera: verifica il riferimento della timeline o correggilo nella finestra di esportazione.
 
 ### Precisione del sync
 
@@ -48,12 +59,12 @@ L’export segnala marker coincidenti (Resolve può conservarne uno solo per fra
 - **OCR:** Tesseract.js 6.0.1, core 6.0.0 e modello inglese 1.0.0. Legge numeri dal solo riquadro sul dispositivo. Le immagini non vengono caricate a un nostro server.
 - **Speaker:** assegnazione manuale dal selettore; non diarizzazione automatica.
 - **Audio:** non viene conservata una registrazione audio. Il microfono serve alla trascrizione.
-- **Salvataggio:** automatico nel browser corrente, senza backend o sincronizzazione. La cache PWA permette il logger manuale offline dopo il primo caricamento riuscito. OCR/Whisper hanno risorse aggiuntive da scaricare e non sono garantiti offline. iOS può cancellare dati di siti: esporta il JSON regolarmente. Gli archivi Safari/Home Screen possono essere distinti.
-- **Ripresa:** tieni l’app visibile e lo schermo acceso. L’app richiede Wake Lock se disponibile; chiamate, cambio app e blocco schermo possono interrompere l’ascolto. La sospensione è segnalata e il clock prosegue.
+- **Salvataggio:** immediato sulle modifiche e sugli eventi di uscita, nel browser corrente, senza backend o sincronizzazione. La cache PWA permette il logger manuale offline dopo il primo caricamento riuscito, inclusi i font. OCR/Whisper hanno risorse aggiuntive da scaricare e non sono garantiti offline. iOS può cancellare dati di siti: esporta il JSON regolarmente. Gli archivi Safari/Home Screen possono essere distinti.
+- **Ripresa:** pausa esplicita o automatica quando l’app viene nascosta, con ripresa nella stessa sessione. L’app richiede Wake Lock se disponibile mentre è attiva. Il riferimento orario continua durante la pausa; l’audio non viene registrato in background.
 
 ## File e sviluppo
 
-`dist/index.html` contiene CSS e JavaScript incorporati. `dist/RAMBLA-Log.html` è la copia portatile senza registrazione service worker. Il pacchetto PWA contiene anche manifest, icone, service worker, guida e licenza: ospita tutto nella stessa cartella su HTTPS.
+`dist/index.html` contiene CSS, font e JavaScript incorporati. `dist/RAMBLA-Log.html` è la copia portatile senza registrazione service worker. Il pacchetto PWA contiene anche manifest, icone, service worker, guida e licenze: ospita tutto nella stessa cartella su HTTPS. La pubblicazione GitHub Pages usa il branch `main`, cartella `/ (root)`; i percorsi sono relativi e compatibili con `/rambla-log/`.
 
 Il runtime dell’app non richiede npm o build. Per modificare i sorgenti:
 
@@ -78,5 +89,8 @@ Non sono stati eseguiti test su iPhone fisico né un’importazione dentro DaVin
 - Tesseract API: https://github.com/naptha/tesseract.js/blob/master/docs/api.md
 - Transformers.js 3.8.1: https://huggingface.co/docs/transformers.js/v3.8.1/en/installation
 - Whisper tiny: https://huggingface.co/Xenova/whisper-tiny
+- WebKit, sospensione del riconoscimento quando la pagina diventa invisibile: https://bugs.webkit.org/show_bug.cgi?id=220073
+- MDN, salvataggio al cambio di visibilità: https://developer.mozilla.org/en-US/docs/Web/API/Document/visibilitychange_event
+- Riferimento visivo e font RAMBLA: https://www.ramblastudio.com/
 
 RAMBLA Log è indipendente e non affiliato a Earwig o Blackmagic Design. Le librerie e i modelli esterni mantengono le proprie licenze. Nessun logo o asset proprietario Earwig è incluso.

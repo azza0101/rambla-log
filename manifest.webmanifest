@@ -2,13 +2,13 @@
   "id": "./",
   "name": "RAMBLA Log",
   "short_name": "RAMBLA Log",
-  "description": "Timecode dalla camera, trascrizioni e marker per Resolve.",
+  "description": "Orologio iPhone, timecode camera, trascrizioni e marker per Resolve.",
   "lang": "it",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#f4f3ee",
-  "theme_color": "#f4f3ee",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
   "icons": [
     {
       "src": "./icon-192.png",

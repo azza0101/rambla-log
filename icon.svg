@@ -1,1 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#20231f"/><g stroke="#dcf28a" stroke-width="28" stroke-linecap="round"><path d="M145 220v72M200 170v172M256 125v262M312 170v172M367 220v72"/></g><circle cx="385" cy="119" r="23" fill="#f2634c"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs><linearGradient id="rambla-wave" x1="145" y1="150" x2="375" y2="360" gradientUnits="userSpaceOnUse"><stop stop-color="#2dd4bf"/><stop offset=".58" stop-color="#69d8d5"/><stop offset="1" stop-color="#a78bfa"/></linearGradient></defs>
+  <rect width="512" height="512" rx="112" fill="#0a0a0a"/>
+  <rect x="40" y="40" width="432" height="432" rx="80" fill="#111513" stroke="#283b33" stroke-width="3"/>
+  <g stroke="url(#rambla-wave)" stroke-width="28" stroke-linecap="round"><path d="M145 220v72M200 174v164M256 136v240M312 174v164M367 220v72"/></g>
+  <circle cx="372" cy="136" r="15" fill="#a78bfa"/>
+</svg>

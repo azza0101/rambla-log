@@ -1,6 +1,8 @@
 'use strict';
-const CACHE='rambla-log-a7a33437574b';
+const CACHE='rambla-log-ec5cdf5e621e';
 const ASSETS=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon.svg'];
+// Let an installed update wait for the existing clients to close. Never force
+// a controller change or reload while a recording session may still be open.
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS))));
 self.addEventListener('activate',event=>event.waitUntil(Promise.all([caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('rambla-log-')&&k!==CACHE).map(k=>caches.delete(k)))),self.clients.claim()])));
 self.addEventListener('fetch',event=>{
