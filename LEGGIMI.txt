@@ -1,0 +1,76 @@
+# RAMBLA Log
+
+Web app in italiano per iPhone: registro di ripresa, lettura ottica del timecode, trascrizione e marker per DaVinci Resolve. Il codice dell’app è MIT e non richiede API a pagamento.
+
+## Uso su iPhone
+
+Apri la versione HTTPS in Safari. Condividi → Aggiungi alla schermata Home → attiva Apri come app web, se presente → Aggiungi. Il file HTML in File è una copia portatile: l’anteprima di iOS non è un browser completo e non installa una PWA.
+
+1. Crea una sessione, imposta FPS e lingua.
+2. Premi **Leggi TC dalla camera** e consenti la fotocamera. Inquadra il display; regola larghezza, altezza e posizione del riquadro sul solo HH:MM:SS:FF. Il timecode deve avanzare.
+3. Dopo tre letture coerenti il clock viene allineato. La fotocamera si chiude; puoi spostare il telefono e iniziare. L’app compensa il tempo trascorso dall’acquisizione del fotogramma OCR al momento dell’aggancio.
+4. Scegli **Voce · browser**, **Whisper · locale** o **Solo marker**. Premi Inizia sessione. I permessi sono richiesti quando servono.
+5. I pulsanti segnano gli ultimi 5/10/20 secondi. Selezionando le frasi, i pulsanti segnano l’intervallo selezionato. Puoi aggiungere o correggere una nota e i suoi tempi.
+6. Termina e attendi gli ultimi risultati. Esporta EDL, SRT e un backup JSON.
+
+### Precisione del sync
+
+Il filtro OCR richiede almeno 3 letture coerenti con il frame rate e l’avanzamento dell’orologio, con confidenza minima 60/100. Non dimostra precisione al frame: restano il ritardo del display, il buffering della camera, eventuali letture errate e la deriva del telefono. Non è LTC/genlock. Fai un ciak di controllo per il primo uso con la tua camera.
+
+Per un’unica sessione lunga usa un timecode FREE RUN. Con REC RUN, che si ferma tra le registrazioni, sincronizza ogni take e usa sessioni distinte. Una nuova sincronizzazione in una sessione esistente corregge l’origine di TUTTI i marker relativi a quella sessione: non unisce discontinuità REC RUN.
+
+Il sync automatico chiude la fotocamera dopo l’aggancio. Disattivando l’opzione puoi guardare le letture live e premere Allinea e chiudi quando sono stabili. Una lettura non più recente o un ritaglio modificato vengono invalidati.
+
+## Esportazioni
+
+| File | Contenuto e utilizzo |
+| --- | --- |
+| EDL | Marker timeline con nome, nota, colore e durata in frame. In Resolve: Media Pool → clic destro sulla timeline → Timelines → Import → Timeline Markers from EDL. |
+| SRT | Trascrizione completa con tempi RELATIVI alla sessione. Importala come sottotitoli e posizionala al punto in cui è iniziata la registrazione. |
+| CSV | Foglio completo con marker e segmenti trascritti. UTF-8, escape di celle e prefissi per evitare formule involontarie. |
+| TXT | Registro leggibile di frasi e marker. |
+| JSON | Backup riapribile con Importa, sullo stesso o su un altro dispositivo. |
+
+L’EDL inserisce annotazioni: non identifica né monta automaticamente i file originali della camera. Il girato deve già essere posizionato sulla timeline. Gli FPS devono corrispondere. Nell’export puoi indicare il timecode della timeline che corrisponde all’inizio della sessione e aggiungere un offset in secondi.
+
+L’export segnala marker coincidenti (Resolve può conservarne uno solo per frame) e rifiuta intervalli prima di 00:00:00:00 o oltre la giornata timecode. Se la ripresa attraversa mezzanotte, rimappa l’origine dell’export, ad esempio a 01:00:00:00, su una timeline continua.
+
+## Trascrizione e dati
+
+- **Browser:** usa SpeechRecognition/webkitSpeechRecognition, quando realmente disponibile. Supporto e comportamento variano tra versioni iOS, Safari e Home Screen. Può usare il servizio vocale del sistema e internet. Le frasi hanno timestamp stimati, non un allineamento parola per parola.
+- **Whisper locale:** Transformers.js 3.8.1, Whisper tiny multilingue q8 (circa 41 MB di pesi, oltre al runtime), eseguito in un worker WASM. Il modello viene scaricato al primo utilizzo. Elabora blocchi di circa 8 secondi; memoria, velocità e cache dipendono dal dispositivo. Se resta indietro, interrompe il microfono, conserva la coda già catturata e mostra il riavvio. Modalità sperimentale su iPhone.
+- **OCR:** Tesseract.js 6.0.1, core 6.0.0 e modello inglese 1.0.0. Legge numeri dal solo riquadro sul dispositivo. Le immagini non vengono caricate a un nostro server.
+- **Speaker:** assegnazione manuale dal selettore; non diarizzazione automatica.
+- **Audio:** non viene conservata una registrazione audio. Il microfono serve alla trascrizione.
+- **Salvataggio:** automatico nel browser corrente, senza backend o sincronizzazione. La cache PWA permette il logger manuale offline dopo il primo caricamento riuscito. OCR/Whisper hanno risorse aggiuntive da scaricare e non sono garantiti offline. iOS può cancellare dati di siti: esporta il JSON regolarmente. Gli archivi Safari/Home Screen possono essere distinti.
+- **Ripresa:** tieni l’app visibile e lo schermo acceso. L’app richiede Wake Lock se disponibile; chiamate, cambio app e blocco schermo possono interrompere l’ascolto. La sospensione è segnalata e il clock prosegue.
+
+## File e sviluppo
+
+`dist/index.html` contiene CSS e JavaScript incorporati. `dist/RAMBLA-Log.html` è la copia portatile senza registrazione service worker. Il pacchetto PWA contiene anche manifest, icone, service worker, guida e licenza: ospita tutto nella stessa cartella su HTTPS.
+
+Il runtime dell’app non richiede npm o build. Per modificare i sorgenti:
+
+```sh
+node --test --test-isolation=none
+node build.mjs
+```
+
+Il modulo core gestisce 23.976, 24, 25, 29.97 NDF/DF, 30, 50, 59.94 NDF/DF e 60 fps. Il drop-frame salta etichette di timecode, non fotogrammi video.
+
+## Collaudo e limiti
+
+La suite automatica copre formati, frame rate, drop-frame, import malformati, recupero delle risorse, PCM/resampling, finalizzazione, marker con trascrizione tardiva e regressioni dell’interfaccia. Un test nel browser con il motore Tesseract reale ha riconosciuto tre timecode sintetici consecutivi senza differenza di frame e ha rilasciato il worker. Anche il worker Whisper è stato provato nel browser con un WAV pubblico di 11 secondi: trascrizione reale corretta, 4,41 secondi di inferenza nel browser di test. Non è una misura di prestazioni su iPhone. Queste prove non equivalgono a un collaudo sulla tua camera.
+
+Non sono stati eseguiti test su iPhone fisico né un’importazione dentro DaVinci Resolve. Occorre provare una breve sessione prima di usare l’app in una ripresa importante. Il formato EDL segue l’esempio Blackmagic; Unicode, collisioni e dettagli del parser vanno verificati nella versione Resolve effettiva.
+
+## Fonti tecniche
+
+- Blackmagic, EDL marker syntax: https://forum.blackmagicdesign.com/viewtopic.php?f=21&t=134578
+- Frame.io, import marker EDL: https://help.frame.io/en/articles/4128691-import-comments-into-resolve-with-edl
+- Apple, aggiunta app alla Home: https://support.apple.com/it-it/guide/iphone/iphea86e5236/ios
+- Tesseract API: https://github.com/naptha/tesseract.js/blob/master/docs/api.md
+- Transformers.js 3.8.1: https://huggingface.co/docs/transformers.js/v3.8.1/en/installation
+- Whisper tiny: https://huggingface.co/Xenova/whisper-tiny
+
+RAMBLA Log è indipendente e non affiliato a Earwig o Blackmagic Design. Le librerie e i modelli esterni mantengono le proprie licenze. Nessun logo o asset proprietario Earwig è incluso.
