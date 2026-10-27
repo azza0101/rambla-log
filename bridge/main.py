@@ -3,7 +3,8 @@ import json,os,shutil,subprocess,sys,threading,tkinter as tk,urllib.request,webb
 from pathlib import Path
 from tkinter import ttk,filedialog,messagebox
 from core import parse,plan,apply
-VERSION='0.1.0'
+from updater import fetch_release,is_newer,download_update,activate_and_launch,current_executable,write_pointer,INSTALL_DIR,VERSIONS
+VERSION='0.2.0'
 REPO='azza0101/rambla-log'
 API='https://api.github.com/repos/'+REPO
 BG='#0a0a0a';PANEL='#161616';FG='#f7f7f7';MUTED='#b0b0b0';TEAL='#2dd4bf'
@@ -36,14 +37,33 @@ def connect():
     if not t:raise RuntimeError('Apri una timeline Resolve')
     return p,t
 def install_menu():
-    if not getattr(sys,'frozen',False):raise RuntimeError('Serve la versione exe')
-    local=Path(os.environ.get('LOCALAPPDATA',str(Path.home())))/'RAMBLA Log Bridge'
-    local.mkdir(parents=True,exist_ok=True);exe=local/'RAMBLA Log Bridge.exe'
-    if Path(sys.executable).resolve()!=exe.resolve():shutil.copy2(sys.executable,exe)
+    if not getattr(sys,'frozen',False):
+        raise RuntimeError('Per installare, usa il file .exe della Release.')
+    local=INSTALL_DIR
+    local.mkdir(parents=True,exist_ok=True)
+    VERSIONS.mkdir(parents=True,exist_ok=True)
+    exe=VERSIONS/('RAMBLA-Log-Bridge-'+VERSION+'.exe')
+    if Path(sys.executable).resolve()!=exe.resolve():
+        shutil.copy2(sys.executable,exe)
+    write_pointer(exe.name)
     root=Path(os.environ.get('PROGRAMDATA','C:/ProgramData'))/'Blackmagic Design'/'DaVinci Resolve'/'Support'/'Workflow Integration Plugins'
     root.mkdir(parents=True,exist_ok=True)
     launcher=root/'rambla_log_bridge.py'
-    launcher.write_text('import os,subprocess\np=os.path.join(os.environ.get("LOCALAPPDATA",""),"RAMBLA Log Bridge","RAMBLA Log Bridge.exe")\nif os.path.isfile(p):subprocess.Popen([p],close_fds=True)\n',encoding='utf-8')
+    # Stable launcher follows current.txt; future updates only change the user-owned pointer.
+    launcher.write_text("""import os,re,subprocess
+from pathlib import Path
+base=Path(os.environ.get('LOCALAPPDATA',str(Path.home())))/'RAMBLA Log Bridge'
+exe=None
+try:
+    name=(base/'current.txt').read_text(encoding='utf-8').strip()
+    if re.fullmatch(r'RAMBLA-Log-Bridge-\\d+\\.\\d+\\.\\d+\\.exe',name):
+        candidate=base/'versions'/name
+        if candidate.is_file():exe=candidate
+except (FileNotFoundError,OSError):
+    pass
+if exe is None:exe=base/'RAMBLA Log Bridge.exe'
+if exe.is_file():subprocess.Popen([str(exe)],close_fds=True)
+""",encoding='utf-8')
     return launcher
 class Bridge:
  def __init__(self,root):
@@ -60,7 +80,8 @@ class Bridge:
     top=tk.Frame(self.root,bg=BG,padx=22,pady=15);top.pack(fill='x')
     self.label(top,'RAMBLA',20,TEAL,True).pack(side='left');self.label(top,'  LOG BRIDGE',14,FG,True).pack(side='left')
     self.label(top,'  v'+VERSION,9,MUTED).pack(side='left')
-    self.button(top,'↻ Aggiorna',self.update,'#292929').pack_configure(side='right')
+    self.update_button=self.button(top,'↻ Aggiorna',self.update,'#292929')
+    self.update_button.pack_configure(side='right')
     bar=tk.Frame(self.root,bg=PANEL,padx=20,pady=14);bar.pack(fill='x')
     for mode in ('GitHub','Cartella'):
        tk.Radiobutton(bar,text=mode,value=mode,variable=self.source,command=self.refresh,bg=PANEL,fg=FG,selectcolor='#353535',activebackground=PANEL,font=('Segoe UI',10)).pack(side='left',padx=(0,10))
@@ -88,6 +109,15 @@ class Bridge:
     self.button(commands,'Connetti Resolve',self.connect_resolve,'#303030')
     self.button(commands,'APPLICA ALLA TIMELINE',self.import_markers,TEAL,BG)
     self.button(commands,'Installa in Workflow Integrations',self.install,'#303030')
+    progress=tk.Frame(bottom,bg=BG)
+    progress.pack(fill='x',pady=(12,0))
+    self.progress_label=tk.StringVar(value='')
+    tk.Label(progress,textvariable=self.progress_label,bg=BG,fg=TEAL,anchor='w',font=('Segoe UI',10,'bold')).pack(fill='x')
+    self.progress=tk.DoubleVar(value=0)
+    style.configure('R.Horizontal.TProgressbar',troughcolor='#282828',background=TEAL,borderwidth=0,thickness=9)
+    self.progressbar=ttk.Progressbar(progress,orient='horizontal',mode='determinate',maximum=100,variable=self.progress,style='R.Horizontal.TProgressbar')
+    self.progressbar.pack(fill='x',pady=(5,0))
+    self.progressbar['value']=0
     tk.Label(bottom,textvariable=self.status,bg=BG,fg=MUTED,anchor='w',font=('Segoe UI',10)).pack(fill='x',pady=(9,0))
  def worker(self,fn,cb):
     self.status.set('Operazione in corso…')
@@ -136,15 +166,45 @@ class Bridge:
     if not messagebox.askyesno('Workflow Integration','Creo un collegamento in Workspace → Workflow Integrations. Potrebbero servire i permessi amministratore. Continuare?'):return
     try:path=install_menu();messagebox.showinfo('Installazione','Installato in '+str(path)+'\nRiavvia Resolve.')
     except Exception as e:messagebox.showerror('Installazione',str(e))
+ def set_update_progress(self,step,percent=None):
+    self.progress_label.set(step)
+    if percent is not None:self.progress.set(max(0,min(100,percent)))
+    self.status.set(step)
  def update(self):
-    def check():
-      release=get_json(API+'/releases/latest')
-      return release.get('tag_name',''),release.get('html_url','')
-    def result(ok,data):
-      if not ok:self.status.set('Aggiornamento: '+data);return
-      tag,url=data
-      if tag=='bridge-v'+VERSION:self.status.set('Versione aggiornata');return
-      if url and messagebox.askyesno('Nuova versione',f'È disponibile {tag}.\nApro la Release GitHub per scaricare il nuovo exe?'):webbrowser.open(url)
-    self.worker(check,result)
+    if getattr(self,'updating',False):return
+    self.updating=True;self.update_button.config(state='disabled')
+    self.set_update_progress('1/4 · Controllo la versione su GitHub…',3)
+    self.worker(fetch_release,self.checked_update)
+ def checked_update(self,ok,result):
+    if not ok:
+        self.set_update_progress('Errore di connessione: '+result,0)
+        self.updating=False;self.update_button.config(state='normal');return
+    self.release=result
+    if not is_newer(result,VERSION):
+        self.set_update_progress('Hai già l’ultima versione: v'+VERSION,100)
+        self.updating=False;self.update_button.config(state='normal');return
+    self.set_update_progress('Nuova versione '+result['version']+' disponibile',5)
+    if not messagebox.askyesno('Aggiorna RAMBLA Log Bridge','Aggiornamento da v'+VERSION+' a v'+result['version']+'\n\nScarico da GitHub, verifico SHA-256 e riavvio automaticamente. Continuare?'):
+        self.set_update_progress('Aggiornamento annullato.',0)
+        self.updating=False;self.update_button.config(state='normal');return
+    self.set_update_progress('2/4 · Preparo il download…',7)
+    def do_download():
+        return download_update(result,lambda step,percent:self.root.after(0,lambda step=step,percent=percent:self.set_update_progress('2/4 · '+step,percent)))
+    self.worker(do_download,self.download_completed)
+ def download_completed(self,ok,result):
+    if not ok:
+        self.set_update_progress('Download non riuscito: '+result,0)
+        self.updating=False;self.update_button.config(state='normal');return
+    self.set_update_progress('3/4 · Verifica completata · preparo il riavvio…',96)
+    if not getattr(sys,'frozen',False):
+        self.set_update_progress('Versione verificata. Installa un EXE per completare il riavvio.',96)
+        self.updating=False;self.update_button.config(state='normal');return
+    try:
+        activate_and_launch(result)
+        self.set_update_progress('4/4 · Nuova versione avviata. Chiudo quella precedente.',100)
+        self.root.after(350,self.root.destroy)
+    except Exception as error:
+        self.set_update_progress('Riavvio non riuscito: '+str(error),95)
+        self.updating=False;self.update_button.config(state='normal')
 if __name__=='__main__':
     root=tk.Tk();Bridge(root);root.mainloop()
