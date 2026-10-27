@@ -3399,20 +3399,36 @@ window.RamblaGithubCloud=(function(){
 
   // The phone is the source of truth. A failed cloud upload NEVER deletes local data.
   let cloudUploadSessionId=null,githubTokenMemory='',cloudUploading=false;
-  function openCloudUpload(id){
+  function cloudConnectedView(connected){
+    $('cloudConnected').hidden=!connected;
+    $('cloudSetup').hidden=connected;
+  }
+  async function openCloudUpload(id){
     const item=store.sessions.find(x=>x.id===id);
-    if(!item||active||pendingFlush){notify('Termina la ripresa prima di caricare la sessione.');return;}
+    if(!item||active||pendingFlush){notify('Termina prima la ripresa.');return;}
     const dlg=$('cloudUploadDialog');if(!dlg||dlg.open)return;
     cloudUploadSessionId=id;
-    $('cloudSummary').textContent=item.title+' · '+item.markers.length+' marker · '+item.segments.length+' frasi. La sessione è già salvata su questo iPhone.';
+    $('cloudSummary').textContent=item.title+' · '+item.markers.length+' marker · salvata su questo iPhone';
     $('cloudFullBackup').checked=!item.markers.length;
     $('cloudPublicConfirm').checked=false;
     $('cloudTokenInput').value='';
-    $('cloudTokenInput').placeholder=githubTokenMemory?'Token già inserito per questa apertura':'github_pat_…';
     $('cloudFeedback').textContent='';$('cloudFeedback').classList.remove('error');
-    $('cloudKeepLocal').textContent='Solo su iPhone';
-    $('cloudKeepLocal').disabled=false;$('cloudUploadButton').disabled=false;
+    $('cloudKeepLocal').textContent='Solo su iPhone';$('cloudKeepLocal').disabled=false;
+    $('cloudUploadButton').disabled=true;cloudConnectedView(false);
     dlg.showModal();
+    try{
+      const saved=githubTokenMemory||await window.RamblaGithubCloud.recallToken();
+      if(cloudUploadSessionId!==id||!dlg.open)return;
+      githubTokenMemory=saved||'';
+      cloudConnectedView(!!saved);
+    }catch(error){
+      if(cloudUploadSessionId===id&&dlg.open){
+        cloudConnectedView(false);
+        $('cloudFeedback').textContent='Collegamento non disponibile. Ricollega GitHub una volta.';
+      }
+    }finally{
+      if(cloudUploadSessionId===id&&dlg.open)$('cloudUploadButton').disabled=false;
+    }
   }
   function closeCloudUpload(){
     if(cloudUploading)return;
@@ -3420,42 +3436,65 @@ window.RamblaGithubCloud=(function(){
     $('cloudUploadDialog').close();
     cloudUploadSessionId=null;
   }
+  async function disconnectCloud(){
+    if(cloudUploading)return;
+    $('cloudDisconnect').disabled=true;
+    try{
+      await window.RamblaGithubCloud.forgetToken();
+      githubTokenMemory='';$('cloudTokenInput').value='';
+      cloudConnectedView(false);
+      $('cloudFeedback').textContent='GitHub scollegato da questo iPhone.';
+    }catch(error){
+      $('cloudFeedback').classList.add('error');$('cloudFeedback').textContent=error.message;
+    }finally{$('cloudDisconnect').disabled=false;}
+  }
   async function uploadCloudSession(){
     if(cloudUploading)return;
-    if(!$('cloudPublicConfirm').checked){
+    const hadPairing=!!githubTokenMemory;
+    if(!hadPairing&&!$('cloudPublicConfirm').checked){
       $('cloudFeedback').classList.add('error');
-      $('cloudFeedback').textContent='Per caricare devi confermare che il repository è pubblico.';
+      $('cloudFeedback').textContent='Conferma che il repository è pubblico per collegare GitHub.';
       return;
     }
-    const token=$('cloudTokenInput').value.trim()||githubTokenMemory;
+    const token=githubTokenMemory||$('cloudTokenInput').value.trim();
     if(!token){
       $('cloudFeedback').classList.add('error');
-      $('cloudFeedback').textContent='Inserisci il token GitHub fine-grained nella casella qui sopra.';
+      $('cloudFeedback').textContent='Incolla il token per il primo collegamento.';
       $('cloudTokenInput').focus();return;
     }
     const item=store.sessions.find(x=>x.id===cloudUploadSessionId);
-    if(!item||active||pendingFlush||scanner||voiceNote||voiceClosing){notify('Completa prima la sessione o la nota in corso.');return;}
-    if(!window.RamblaGithubCloud){notify('Il collegamento GitHub non è stato caricato.');return;}
+    if(!item||active||pendingFlush||scanner||voiceNote||voiceClosing){notify('Completa la sessione prima di caricare.');return;}
     const snapshot=JSON.parse(JSON.stringify(item));
     let edl='',backup='';
     try{
       if(snapshot.markers.length)edl=C.makeEDL(snapshot);
       if($('cloudFullBackup').checked)backup=JSON.stringify({app:'RAMBLA Log',version:1,exportedAt:new Date().toISOString(),sessions:[snapshot]},null,2);
-    }catch(e){$('cloudFeedback').classList.add('error');$('cloudFeedback').textContent='Esportazione: '+e.message;return;}
-    cloudUploading=true;$('cloudUploadButton').disabled=true;$('cloudKeepLocal').disabled=true;$('cloudClose').disabled=true;
-    $('cloudFeedback').classList.remove('error');$('cloudFeedback').textContent='Caricamento in corso: tieni aperta l’app…';
+    }catch(error){$('cloudFeedback').classList.add('error');$('cloudFeedback').textContent=error.message;return;}
+    cloudUploading=true;
+    $('cloudUploadButton').disabled=true;$('cloudKeepLocal').disabled=true;$('cloudClose').disabled=true;
+    $('cloudFeedback').classList.remove('error');$('cloudFeedback').textContent='Caricamento…';
     try{
-      const done=await window.RamblaGithubCloud.uploadFiles({token,session:snapshot,edl,backup,publicConfirmed:true});
-      githubTokenMemory=token;$('cloudTokenInput').value='';$('cloudTokenInput').placeholder='Token attivo per questa apertura';
-      $('cloudFeedback').textContent='Caricamento confermato da GitHub: '+done.uploaded.map(x=>x.path.split('/').pop()).join(', ')+'. Il Bridge può leggerli premendo Rileggi.';
+      const result=await window.RamblaGithubCloud.uploadFiles({token,session:snapshot,edl,backup,publicConfirmed:true});
+      githubTokenMemory=token;
+      $('cloudTokenInput').value='';cloudConnectedView(true);
+      $('cloudFeedback').textContent='Caricato su GitHub · '+result.uploaded.map(x=>x.path.split('/').pop()).join(', ');
       $('cloudKeepLocal').textContent='Chiudi';
-      notify('Sessione caricata su GitHub. Il Bridge ora può leggerla.');
-    }catch(e){
-      if(/401|403/.test(e.message))githubTokenMemory='';
+      if(!hadPairing){
+        try{await window.RamblaGithubCloud.rememberToken(token);}
+        catch(error){$('cloudFeedback').textContent+=' · Collegamento non memorizzato: '+error.message;}
+      }
+      notify('Caricato su GitHub.');
+    }catch(error){
+      if(/401|403/.test(error.message)){
+        githubTokenMemory='';
+        try{await window.RamblaGithubCloud.forgetToken();}catch{}
+        cloudConnectedView(false);
+      }
       $('cloudFeedback').classList.add('error');
-      $('cloudFeedback').textContent=e.message+' La copia sull’iPhone non è stata modificata.';
+      $('cloudFeedback').textContent=error.message+' La sessione resta salvata sull’iPhone.';
     }finally{
-      cloudUploading=false;$('cloudUploadButton').disabled=false;$('cloudKeepLocal').disabled=false;$('cloudClose').disabled=false;
+      cloudUploading=false;
+      $('cloudUploadButton').disabled=false;$('cloudKeepLocal').disabled=false;$('cloudClose').disabled=false;
     }
   }
 
@@ -3857,6 +3896,7 @@ window.RamblaGithubCloud=(function(){
     if($('updateAppButton'))$('updateAppButton').onclick=updateApp;
     $('cloudKeepLocal').onclick=closeCloudUpload;$('cloudClose').onclick=closeCloudUpload;
     $('cloudUploadButton').onclick=uploadCloudSession;
+    $('cloudDisconnect').onclick=disconnectCloud;
     $('cloudUploadDialog').addEventListener('cancel',e=>{if(cloudUploading)e.preventDefault();});
     $('exportCloudButton').onclick=()=>{const id=current()?.id;if(active||pendingFlush){notify('Termina prima la sessione.');return;}$('exportDialog').close();openCloudUpload(id);};
     $('startButton').onclick=()=>startSession();$('stopButton').onclick=endSession;
