@@ -632,6 +632,22 @@ h1 { font-family: var(--heading); font-size: clamp(26px,2.3vw,37px); letter-spac
 .marker-pad{min-height:62px}
 .transport-actions{display:block}
 }
+
+/* RAMBLA Cloud — explicit upload after local save, never an implicit sync. */
+.cloud-sheet .dialog-head{margin-bottom:13px}
+.cloud-sheet .cloud-warning{border:1px solid #a35c4a;background:#30211e;border-radius:12px;padding:13px 14px;font-size:12px;line-height:1.65;color:#ffd6cf}
+.cloud-sheet .cloud-warning strong{display:block;font-weight:700;color:#fff}
+.cloud-sheet .cloud-choice{font-size:12px;line-height:1.65;color:var(--muted);margin:10px 0 15px}
+.cloud-sheet .cloud-note{font-size:11px;line-height:1.6;color:var(--muted)}
+.cloud-sheet .cloud-note a{color:var(--primary)}
+.cloud-sheet #cloudFeedback{font-size:12px;line-height:1.6;margin-top:12px;white-space:pre-wrap;color:var(--primary)}
+.cloud-sheet #cloudFeedback.error{color:#ff9b8d}
+.cloud-sheet .dialog-footer{display:flex;justify-content:stretch;gap:9px}
+.cloud-sheet .dialog-footer button{flex:1 1 0;justify-content:center;padding:13px 8px;min-height:52px}
+.cloud-sheet .cloud-token{margin:12px 0 4px}
+.cloud-sheet .cloud-token input{font-size:16px}
+.cloud-sheet .cloud-permission{margin-top:12px}
+.cloud-sheet #cloudUploadButton{background:var(--primary);color:#08291f;font-weight:700}
 </style>
 <!--
 Bundled font licenses
@@ -952,7 +968,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
       
     </div>
 
-    <div class="workspace-foot"><span>RAMBLA LOG <b>1.5.2</b></span><span id="offlineReady">Salvataggio locale immediato</span></div>
+    <div class="workspace-foot"><span>RAMBLA LOG <b>1.6.0</b></span><span id="offlineReady">Salvataggio locale immediato</span></div>
   </main>
 </div>
 
@@ -997,12 +1013,28 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
   <div class="dialog-footer"><button type="button" id="voiceCancel" class="text-button">Annulla</button><button type="button" id="voiceSave" class="button button-dark">Salva marker<svg class="icon"><use href="#i-check"/></svg></button></div>
 </dialog>
 
+
+<dialog id="cloudUploadDialog" class="sheet cloud-sheet" aria-labelledby="cloudTitle">
+  <div class="dialog-head"><div><div class="eyebrow">SESSIONE SALVATA</div><h2 id="cloudTitle">Salvare anche sul cloud?</h2></div><button type="button" class="icon-button" id="cloudClose" aria-label="Chiudi"><svg class="icon"><use href="#i-close"/></svg></button></div>
+  <p id="cloudSummary" class="cloud-choice"></p>
+  <div class="cloud-warning"><strong>ATTENZIONE · GitHub pubblico</strong>Il repository <b>azza0101/rambla-log</b> è visibile a tutti. Marker, titoli e note caricati potranno essere letti da chiunque. Evita contenuti riservati.</div>
+  <label class="field cloud-token">Token personale GitHub
+    <input id="cloudTokenInput" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="github_pat_…">
+    <small>Da inserire una volta per ogni apertura dell’app. Rimane soltanto nella memoria temporanea dell’app: non viene salvato sul telefono né nel codice del sito.</small>
+  </label>
+  <p class="cloud-note">Crea un <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">token GitHub fine-grained</a> scegliendo <b>Only select repositories → rambla-log</b> e <b>Repository permissions → Contents: Read and write</b>. Non servono altri permessi. La connessione GitHub di ChatGPT non è accessibile a Safari.</p>
+  <label class="check-field"><input id="cloudFullBackup" type="checkbox"><span>Includi anche il <b>backup completo JSON</b> con le trascrizioni (altrimenti invio solo EDL con marker e note)</span></label>
+  <label class="check-field cloud-permission"><input id="cloudPublicConfirm" type="checkbox"><span>Confermo di voler pubblicare questi contenuti nel repository GitHub <b>pubblico</b>.</span></label>
+  <p id="cloudFeedback" role="status" aria-live="polite"></p>
+  <div class="dialog-footer"><button type="button" class="button button-dark" id="cloudKeepLocal">Solo su iPhone</button><button type="button" class="button" id="cloudUploadButton">Salva su GitHub</button></div>
+</dialog>
 <dialog id="exportDialog" class="sheet export-sheet">
   <div class="dialog-head"><div><div class="eyebrow">ESPORTAZIONE</div><h2>Esporta la sessione</h2></div><button type="button" class="icon-button close-dialog" aria-label="Chiudi"><svg class="icon"><use href="#i-close"/></svg></button></div>
   <p id="exportSummary" class="dialog-intro"></p>
   <div class="export-alignment"><strong>Allineamento dei marker EDL</strong><div class="field-row"><label class="field">TC del primo istante<input id="exportTC" class="mono" placeholder="01:00:00:00" maxlength="11"></label><label class="field">Correzione · secondi<input id="exportOffset" type="number" step="0.001" inputmode="decimal" value="0"></label></div><p>Inserisci il timecode della timeline nel punto in cui è iniziata questa sessione. Una correzione positiva sposta i marker in avanti. Usa gli stessi FPS in Resolve.</p></div>
   <div id="exportWarning" class="banner warning" hidden></div>
   <div class="export-options">
+    <button type="button" class="export-option" id="exportCloudButton"><span class="file-icon">GH</span><span><strong>Salva su GitHub</strong><small>Invia i marker al Bridge, anche dopo aver terminato</small></span><svg class="icon"><use href="#i-upload"/></svg></button>
     <button class="export-option featured" data-export="edl"><span class="file-icon">EDL</span><span><strong>Marker per DaVinci Resolve</strong><small>Nomi, colori, note e durate</small></span><svg class="icon"><use href="#i-down"/></svg></button>
     <button class="export-option" data-export="srt"><span class="file-icon">SRT</span><span><strong>Trascrizione completa</strong><small>Sottotitoli con tempi relativi alla sessione</small></span><svg class="icon"><use href="#i-down"/></svg></button>
     <button class="export-option" data-export="csv"><span class="file-icon">CSV</span><span><strong>Foglio di lavorazione</strong><small>Tutti i marker con timecode e annotazioni</small></span><svg class="icon"><use href="#i-down"/></svg></button>
@@ -1469,7 +1501,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
   return Object.freeze({ rates, rateInfo, parseTC, formatTC, secondsToFrames, framesToSeconds, framesAt, makeTimecodeAnchor, srtTime, parseSRT, validateSession, makeEDL, makeSRT, makeCSV, makeTXT });
 }));
 </script>
-<script>window.RAMBLA_BUILD={version:"1.5.2",build:"a54e1c903d72"};</script>
+<script>window.RAMBLA_BUILD={version:"1.6.0",build:"01127d848d1f"};</script>
 <script>/*
  * RAMBLA Log — optional, experimental local speech recognition.
  * Loading this file does not contact a server or request the microphone.
@@ -2856,6 +2888,68 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
   return RamblaVoiceNote;
 }));
 </script>
+<script>/* RAMBLA_GITHUB_CLOUD_V1 */
+window.RamblaGithubCloud=(function(){
+  'use strict';
+  const base='https://api.github.com/repos/azza0101/rambla-log/contents/sessions/';
+  const headers=token=>({'Accept':'application/vnd.github+json','Authorization':'Bearer '+token,'Content-Type':'application/json'});
+  function filename(id,extension){
+    const key=String(id??'').replace(/[^A-Za-z0-9_-]/g,'').slice(0,70);
+    if(!key)throw Error('La sessione non ha un identificativo valido.');
+    return 'RAMBLA-'+key+'.'+extension;
+  }
+  function base64Utf8(value){
+    const bytes=new TextEncoder().encode(value);
+    let binary='';
+    for(let i=0;i<bytes.length;i+=16384)binary+=String.fromCharCode(...bytes.subarray(i,i+16384));
+    return btoa(binary);
+  }
+  async function request(url,method,token,body){
+    let response;
+    try{
+      response=await fetch(url,{method,headers:headers(token),body:body===undefined?undefined:JSON.stringify(body),mode:'cors',credentials:'omit',cache:'no-store'});
+    }catch(e){throw Error('Connessione GitHub non disponibile. Controlla internet e riprova: i marker restano salvati sul telefono.');}
+    return response;
+  }
+  function problem(status){
+    if(status===401)return 'Token GitHub non valido o scaduto (401). Creane uno nuovo.';
+    if(status===403)return 'GitHub ha rifiutato il permesso (403). Il token deve avere Contents: Read and write sul repository rambla-log.';
+    if(status===404)return 'Repository o cartella GitHub non accessibili (404). Controlla l’accesso del token a azza0101/rambla-log.';
+    if(status===409)return 'GitHub ha segnalato una modifica contemporanea (409). Riprova.';
+    if(status===422)return 'GitHub non ha accettato il contenuto (422).';
+    return 'GitHub non ha accettato il caricamento (HTTP '+status+').';
+  }
+  async function putFile(token,file,text){
+    const path='sessions/'+file;
+    const url=base+encodeURIComponent(file);
+    const existing=await request(url,'GET',token);
+    let sha;
+    if(existing.ok){
+      const info=await existing.json();sha=info.sha;
+      if(typeof sha!=='string'||!sha)throw Error('Risposta GitHub non valida: SHA mancante.');
+    }else if(existing.status!==404)throw Error(problem(existing.status));
+    const payload={message:'RAMBLA Log: salva '+file,content:base64Utf8(text),branch:'main'};
+    if(sha)payload.sha=sha;
+    const reply=await request(url,'PUT',token,payload);
+    if(!reply.ok)throw Error(problem(reply.status));
+    return {path,html_url:'https://github.com/azza0101/rambla-log/blob/main/'+path};
+  }
+  async function uploadFiles({token,session,edl,backup,publicConfirmed}){
+    if(!publicConfirmed)throw Error('Conferma prima che questo repository GitHub è pubblico.');
+    if(typeof token!=='string'||!token.trim())throw Error('Inserisci il token GitHub per questa apertura dell’app.');
+    const jobs=[];
+    const name=filename(session?.id,'edl').slice(0,-4);
+    if(typeof edl==='string'&&edl.trim())jobs.push([name+'.edl',edl]);
+    if(typeof backup==='string'&&backup.trim())jobs.push([name+'.json',backup]);
+    if(!jobs.length)throw Error('Non ci sono marker da esportare. Attiva Backup completo per salvare una sessione senza marker.');
+    if(jobs.some(x=>new TextEncoder().encode(x[1]).byteLength>5_000_000))throw Error('Sessione troppo grande per il caricamento diretto. Usa Esporta e trasferisci il file manualmente.');
+    const uploaded=[];
+    for(const [file,text] of jobs)uploaded.push(await putFile(token.trim(),file,text));
+    return {uploaded};
+  }
+  return Object.freeze({uploadFiles,filename});
+})();
+</script>
 <script>(function () {
   'use strict';
   const C = window.RamblaCore;
@@ -3221,8 +3315,71 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
     const boundary=elapsed();s.duration=boundary;s.endedAt=Math.max(s.startedAt||0,Date.now());s.captureState='ended';s.pauseReason=null;s.pausedAt=null;
     active=false;recovery=false;speechSuspended=true;persist();
     const finished=flushCapture(boundary);render();
-    return finished.then(()=>{setSpeech('idle','Sessione conclusa · trascrizione modificabile');persist();render();notify('Sessione salvata. Esporta anche il backup JSON.');});
+    return finished.then(()=>{setSpeech('idle','Sessione conclusa · trascrizione modificabile');persist();render();notify('Sessione salvata sul telefono.');if(current()?.id===s.id&&!document.hidden)openCloudUpload(s.id);});
   }
+
+  // The phone is the source of truth. A failed cloud upload NEVER deletes local data.
+  let cloudUploadSessionId=null,githubTokenMemory='',cloudUploading=false;
+  function openCloudUpload(id){
+    const item=store.sessions.find(x=>x.id===id);
+    if(!item||active||pendingFlush){notify('Termina la ripresa prima di caricare la sessione.');return;}
+    const dlg=$('cloudUploadDialog');if(!dlg||dlg.open)return;
+    cloudUploadSessionId=id;
+    $('cloudSummary').textContent=item.title+' · '+item.markers.length+' marker · '+item.segments.length+' frasi. La sessione è già salvata su questo iPhone.';
+    $('cloudFullBackup').checked=!item.markers.length;
+    $('cloudPublicConfirm').checked=false;
+    $('cloudTokenInput').value='';
+    $('cloudTokenInput').placeholder=githubTokenMemory?'Token già inserito per questa apertura':'github_pat_…';
+    $('cloudFeedback').textContent='';$('cloudFeedback').classList.remove('error');
+    $('cloudKeepLocal').textContent='Solo su iPhone';
+    $('cloudKeepLocal').disabled=false;$('cloudUploadButton').disabled=false;
+    dlg.showModal();
+  }
+  function closeCloudUpload(){
+    if(cloudUploading)return;
+    $('cloudTokenInput').value='';
+    $('cloudUploadDialog').close();
+    cloudUploadSessionId=null;
+  }
+  async function uploadCloudSession(){
+    if(cloudUploading)return;
+    if(!$('cloudPublicConfirm').checked){
+      $('cloudFeedback').classList.add('error');
+      $('cloudFeedback').textContent='Per caricare devi confermare che il repository è pubblico.';
+      return;
+    }
+    const token=$('cloudTokenInput').value.trim()||githubTokenMemory;
+    if(!token){
+      $('cloudFeedback').classList.add('error');
+      $('cloudFeedback').textContent='Inserisci il token GitHub fine-grained nella casella qui sopra.';
+      $('cloudTokenInput').focus();return;
+    }
+    const item=store.sessions.find(x=>x.id===cloudUploadSessionId);
+    if(!item||active||pendingFlush||scanner||voiceNote||voiceClosing){notify('Completa prima la sessione o la nota in corso.');return;}
+    if(!window.RamblaGithubCloud){notify('Il collegamento GitHub non è stato caricato.');return;}
+    const snapshot=JSON.parse(JSON.stringify(item));
+    let edl='',backup='';
+    try{
+      if(snapshot.markers.length)edl=C.makeEDL(snapshot);
+      if($('cloudFullBackup').checked)backup=JSON.stringify({app:'RAMBLA Log',version:1,exportedAt:new Date().toISOString(),sessions:[snapshot]},null,2);
+    }catch(e){$('cloudFeedback').classList.add('error');$('cloudFeedback').textContent='Esportazione: '+e.message;return;}
+    cloudUploading=true;$('cloudUploadButton').disabled=true;$('cloudKeepLocal').disabled=true;$('cloudClose').disabled=true;
+    $('cloudFeedback').classList.remove('error');$('cloudFeedback').textContent='Caricamento in corso: tieni aperta l’app…';
+    try{
+      const done=await window.RamblaGithubCloud.uploadFiles({token,session:snapshot,edl,backup,publicConfirmed:true});
+      githubTokenMemory=token;$('cloudTokenInput').value='';$('cloudTokenInput').placeholder='Token attivo per questa apertura';
+      $('cloudFeedback').textContent='Caricamento confermato da GitHub: '+done.uploaded.map(x=>x.path.split('/').pop()).join(', ')+'. Il Bridge può leggerli premendo Rileggi.';
+      $('cloudKeepLocal').textContent='Chiudi';
+      notify('Sessione caricata su GitHub. Il Bridge ora può leggerla.');
+    }catch(e){
+      if(/401|403/.test(e.message))githubTokenMemory='';
+      $('cloudFeedback').classList.add('error');
+      $('cloudFeedback').textContent=e.message+' La copia sull’iPhone non è stata modificata.';
+    }finally{
+      cloudUploading=false;$('cloudUploadButton').disabled=false;$('cloudKeepLocal').disabled=false;$('cloudClose').disabled=false;
+    }
+  }
+
   function retrySpeech() {
     if(!active||pendingFlush||retryTask||voiceNote||voiceClosing)return;
     const sessionId=current().id;
@@ -3619,6 +3776,10 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
     $('sessionActionsDialog').addEventListener('close',()=>{sessionActionId=null;});
     $('sessionRenameDialog').addEventListener('close',()=>{sessionRenameId=null;});
     if($('updateAppButton'))$('updateAppButton').onclick=updateApp;
+    $('cloudKeepLocal').onclick=closeCloudUpload;$('cloudClose').onclick=closeCloudUpload;
+    $('cloudUploadButton').onclick=uploadCloudSession;
+    $('cloudUploadDialog').addEventListener('cancel',e=>{if(cloudUploading)e.preventDefault();});
+    $('exportCloudButton').onclick=()=>{const id=current()?.id;if(active||pendingFlush){notify('Termina prima la sessione.');return;}$('exportDialog').close();openCloudUpload(id);};
     $('startButton').onclick=()=>startSession();$('stopButton').onclick=endSession;
     if($('pauseButton'))$('pauseButton').onclick=()=>pauseSession('manual');
     if($('resumeButton'))$('resumeButton').onclick=()=>startSession(true);
