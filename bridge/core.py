@@ -121,7 +121,7 @@ def apply(timeline,chosen):
         if pos in {int(round(float(k))) for k in (timeline.GetMarkers() or {})}:
             errors.append(m.tc+' già presente');continue
         try:
-            if timeline.AddMarker(pos,m.color,m.name,m.note,max(1,m.duration),'rambla:'+m.uid):added+=1
+            if timeline.AddMarker(pos,m.color,m.name,m.note,max(1,round(float(rate(timeline.GetSetting('timelineFrameRate'))))),'rambla:'+m.uid):added+=1
             else:errors.append(m.tc+' rifiutato da Resolve')
         except Exception as e:errors.append(m.tc+': '+str(e))
     return added,errors
