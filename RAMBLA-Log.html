@@ -648,6 +648,26 @@ h1 { font-family: var(--heading); font-size: clamp(26px,2.3vw,37px); letter-spac
 .cloud-sheet .cloud-token input{font-size:16px}
 .cloud-sheet .cloud-permission{margin-top:12px}
 .cloud-sheet #cloudUploadButton{background:var(--primary);color:#08291f;font-weight:700}
+
+/* Compact notifications and color-coded note controls */
+.toast{top:68px;bottom:auto;box-shadow:0 4px 18px #0006;padding:8px 12px;border-radius:9px;font-size:11px;line-height:1.3;max-width:calc(100vw - 38px);gap:9px;pointer-events:none}
+.toast .text-button{min-height:28px;pointer-events:auto}
+.toast[hidden]{display:none!important}
+.manual-note{background:#ad87ff;border-color:#ad87ff;color:#21133a;font-weight:700}
+.manual-note .icon{color:#21133a}
+.voice-note{background:#35dec0;border-color:#35dec0;color:#04281f;font-weight:700}
+.voice-note .icon{color:#04281f}
+.marker-row{border-left:4px solid var(--note-accent,#35dec0);background:linear-gradient(105deg,color-mix(in srgb,var(--note-accent,#35dec0) 15%,#151515),#151515 75%)}
+.marker-row strong{color:var(--note-accent,#35dec0)}
+@media(max-width:620px){.toast{top:calc(62px + env(safe-area-inset-top));bottom:auto;padding:7px 11px}}
+
+.cloud-sheet [hidden]{display:none!important}
+.cloud-sheet .cloud-connection{display:flex;align-items:center;gap:9px;background:#17241f;padding:10px 13px;border:1px solid #355347;border-radius:9px;font-size:12px;color:#b2f5df}
+.cloud-sheet .cloud-connection .text-button{margin-left:auto;font-size:11px}
+.cloud-link-led{width:8px;height:8px;border-radius:100%;background:#35dec0}
+.cloud-sheet .cloud-help{margin:6px 0 12px}
+.cloud-sheet .cloud-help p{line-height:1.5}
+.cloud-sheet .cloud-disclosure{font-size:10px;color:#a6a6a6;margin:12px 0 0}
 </style>
 <!--
 Bundled font licenses
@@ -968,7 +988,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
       
     </div>
 
-    <div class="workspace-foot"><span>RAMBLA LOG <b>1.6.0</b></span><span id="offlineReady">Salvataggio locale immediato</span></div>
+    <div class="workspace-foot"><span>RAMBLA LOG <b>1.7.0</b></span><span id="offlineReady">Salvataggio locale immediato</span></div>
   </main>
 </div>
 
@@ -1015,16 +1035,18 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 
 
 <dialog id="cloudUploadDialog" class="sheet cloud-sheet" aria-labelledby="cloudTitle">
-  <div class="dialog-head"><div><div class="eyebrow">SESSIONE SALVATA</div><h2 id="cloudTitle">Salvare anche sul cloud?</h2></div><button type="button" class="icon-button" id="cloudClose" aria-label="Chiudi"><svg class="icon"><use href="#i-close"/></svg></button></div>
+  <div class="dialog-head"><div><div class="eyebrow">SESSIONE SALVATA</div><h2 id="cloudTitle">Salvare anche su GitHub?</h2></div><button type="button" class="icon-button" id="cloudClose" aria-label="Chiudi"><svg class="icon"><use href="#i-close"/></svg></button></div>
   <p id="cloudSummary" class="cloud-choice"></p>
-  <div class="cloud-warning"><strong>ATTENZIONE · GitHub pubblico</strong>Il repository <b>azza0101/rambla-log</b> è visibile a tutti. Marker, titoli e note caricati potranno essere letti da chiunque. Evita contenuti riservati.</div>
-  <label class="field cloud-token">Token personale GitHub
-    <input id="cloudTokenInput" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="github_pat_…">
-    <small>Da inserire una volta per ogni apertura dell’app. Rimane soltanto nella memoria temporanea dell’app: non viene salvato sul telefono né nel codice del sito.</small>
-  </label>
-  <p class="cloud-note">Crea un <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">token GitHub fine-grained</a> scegliendo <b>Only select repositories → rambla-log</b> e <b>Repository permissions → Contents: Read and write</b>. Non servono altri permessi. La connessione GitHub di ChatGPT non è accessibile a Safari.</p>
-  <label class="check-field"><input id="cloudFullBackup" type="checkbox"><span>Includi anche il <b>backup completo JSON</b> con le trascrizioni (altrimenti invio solo EDL con marker e note)</span></label>
-  <label class="check-field cloud-permission"><input id="cloudPublicConfirm" type="checkbox"><span>Confermo di voler pubblicare questi contenuti nel repository GitHub <b>pubblico</b>.</span></label>
+  <div id="cloudConnected" class="cloud-connection" hidden><span class="cloud-link-led" aria-hidden="true"></span><strong>GitHub collegato</strong><button type="button" class="text-button" id="cloudDisconnect">Scollega</button></div>
+  <div id="cloudSetup" hidden>
+    <label class="field cloud-token">Collega GitHub una sola volta
+      <input id="cloudTokenInput" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Incolla token GitHub">
+    </label>
+    <details class="guide-details cloud-help"><summary>Come collegare GitHub</summary><p>Apri <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">GitHub → Nuovo token</a>, seleziona soltanto <b>rambla-log</b> e abilita <b>Contents: Read and write</b>. Incollalo qui una volta. Puoi scollegarlo quando vuoi.</p></details>
+    <label class="check-field cloud-permission"><input id="cloudPublicConfirm" type="checkbox"><span>Ho capito che i file caricati nel repository GitHub <b>pubblico</b> saranno visibili online.</span></label>
+  </div>
+  <label class="check-field"><input id="cloudFullBackup" type="checkbox"><span>Carica anche trascrizione e backup completo</span></label>
+  <p class="cloud-disclosure">GitHub pubblico · invia solo contenuti condivisibili.</p>
   <p id="cloudFeedback" role="status" aria-live="polite"></p>
   <div class="dialog-footer"><button type="button" class="button button-dark" id="cloudKeepLocal">Solo su iPhone</button><button type="button" class="button" id="cloudUploadButton">Salva su GitHub</button></div>
 </dialog>
@@ -1501,7 +1523,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
   return Object.freeze({ rates, rateInfo, parseTC, formatTC, secondsToFrames, framesToSeconds, framesAt, makeTimecodeAnchor, srtTime, parseSRT, validateSession, makeEDL, makeSRT, makeCSV, makeTXT });
 }));
 </script>
-<script>window.RAMBLA_BUILD={version:"1.6.0",build:"01127d848d1f"};</script>
+<script>window.RAMBLA_BUILD={version:"1.7.0",build:"b0bf0717268a"};</script>
 <script>/*
  * RAMBLA Log — optional, experimental local speech recognition.
  * Loading this file does not contact a server or request the microphone.
@@ -2947,7 +2969,51 @@ window.RamblaGithubCloud=(function(){
     for(const [file,text] of jobs)uploaded.push(await putFile(token.trim(),file,text));
     return {uploaded};
   }
-  return Object.freeze({uploadFiles,filename});
+  // A one-time opt-in device pairing; no credential is shipped in app code.
+  // Same-origin JavaScript can access this store: scope tokens to rambla-log.
+  function dbOpen(){
+    if(!window.indexedDB||!window.crypto?.subtle)throw Error('Memoria protetta non disponibile. Apri la web app in Safari tramite HTTPS.');
+    return new Promise((resolve,reject)=>{
+      const req=indexedDB.open('rambla-log-cloud-pairing-v1',1);
+      req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains('auth'))req.result.createObjectStore('auth');};
+      req.onsuccess=()=>resolve(req.result);
+      req.onerror=()=>reject(Error('Non riesco ad aprire la memoria locale.'));
+    });
+  }
+  async function dbGet(name){
+    const db=await dbOpen();
+    try{return await new Promise((resolve,reject)=>{
+      const req=db.transaction('auth','readonly').objectStore('auth').get(name);
+      req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(Error('Non riesco a leggere il collegamento.'));
+    });}finally{db.close();}
+  }
+  async function dbWrite(name,value,remove=false){
+    const db=await dbOpen();
+    try{return await new Promise((resolve,reject)=>{
+      const tx=db.transaction('auth','readwrite');
+      if(remove)tx.objectStore('auth').delete(name);else tx.objectStore('auth').put(value,name);
+      tx.oncomplete=resolve;
+      tx.onerror=()=>reject(Error('Non riesco a salvare il collegamento.'));
+      tx.onabort=()=>reject(Error('Memoria locale interrotta.'));
+    });}finally{db.close();}
+  }
+  async function rememberToken(token){
+    if(typeof token!=='string'||token.length<12||token.length>400)throw Error('Token non valido.');
+    let key=await dbGet('key');
+    if(!key){key=await window.crypto.subtle.generateKey({name:'AES-GCM',length:256},false,['encrypt','decrypt']);await dbWrite('key',key);}
+    const iv=window.crypto.getRandomValues(new Uint8Array(12));
+    const ciphertext=await window.crypto.subtle.encrypt({name:'AES-GCM',iv},key,new TextEncoder().encode(token));
+    await dbWrite('credential',{iv:Array.from(iv),data:Array.from(new Uint8Array(ciphertext))});
+  }
+  async function recallToken(){
+    const value=await dbGet('credential');if(!value)return '';
+    const key=await dbGet('key');
+    if(!key||!Array.isArray(value.iv)||!Array.isArray(value.data))throw Error('Collegamento locale da ricreare.');
+    const bytes=await window.crypto.subtle.decrypt({name:'AES-GCM',iv:Uint8Array.from(value.iv)},key,Uint8Array.from(value.data));
+    return new TextDecoder().decode(bytes);
+  }
+  async function forgetToken(){await dbWrite('credential',null,true);}
+  return Object.freeze({uploadFiles,filename,rememberToken,recallToken,forgetToken});
 })();
 </script>
 <script>(function () {
@@ -3003,7 +3069,7 @@ window.RamblaGithubCloud=(function(){
   function notify(message,undo) {
     clearTimeout(toastTimer);$('toast').querySelector('span').textContent=message;
     const btn=$('toast').querySelector('button');btn.hidden=!undo;btn.onclick=undo?()=>{undo();$('toast').hidden=true;}:null;
-    $('toast').hidden=false;toastTimer=setTimeout(()=>$('toast').hidden=true,undo?8000:5500);
+    $('toast').hidden=false;toastTimer=setTimeout(()=>$('toast').hidden=true,undo?3400:1400);
   }
   function showError(id,message) {$(id).hidden=!message;$(id).textContent=message || '';}
   function persist() {
@@ -3105,7 +3171,7 @@ window.RamblaGithubCloud=(function(){
     list.innerHTML=sorted.length?sorted.map(line=>`<article class="transcript-row ${selected.has(line.id)?'selected':''} ${marked.has(line.id)?'marked':''}"><button class="transcript-main" data-segment="${esc(line.id)}" aria-pressed="${selected.has(line.id)}"><span class="line-meta"><strong>${esc(line.speaker||'Voce')}</strong><span>${esc(tcAt(line.start))}</span>${marked.has(line.id)?'<span>●</span>':''}</span><span class="line-text">${esc(line.text)}</span></button><button class="icon-button edit-line" data-edit-segment="${esc(line.id)}" aria-label="Modifica frase">${icon('note')}</button></article>`).join(''):`<div class="empty-state"><div class="empty-glyph">${icon('wave')}</div><h3>Nessuna trascrizione</h3><p>${active?'La trascrizione apparirà qui. Marker e note vocali sono nel registro dei marker.':'Avvia la sessione per trascrivere, oppure aggiungi una nota o un file SRT.'}</p><button class="text-button import-button">Importa una trascrizione ${icon('arrow')}</button></div>`;
     if(interimText){const row=document.createElement('div');row.className='transcript-row interim';const text=document.createElement('span');text.className='line-text';text.textContent=interimText;row.append(text);list.append(row);}
     if(autoscroll&&wasNearBottom)list.scrollTop=list.scrollHeight;
-    $('markerList').innerHTML=s.markers.length?[...s.markers].sort((a,b)=>a.start-b.start).map(m=>{const cat=catFor(m.category);return `<article class="marker-row"><span class="marker-dot" style="--dot:${cat.dot}"></span><div><strong>${esc(m.name)}</strong><p>${esc(m.note||'Momento segnato durante la ripresa.')}</p><span class="line-meta">${esc(tcAt(m.start))} → ${esc(tcAt(m.end,m.start))} · ${(m.end-m.start).toFixed(1)}s</span></div><button class="icon-button" data-edit-marker="${esc(m.id)}" aria-label="Modifica marker">${icon('note')}</button></article>`;}).join(''):`<div class="empty-state"><div class="empty-glyph">${icon('flag')}</div><h3>Nessun marker</h3><p>Usa un pulsante colorato per segnare gli ultimi secondi, o seleziona le frasi che vuoi tenere.</p></div>`;
+    $('markerList').innerHTML=s.markers.length?[...s.markers].sort((a,b)=>a.start-b.start).map(m=>{const cat=catFor(m.category);return `<article class="marker-row" style="--note-accent:${cat.dot}"><span class="marker-dot" style="--dot:${cat.dot}"></span><div><strong>${esc(m.name)}</strong><p>${esc(m.note||'Momento segnato durante la ripresa.')}</p><span class="line-meta">${esc(tcAt(m.start))} → ${esc(tcAt(m.end,m.start))} · ${(m.end-m.start).toFixed(1)}s</span></div><button class="icon-button" data-edit-marker="${esc(m.id)}" aria-label="Modifica marker">${icon('note')}</button></article>`;}).join(''):`<div class="empty-state"><div class="empty-glyph">${icon('flag')}</div><h3>Nessun marker</h3><p>Usa un pulsante colorato per segnare gli ultimi secondi, o seleziona le frasi che vuoi tenere.</p></div>`;
     $('selectionBar').hidden=!selected.size;$('selectionText').textContent=`${selected.size} ${selected.size===1?'frase selezionata':'frasi selezionate'}`;
     $('markScope').textContent=selected.size?'Frasi selezionate':'Segna gli ultimi';
     $$('.segmented button').forEach(b=>{b.classList.toggle('active',Number(b.dataset.lookback)===s.lookback);b.disabled=!!selected.size;});
@@ -3135,7 +3201,7 @@ window.RamblaGithubCloud=(function(){
     document.querySelector('.transport').classList.toggle('live',active);document.querySelector('.transport').classList.toggle('paused',paused);
     $('startButton').hidden=active||paused||!!s.endedAt||s.isDemo||recovery;$('stopButton').hidden=!active&&!paused;
     if($('pauseButton')){$('pauseButton').hidden=!active;$('pauseButton').disabled=false;}
-    if($('resumeButton')){$('resumeButton').hidden=!paused;$('resumeButton').disabled=pendingFlush||!!voiceClosing;}
+    if($('resumeButton')){$('resumeButton').hidden=(!paused&&!s.endedAt)||s.isDemo;$('resumeButton').disabled=pendingFlush||!!voiceClosing;}
     $('stopButton').disabled=pendingFlush;
     $('newAfterEnd').hidden=!s.endedAt&&!s.isDemo;$('speechMode').disabled=active||pendingFlush;
     $('startButton').disabled=pendingFlush;$('newAfterEnd').disabled=pendingFlush;
@@ -3300,6 +3366,19 @@ window.RamblaGithubCloud=(function(){
     const task=Promise.all(tasks).finally(()=>{if(flushPromise===task){flushPromise=null;pendingFlush=false;interimText='';persist();render();}});
     flushPromise=task;return task;
   }
+  function resumeFinishedSession() {
+    if(active||pendingFlush||voiceClosing||voiceNote||scanner||document.hidden)return;
+    const s=current();if(!s||!s.endedAt||s.isDemo||!s.startedAt)return;
+    const now=Date.now(),elapsedSeconds=(now-s.startedAt)/1000;
+    if(elapsedSeconds>=86300){notify('Sessione oltre le 24 ore. Crea una nuova sessione.');return;}
+    const archivedEnd=s.endedAt,priorState=s.captureState,priorReason=s.pauseReason,priorPaused=s.pausedAt,priorDuration=s.duration;
+    s.endedAt=null;s.captureState='paused';s.pauseReason='continued';s.pausedAt=archivedEnd;
+    s.duration=Math.max(s.duration||0,elapsedSeconds);recovery=false;
+    if(!persist()){Object.assign(s,{endedAt:archivedEnd,captureState:priorState,pauseReason:priorReason,pausedAt:priorPaused,duration:priorDuration});notify('Impossibile salvare. Libera spazio.');return;}
+    render();startSession(true);
+    if(s.clockSource==='timecode'&&now-archivedEnd>300000)notify('Se la camera usa REC RUN, riallinea il TC prima di segnare nuovi marker.');
+  }
+
   function pauseSession(reason='manual') {
     if(!active)return flushPromise||Promise.resolve();
     const s=current(),boundary=elapsed();s.duration=boundary;s.captureState='paused';s.pauseReason=reason;s.pausedAt=Math.max(s.startedAt,Date.now());
@@ -3320,20 +3399,36 @@ window.RamblaGithubCloud=(function(){
 
   // The phone is the source of truth. A failed cloud upload NEVER deletes local data.
   let cloudUploadSessionId=null,githubTokenMemory='',cloudUploading=false;
-  function openCloudUpload(id){
+  function cloudConnectedView(connected){
+    $('cloudConnected').hidden=!connected;
+    $('cloudSetup').hidden=connected;
+  }
+  async function openCloudUpload(id){
     const item=store.sessions.find(x=>x.id===id);
-    if(!item||active||pendingFlush){notify('Termina la ripresa prima di caricare la sessione.');return;}
+    if(!item||active||pendingFlush){notify('Termina prima la ripresa.');return;}
     const dlg=$('cloudUploadDialog');if(!dlg||dlg.open)return;
     cloudUploadSessionId=id;
-    $('cloudSummary').textContent=item.title+' · '+item.markers.length+' marker · '+item.segments.length+' frasi. La sessione è già salvata su questo iPhone.';
+    $('cloudSummary').textContent=item.title+' · '+item.markers.length+' marker · salvata su questo iPhone';
     $('cloudFullBackup').checked=!item.markers.length;
     $('cloudPublicConfirm').checked=false;
     $('cloudTokenInput').value='';
-    $('cloudTokenInput').placeholder=githubTokenMemory?'Token già inserito per questa apertura':'github_pat_…';
     $('cloudFeedback').textContent='';$('cloudFeedback').classList.remove('error');
-    $('cloudKeepLocal').textContent='Solo su iPhone';
-    $('cloudKeepLocal').disabled=false;$('cloudUploadButton').disabled=false;
+    $('cloudKeepLocal').textContent='Solo su iPhone';$('cloudKeepLocal').disabled=false;
+    $('cloudUploadButton').disabled=true;cloudConnectedView(false);
     dlg.showModal();
+    try{
+      const saved=githubTokenMemory||await window.RamblaGithubCloud.recallToken();
+      if(cloudUploadSessionId!==id||!dlg.open)return;
+      githubTokenMemory=saved||'';
+      cloudConnectedView(!!saved);
+    }catch(error){
+      if(cloudUploadSessionId===id&&dlg.open){
+        cloudConnectedView(false);
+        $('cloudFeedback').textContent='Collegamento non disponibile. Ricollega GitHub una volta.';
+      }
+    }finally{
+      if(cloudUploadSessionId===id&&dlg.open)$('cloudUploadButton').disabled=false;
+    }
   }
   function closeCloudUpload(){
     if(cloudUploading)return;
@@ -3341,42 +3436,65 @@ window.RamblaGithubCloud=(function(){
     $('cloudUploadDialog').close();
     cloudUploadSessionId=null;
   }
+  async function disconnectCloud(){
+    if(cloudUploading)return;
+    $('cloudDisconnect').disabled=true;
+    try{
+      await window.RamblaGithubCloud.forgetToken();
+      githubTokenMemory='';$('cloudTokenInput').value='';
+      cloudConnectedView(false);
+      $('cloudFeedback').textContent='GitHub scollegato da questo iPhone.';
+    }catch(error){
+      $('cloudFeedback').classList.add('error');$('cloudFeedback').textContent=error.message;
+    }finally{$('cloudDisconnect').disabled=false;}
+  }
   async function uploadCloudSession(){
     if(cloudUploading)return;
-    if(!$('cloudPublicConfirm').checked){
+    const hadPairing=!!githubTokenMemory;
+    if(!hadPairing&&!$('cloudPublicConfirm').checked){
       $('cloudFeedback').classList.add('error');
-      $('cloudFeedback').textContent='Per caricare devi confermare che il repository è pubblico.';
+      $('cloudFeedback').textContent='Conferma che il repository è pubblico per collegare GitHub.';
       return;
     }
-    const token=$('cloudTokenInput').value.trim()||githubTokenMemory;
+    const token=githubTokenMemory||$('cloudTokenInput').value.trim();
     if(!token){
       $('cloudFeedback').classList.add('error');
-      $('cloudFeedback').textContent='Inserisci il token GitHub fine-grained nella casella qui sopra.';
+      $('cloudFeedback').textContent='Incolla il token per il primo collegamento.';
       $('cloudTokenInput').focus();return;
     }
     const item=store.sessions.find(x=>x.id===cloudUploadSessionId);
-    if(!item||active||pendingFlush||scanner||voiceNote||voiceClosing){notify('Completa prima la sessione o la nota in corso.');return;}
-    if(!window.RamblaGithubCloud){notify('Il collegamento GitHub non è stato caricato.');return;}
+    if(!item||active||pendingFlush||scanner||voiceNote||voiceClosing){notify('Completa la sessione prima di caricare.');return;}
     const snapshot=JSON.parse(JSON.stringify(item));
     let edl='',backup='';
     try{
       if(snapshot.markers.length)edl=C.makeEDL(snapshot);
       if($('cloudFullBackup').checked)backup=JSON.stringify({app:'RAMBLA Log',version:1,exportedAt:new Date().toISOString(),sessions:[snapshot]},null,2);
-    }catch(e){$('cloudFeedback').classList.add('error');$('cloudFeedback').textContent='Esportazione: '+e.message;return;}
-    cloudUploading=true;$('cloudUploadButton').disabled=true;$('cloudKeepLocal').disabled=true;$('cloudClose').disabled=true;
-    $('cloudFeedback').classList.remove('error');$('cloudFeedback').textContent='Caricamento in corso: tieni aperta l’app…';
+    }catch(error){$('cloudFeedback').classList.add('error');$('cloudFeedback').textContent=error.message;return;}
+    cloudUploading=true;
+    $('cloudUploadButton').disabled=true;$('cloudKeepLocal').disabled=true;$('cloudClose').disabled=true;
+    $('cloudFeedback').classList.remove('error');$('cloudFeedback').textContent='Caricamento…';
     try{
-      const done=await window.RamblaGithubCloud.uploadFiles({token,session:snapshot,edl,backup,publicConfirmed:true});
-      githubTokenMemory=token;$('cloudTokenInput').value='';$('cloudTokenInput').placeholder='Token attivo per questa apertura';
-      $('cloudFeedback').textContent='Caricamento confermato da GitHub: '+done.uploaded.map(x=>x.path.split('/').pop()).join(', ')+'. Il Bridge può leggerli premendo Rileggi.';
+      const result=await window.RamblaGithubCloud.uploadFiles({token,session:snapshot,edl,backup,publicConfirmed:true});
+      githubTokenMemory=token;
+      $('cloudTokenInput').value='';cloudConnectedView(true);
+      $('cloudFeedback').textContent='Caricato su GitHub · '+result.uploaded.map(x=>x.path.split('/').pop()).join(', ');
       $('cloudKeepLocal').textContent='Chiudi';
-      notify('Sessione caricata su GitHub. Il Bridge ora può leggerla.');
-    }catch(e){
-      if(/401|403/.test(e.message))githubTokenMemory='';
+      if(!hadPairing){
+        try{await window.RamblaGithubCloud.rememberToken(token);}
+        catch(error){$('cloudFeedback').textContent+=' · Collegamento non memorizzato: '+error.message;}
+      }
+      notify('Caricato su GitHub.');
+    }catch(error){
+      if(/401|403/.test(error.message)){
+        githubTokenMemory='';
+        try{await window.RamblaGithubCloud.forgetToken();}catch{}
+        cloudConnectedView(false);
+      }
       $('cloudFeedback').classList.add('error');
-      $('cloudFeedback').textContent=e.message+' La copia sull’iPhone non è stata modificata.';
+      $('cloudFeedback').textContent=error.message+' La sessione resta salvata sull’iPhone.';
     }finally{
-      cloudUploading=false;$('cloudUploadButton').disabled=false;$('cloudKeepLocal').disabled=false;$('cloudClose').disabled=false;
+      cloudUploading=false;
+      $('cloudUploadButton').disabled=false;$('cloudKeepLocal').disabled=false;$('cloudClose').disabled=false;
     }
   }
 
@@ -3778,11 +3896,12 @@ window.RamblaGithubCloud=(function(){
     if($('updateAppButton'))$('updateAppButton').onclick=updateApp;
     $('cloudKeepLocal').onclick=closeCloudUpload;$('cloudClose').onclick=closeCloudUpload;
     $('cloudUploadButton').onclick=uploadCloudSession;
+    $('cloudDisconnect').onclick=disconnectCloud;
     $('cloudUploadDialog').addEventListener('cancel',e=>{if(cloudUploading)e.preventDefault();});
     $('exportCloudButton').onclick=()=>{const id=current()?.id;if(active||pendingFlush){notify('Termina prima la sessione.');return;}$('exportDialog').close();openCloudUpload(id);};
     $('startButton').onclick=()=>startSession();$('stopButton').onclick=endSession;
     if($('pauseButton'))$('pauseButton').onclick=()=>pauseSession('manual');
-    if($('resumeButton'))$('resumeButton').onclick=()=>startSession(true);
+    if($('resumeButton'))$('resumeButton').onclick=()=>current()?.endedAt?resumeFinishedSession():startSession(true);
     if($('clockPhoneButton'))$('clockPhoneButton').onclick=()=>selectClockSource('phone');
     if($('clockTimecodeButton'))$('clockTimecodeButton').onclick=()=>selectClockSource('timecode');
     $('speechMode').onchange=()=>{if(active||pendingFlush)return;store.prefs.mode=$('speechMode').value;persist();render();};
