@@ -1,0 +1,14 @@
+TITLE: RAMBLA DEMO - TEST RESOLVE
+FCM: NON-DROP FRAME
+
+001  001      V     C        01:00:04:00 01:00:04:01 01:00:04:00 01:00:04:01
+[keep] Primo passaggio da tenere.
+ |C:ResolveColorGreen |M:Da tenere |D:25
+
+002  001      V     C        01:00:12:12 01:00:12:13 01:00:12:12 01:00:12:13
+[highlight] Ottima risposta, provare dettaglio.
+ |C:ResolveColorYellow |M:Highlight |D:50
+
+003  001      V     C        01:00:27:00 01:00:27:01 01:00:27:00 01:00:27:01
+[turn] Pausa lunga da scartare.
+ |C:ResolveColorRed |M:SCARTA |D:25
