@@ -1,0 +1,52 @@
+name: RAMBLA Log Bridge Windows EXE
+on:
+  push:
+    branches: [main]
+    paths:
+      - "bridge/**"
+      - ".github/workflows/bridge-windows.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Test parser and timeline mapping
+        run: python -m unittest discover -s bridge -p "test_*.py" -v
+      - name: Install PyInstaller
+        run: python -m pip install -r bridge/requirements-build.txt
+      - name: Compile standalone exe
+        run: pyinstaller --noconfirm --clean --onefile --windowed --name "RAMBLA Log Bridge" --paths bridge bridge/main.py
+      - name: Prepare checksums
+        shell: pwsh
+        run: |
+          $exe = "dist/RAMBLA Log Bridge.exe"
+          $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath $exe).Hash.ToLower()
+          "$hash  RAMBLA Log Bridge.exe" | Set-Content -LiteralPath "dist/RAMBLA Log Bridge.exe.sha256" -Encoding ascii
+      - name: Publish artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RAMBLA-Log-Bridge-Windows
+          path: |
+            dist/RAMBLA Log Bridge.exe
+            dist/RAMBLA Log Bridge.exe.sha256
+      - name: Create release for this version
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $v = (Get-Content bridge/VERSION -Raw).Trim()
+          if ($v -notmatch '^\d+\.\d+\.\d+$') { throw "Invalid semantic version" }
+          $tag = "bridge-v$v"
+          gh release view $tag 2>$null
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "Release $tag already exists."
+            exit 0
+          }
+          gh release create $tag "dist/RAMBLA Log Bridge.exe" "dist/RAMBLA Log Bridge.exe.sha256" --target "${{ github.sha }}" --title "RAMBLA Log Bridge v$v" --notes "Workflow Integration for DaVinci Resolve Studio. Download the Windows EXE. Unsigned prototype."
