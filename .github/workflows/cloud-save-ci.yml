@@ -1,0 +1,21 @@
+name: RAMBLA Cloud save tests
+on:
+  push:
+    branches: [feat/iphone-github-cloud-save, main]
+    paths:
+      - index.html
+      - RAMBLA-Log.html
+      - tests/cloud-upload.test.mjs
+      - .github/workflows/cloud-save-ci.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  cloud:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: node --test tests/cloud-upload.test.mjs tests/phone-release.test.mjs
