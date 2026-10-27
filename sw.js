@@ -1,5 +1,5 @@
 'use strict';
-const CACHE='rambla-log-f4a7b2c9d610';
+const CACHE='rambla-log-c7a51d0e842b';
 const ASSETS=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon.svg'];
 // Let an installed update wait for the existing clients to close. Never force
 // a controller change or reload while a recording session may still be open.
