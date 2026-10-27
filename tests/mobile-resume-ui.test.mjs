@@ -55,3 +55,17 @@ test('GitHub pairing persists locally without a token in public HTML',()=>{
 test('All inline scripts parse',()=>{
  for(const [i,m] of [...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].entries())assert.doesNotThrow(()=>new vm.Script(m[1]),'Script '+i);
 });
+
+test('Failed local save never alters a previously ended session',()=>{
+ const source=functionText('resumeFinishedSession');
+ const session={id:'old',startedAt:1_000_000,endedAt:1_004_000,duration:4,markers:[{id:'m1',start:2}],captureState:'ended',pauseReason:null,pausedAt:null,isDemo:false};
+ let resumed=0;
+ const env={current:()=>session,active:false,pendingFlush:false,voiceClosing:null,voiceNote:null,scanner:null,recovery:false,document:{hidden:false},Date:{now:()=>1_900_000},persist:()=>false,render(){},startSession:()=>resumed++,notify(){}};
+ vm.runInNewContext(source+';resumeFinishedSession();',env);
+ assert.equal(session.endedAt,1_004_000);
+ assert.equal(session.duration,4);
+ assert.equal(session.captureState,'ended');
+ assert.equal(session.pauseReason,null);
+ assert.equal(session.pausedAt,null);
+ assert.equal(resumed,0);
+});
