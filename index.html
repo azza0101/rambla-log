@@ -3371,10 +3371,10 @@ window.RamblaGithubCloud=(function(){
     const s=current();if(!s||!s.endedAt||s.isDemo||!s.startedAt)return;
     const now=Date.now(),elapsedSeconds=(now-s.startedAt)/1000;
     if(elapsedSeconds>=86300){notify('Sessione oltre le 24 ore. Crea una nuova sessione.');return;}
-    const archivedEnd=s.endedAt;
+    const archivedEnd=s.endedAt,priorState=s.captureState,priorReason=s.pauseReason,priorPaused=s.pausedAt,priorDuration=s.duration;
     s.endedAt=null;s.captureState='paused';s.pauseReason='continued';s.pausedAt=archivedEnd;
     s.duration=Math.max(s.duration||0,elapsedSeconds);recovery=false;
-    if(!persist()){s.endedAt=archivedEnd;s.captureState='ended';s.pausedAt=null;notify('Impossibile salvare. Libera spazio.');return;}
+    if(!persist()){Object.assign(s,{endedAt:archivedEnd,captureState:priorState,pauseReason:priorReason,pausedAt:priorPaused,duration:priorDuration});notify('Impossibile salvare. Libera spazio.');return;}
     render();startSession(true);
     if(s.clockSource==='timecode'&&now-archivedEnd>300000)notify('Se la camera usa REC RUN, riallinea il TC prima di segnare nuovi marker.');
   }
