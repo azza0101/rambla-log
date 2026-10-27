@@ -9,6 +9,7 @@ on:
       - sw.js
       - tests/cloud-upload.test.mjs
       - tests/mobile-resume-ui.test.mjs
+      - tests/cloud-credentials.test.mjs
       - .github/workflows/cloud-save-ci.yml
   workflow_dispatch:
 permissions:
