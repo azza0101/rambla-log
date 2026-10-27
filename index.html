@@ -2959,7 +2959,51 @@ window.RamblaGithubCloud=(function(){
     for(const [file,text] of jobs)uploaded.push(await putFile(token.trim(),file,text));
     return {uploaded};
   }
-  return Object.freeze({uploadFiles,filename});
+  // A one-time opt-in device pairing; no credential is shipped in app code.
+  // Same-origin JavaScript can access this store: scope tokens to rambla-log.
+  function dbOpen(){
+    if(!window.indexedDB||!window.crypto?.subtle)throw Error('Memoria protetta non disponibile. Apri la web app in Safari tramite HTTPS.');
+    return new Promise((resolve,reject)=>{
+      const req=indexedDB.open('rambla-log-cloud-pairing-v1',1);
+      req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains('auth'))req.result.createObjectStore('auth');};
+      req.onsuccess=()=>resolve(req.result);
+      req.onerror=()=>reject(Error('Non riesco ad aprire la memoria locale.'));
+    });
+  }
+  async function dbGet(name){
+    const db=await dbOpen();
+    try{return await new Promise((resolve,reject)=>{
+      const req=db.transaction('auth','readonly').objectStore('auth').get(name);
+      req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(Error('Non riesco a leggere il collegamento.'));
+    });}finally{db.close();}
+  }
+  async function dbWrite(name,value,remove=false){
+    const db=await dbOpen();
+    try{return await new Promise((resolve,reject)=>{
+      const tx=db.transaction('auth','readwrite');
+      if(remove)tx.objectStore('auth').delete(name);else tx.objectStore('auth').put(value,name);
+      tx.oncomplete=resolve;
+      tx.onerror=()=>reject(Error('Non riesco a salvare il collegamento.'));
+      tx.onabort=()=>reject(Error('Memoria locale interrotta.'));
+    });}finally{db.close();}
+  }
+  async function rememberToken(token){
+    if(typeof token!=='string'||token.length<12||token.length>400)throw Error('Token non valido.');
+    let key=await dbGet('key');
+    if(!key){key=await window.crypto.subtle.generateKey({name:'AES-GCM',length:256},false,['encrypt','decrypt']);await dbWrite('key',key);}
+    const iv=window.crypto.getRandomValues(new Uint8Array(12));
+    const ciphertext=await window.crypto.subtle.encrypt({name:'AES-GCM',iv},key,new TextEncoder().encode(token));
+    await dbWrite('credential',{iv:Array.from(iv),data:Array.from(new Uint8Array(ciphertext))});
+  }
+  async function recallToken(){
+    const value=await dbGet('credential');if(!value)return '';
+    const key=await dbGet('key');
+    if(!key||!Array.isArray(value.iv)||!Array.isArray(value.data))throw Error('Collegamento locale da ricreare.');
+    const bytes=await window.crypto.subtle.decrypt({name:'AES-GCM',iv:Uint8Array.from(value.iv)},key,Uint8Array.from(value.data));
+    return new TextDecoder().decode(bytes);
+  }
+  async function forgetToken(){await dbWrite('credential',null,true);}
+  return Object.freeze({uploadFiles,filename,rememberToken,recallToken,forgetToken});
 })();
 </script>
 <script>(function () {
