@@ -615,6 +615,23 @@ h1 { font-family: var(--heading); font-size: clamp(26px,2.3vw,37px); letter-spac
   .scan-readout span { font-size: 7px; max-width: 80px; }
   .scan-footer .button { padding-left: 10px; padding-right: 10px; font-size: 11px; gap: 6px; }
 }
+
+/* RAMBLA 1.5 — mode under title, registry above accessible marker pads */
+.project-speech-mode {display:flex;margin:0 0 13px;justify-content:flex-start}
+.project-speech-mode .transport-options {display:block;min-width:240px}
+.project-speech-mode .mode-control {display:block;width:100%}
+@media(max-width:620px){
+.project-speech-mode {margin:0;flex:0 0 auto;padding-bottom:3px}
+.project-speech-mode .transport-options {display:block;width:100%;min-width:0}
+.project-speech-mode .mode-control {display:block;width:100%}
+.work-grid>.log-disclosure{order:0;flex:0 0 auto}
+.work-grid>.marking-panel{order:1;flex:1 1 0;min-height:0;justify-content:flex-end}
+.work-grid:has(.log-disclosure[open]) .marking-panel{display:flex;flex:0 0 auto;max-height:44%;overflow:auto}
+.work-grid:has(.log-disclosure[open]) .log-disclosure[open]{flex:1 1 0;min-height:0}
+.marking-panel .marker-pads{flex:1 1 135px;max-height:220px;min-height:120px;align-content:end}
+.marker-pad{min-height:62px}
+.transport-actions{display:block}
+}
 </style>
 <!--
 Bundled font licenses
@@ -895,6 +912,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
     <section class="session-heading">
       <div><div class="eyebrow" id="sessionDate"></div><h1 id="sessionTitle">Nuova sessione</h1><p id="sessionSubtitle">Note, trascrizione e marker della sessione.</p></div>
     </section>
+    <div class="project-speech-mode"><div class="transport-options"><label class="mode-control"><span class="sr-only">Modalità trascrizione</span><select id="speechMode"><option value="native">Voce · browser</option><option value="local">Whisper · locale</option><option value="manual">Solo marker</option></select></label></div></div>
 
     <div class="clock-source-control" role="group" aria-label="Riferimento orario della sessione">
       <button type="button" id="clockPhoneButton" class="clock-source-button active" aria-pressed="true"><svg class="icon"><use href="#i-clock"/></svg><span><strong>Ora iPhone</strong><small>Ore · minuti · secondi</small></span></button>
@@ -910,12 +928,6 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
     </section>
 
     <div class="work-grid">
-      <section class="marking-panel" id="markingPanel" aria-label="Segna un momento">
-        <div class="lookback-control"><span id="markScope">Segna gli ultimi</span><div class="segmented" aria-label="Secondi da segnare"><button data-lookback="5">5s</button><button data-lookback="10" class="active">10s</button><button data-lookback="20">20s</button></div></div>
-        <div id="markerPads" class="marker-pads"></div>
-        <div class="quick-notes"><button class="button manual-note" id="manualNoteButton2" aria-label="Aggiungi una nota"><svg class="icon"><use href="#i-note"/></svg>Nota</button><button class="button voice-note" id="voiceNoteButton"><svg class="icon"><use href="#i-mic"/></svg>Nota vocale</button></div>
-        <div class="resolve-card"><div class="resolve-symbol" aria-hidden="true"><span></span><span></span><span></span></div><div><strong>Esporta per Resolve</strong><p>Marker EDL e trascrizione SRT.<br>Già pronti da esportare.</p></div><button class="icon-button export-button" aria-label="Esporta per Resolve"><svg class="icon"><use href="#i-arrow"/></svg></button></div>
-      </section>
       <details id="logDisclosure" class="log-disclosure">
         <summary><span>Registro</span><span><b id="logMarkerCount">0</b> marker · <b id="logNoteCount">0</b> note<svg class="icon"><use href="#i-arrow"/></svg></span></summary>
       <section class="transcript-panel" id="transcriptPanel" aria-label="Testo e marker della sessione">
@@ -931,6 +943,13 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <div class="panel-bottom"><svg class="icon"><use href="#i-clock"/></svg><span id="transcriptFootnote">Le frasi si possono selezionare e correggere.</span></div>
       </section>
       </details>
+      <section class="marking-panel" id="markingPanel" aria-label="Segna un momento">
+        <div class="lookback-control"><span id="markScope">Segna gli ultimi</span><div class="segmented" aria-label="Secondi da segnare"><button data-lookback="5">5s</button><button data-lookback="10" class="active">10s</button><button data-lookback="20">20s</button></div></div>
+        <div id="markerPads" class="marker-pads"></div>
+        <div class="quick-notes"><button class="button manual-note" id="manualNoteButton2" aria-label="Aggiungi una nota"><svg class="icon"><use href="#i-note"/></svg>Nota</button><button class="button voice-note" id="voiceNoteButton"><svg class="icon"><use href="#i-mic"/></svg>Nota vocale</button></div>
+        <div class="resolve-card"><div class="resolve-symbol" aria-hidden="true"><span></span><span></span><span></span></div><div><strong>Esporta per Resolve</strong><p>Marker EDL e trascrizione SRT.<br>Già pronti da esportare.</p></div><button class="icon-button export-button" aria-label="Esporta per Resolve"><svg class="icon"><use href="#i-arrow"/></svg></button></div>
+      </section>
+      
     </div>
 
     <div class="workspace-foot"><span>RAMBLA LOG <b>1.3</b></span><span id="offlineReady">Salvataggio locale immediato</span></div>
@@ -940,7 +959,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 <footer class="transport">
   <div class="transport-info"><span class="transport-led"></span><div><strong id="transportTitle">Sessione pronta</strong><span id="transportHint">Scegli il riferimento orario e inizia.</span></div></div>
   <div class="transport-actions">
-    <div class="transport-options"><label class="mode-control"><span class="sr-only">Modalità trascrizione</span><select id="speechMode"><option value="native">Voce · browser</option><option value="local">Whisper · locale</option><option value="manual">Solo marker</option></select></label></div>
+    
     <div class="transport-buttons"><button id="startButton" class="button button-start"><svg class="icon"><use href="#i-play"/></svg><span>Inizia sessione</span></button><button id="pauseButton" class="button button-pause" hidden><svg class="icon"><use href="#i-pause"/></svg>Pausa</button><button id="resumeButton" class="button button-start" hidden><svg class="icon"><use href="#i-play"/></svg>Riprendi</button><button id="stopButton" class="button button-stop" hidden><span class="stop-square"></span>Termina</button><button id="newAfterEnd" class="button button-start new-session" hidden><svg class="icon"><use href="#i-plus"/></svg>Nuova sessione</button></div>
   </div>
 </footer>
@@ -3550,7 +3569,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
   }
   async function closeScanner() {scanGeneration++;const old=scanner;scanner=null;latestReading=null;try{await old?.stop();}catch{} }
   function bind() {
-    $('markerPads').innerHTML=CATEGORIES.map((c,i)=>`<button class="marker-pad" data-category="${c.id}" style="--pad-bg:${c.bg};--pad-border:${c.border};--pad-ink:${c.ink}">${icon(c.icon)}<span>${c.name}</span><span class="shortcut">${i+1}</span></button>`).join('');
+    $('markerPads').innerHTML=CATEGORIES.filter(c=>c.id!=='funny').sort((a,b)=>({highlight:0,emotion:1,keep:2,turn:3,check:4}[a.id]??99)-({highlight:0,emotion:1,keep:2,turn:3,check:4}[b.id]??99)).map((c,i)=>`<button class="marker-pad" data-category="${c.id}" style="--pad-bg:${c.bg};--pad-border:${c.border};--pad-ink:${c.ink}">${icon(c.icon)}<span>${c.name}</span><span class="shortcut">${i+1}</span></button>`).join('');
     $('settingsFps').innerHTML=C.rates.map(r=>`<option value="${esc(r.id)}">${esc(r.label)}</option>`).join('');
     $('noteCategory').innerHTML=CATEGORIES.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
     $('voiceCategory').innerHTML=$('noteCategory').innerHTML;
