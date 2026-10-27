@@ -4,6 +4,13 @@ Web app in italiano per iPhone: registro di ripresa, lettura ottica del timecode
 
 **Apri l’app:** [RAMBLA Log](https://azza0101.github.io/rambla-log/)
 
+## Versione 1.7.0 — Sessioni riprendibili e salvataggio GitHub
+
+- **Riprendi** è disponibile anche sulle sessioni terminate: mantiene timecode iniziale e marker precedenti, conta il tempo della pausa e non estende i nuovi marker dentro l'interruzione. Se la camera usa REC RUN, riallinea il timecode prima di continuare. Per la finestra massima timecode di 24 ore avvia una nuova sessione.
+- **Nota** e **Nota vocale** hanno pulsanti pieni colorati, e i marker del Registro hanno un accento del colore della categoria. I messaggi normali durano circa 1,4 secondi e sono posizionati in alto, senza coprire i pulsanti; quelli con Annulla circa 3,4 secondi.
+- **GitHub:** dopo Stop puoi scegliere tra Solo su iPhone e Salva su GitHub. La prima connessione richiede un token GitHub fine-grained limitato a questo repository, con permessi Contents: Read and write. Dopo un upload riuscito, la PWA memorizza localmente il token cifrato tramite WebCrypto e IndexedDB e lo recupera automaticamente alle successive aperture. Puoi scollegarlo dal popup. Nessuna credenziale è inclusa nei sorgenti pubblici. La cifratura locale non sostituisce un gestore di segreti nativo: il codice eseguito sullo stesso dominio ha accesso al collegamento. Proteggi l'account e usa un token limitato e revocabile.
+- **Privacy:** il repository GitHub corrente è pubblico. Gli EDL caricati, inclusi i titoli e le note, possono essere letti da chiunque. Il caricamento resta esplicito; il JSON con la trascrizione è opzionale. Il salvataggio locale rimane la copia principale anche in caso di errore GitHub.
+
 ## Versione 1.3
 
 Il pulsante del timecode è più compatto e ha una riga separata dai numeri. In alto compare il logo originale RAMBLA Studio. Le sessioni hanno un menu **⋯**, disponibile anche tenendo premuto per mezzo secondo, con **Rinomina sessione** ed **Elimina sessione**; l’eliminazione chiede conferma e offre **Annulla** per 8 secondi. La sessione che sta registrando non può essere eliminata. Il selettore Speaker A/B e i campi delle voci sono rimossi; le attribuzioni già presenti negli archivi restano conservate.
