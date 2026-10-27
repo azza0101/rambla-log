@@ -20,7 +20,7 @@ test('Ended session reopens with the original time origin and markers intact',()
  const source=functionText('resumeFinishedSession');
  const session={id:'session',title:'S',startedAt:1_000_000,endedAt:1_004_000,duration:4,markers:[{id:'m1',start:2}],segments:[{id:'s1',start:1}],captureState:'ended',pausedAt:null};
  let resumed=0,saved=0;
- const env={current:()=>session,active:false,pendingFlush:false,voiceClosing:null,voiceNote:null,scanner:null,recovery:false,Date:{now:()=>1_900_000},elapsed:()=>900,store:{activeId:'session'},persist:()=>saved++,render(){},startSession:(continueSession)=>{assert.equal(continueSession,true);resumed++;},notify(){}};
+ const env={current:()=>session,active:false,pendingFlush:false,voiceClosing:null,voiceNote:null,scanner:null,recovery:false,document:{hidden:false},Date:{now:()=>1_900_000},elapsed:()=>900,store:{activeId:'session'},persist:()=>saved++,render(){},startSession:(continueSession)=>{assert.equal(continueSession,true);resumed++;},notify(){}};
  vm.runInNewContext(source+';resumeFinishedSession();',env);
  assert.equal(session.startedAt,1_000_000);
  assert.equal(session.endedAt,null);
