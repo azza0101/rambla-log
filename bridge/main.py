@@ -4,7 +4,7 @@ from pathlib import Path
 from tkinter import ttk,filedialog,messagebox
 from core import parse,plan,apply
 from updater import fetch_release,is_newer,download_update,activate_and_launch,current_executable,write_pointer,INSTALL_DIR,VERSIONS
-VERSION='0.2.0'
+VERSION='0.2.1'
 REPO='azza0101/rambla-log'
 API='https://api.github.com/repos/'+REPO
 BG='#0a0a0a';PANEL='#161616';FG='#f7f7f7';MUTED='#b0b0b0';TEAL='#2dd4bf'
