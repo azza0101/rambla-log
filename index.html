@@ -660,6 +660,14 @@ h1 { font-family: var(--heading); font-size: clamp(26px,2.3vw,37px); letter-spac
 .marker-row{border-left:4px solid var(--note-accent,#35dec0);background:linear-gradient(105deg,color-mix(in srgb,var(--note-accent,#35dec0) 15%,#151515),#151515 75%)}
 .marker-row strong{color:var(--note-accent,#35dec0)}
 @media(max-width:620px){.toast{top:calc(62px + env(safe-area-inset-top));bottom:auto;padding:7px 11px}}
+
+.cloud-sheet [hidden]{display:none!important}
+.cloud-sheet .cloud-connection{display:flex;align-items:center;gap:9px;background:#17241f;padding:10px 13px;border:1px solid #355347;border-radius:9px;font-size:12px;color:#b2f5df}
+.cloud-sheet .cloud-connection .text-button{margin-left:auto;font-size:11px}
+.cloud-link-led{width:8px;height:8px;border-radius:100%;background:#35dec0}
+.cloud-sheet .cloud-help{margin:6px 0 12px}
+.cloud-sheet .cloud-help p{line-height:1.5}
+.cloud-sheet .cloud-disclosure{font-size:10px;color:#a6a6a6;margin:12px 0 0}
 </style>
 <!--
 Bundled font licenses
@@ -1027,16 +1035,18 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 
 
 <dialog id="cloudUploadDialog" class="sheet cloud-sheet" aria-labelledby="cloudTitle">
-  <div class="dialog-head"><div><div class="eyebrow">SESSIONE SALVATA</div><h2 id="cloudTitle">Salvare anche sul cloud?</h2></div><button type="button" class="icon-button" id="cloudClose" aria-label="Chiudi"><svg class="icon"><use href="#i-close"/></svg></button></div>
+  <div class="dialog-head"><div><div class="eyebrow">SESSIONE SALVATA</div><h2 id="cloudTitle">Salvare anche su GitHub?</h2></div><button type="button" class="icon-button" id="cloudClose" aria-label="Chiudi"><svg class="icon"><use href="#i-close"/></svg></button></div>
   <p id="cloudSummary" class="cloud-choice"></p>
-  <div class="cloud-warning"><strong>ATTENZIONE · GitHub pubblico</strong>Il repository <b>azza0101/rambla-log</b> è visibile a tutti. Marker, titoli e note caricati potranno essere letti da chiunque. Evita contenuti riservati.</div>
-  <label class="field cloud-token">Token personale GitHub
-    <input id="cloudTokenInput" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="github_pat_…">
-    <small>Da inserire una volta per ogni apertura dell’app. Rimane soltanto nella memoria temporanea dell’app: non viene salvato sul telefono né nel codice del sito.</small>
-  </label>
-  <p class="cloud-note">Crea un <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">token GitHub fine-grained</a> scegliendo <b>Only select repositories → rambla-log</b> e <b>Repository permissions → Contents: Read and write</b>. Non servono altri permessi. La connessione GitHub di ChatGPT non è accessibile a Safari.</p>
-  <label class="check-field"><input id="cloudFullBackup" type="checkbox"><span>Includi anche il <b>backup completo JSON</b> con le trascrizioni (altrimenti invio solo EDL con marker e note)</span></label>
-  <label class="check-field cloud-permission"><input id="cloudPublicConfirm" type="checkbox"><span>Confermo di voler pubblicare questi contenuti nel repository GitHub <b>pubblico</b>.</span></label>
+  <div id="cloudConnected" class="cloud-connection" hidden><span class="cloud-link-led" aria-hidden="true"></span><strong>GitHub collegato</strong><button type="button" class="text-button" id="cloudDisconnect">Scollega</button></div>
+  <div id="cloudSetup" hidden>
+    <label class="field cloud-token">Collega GitHub una sola volta
+      <input id="cloudTokenInput" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Incolla token GitHub">
+    </label>
+    <details class="guide-details cloud-help"><summary>Come collegare GitHub</summary><p>Apri <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">GitHub → Nuovo token</a>, seleziona soltanto <b>rambla-log</b> e abilita <b>Contents: Read and write</b>. Incollalo qui una volta. Puoi scollegarlo quando vuoi.</p></details>
+    <label class="check-field cloud-permission"><input id="cloudPublicConfirm" type="checkbox"><span>Ho capito che i file caricati nel repository GitHub <b>pubblico</b> saranno visibili online.</span></label>
+  </div>
+  <label class="check-field"><input id="cloudFullBackup" type="checkbox"><span>Carica anche trascrizione e backup completo</span></label>
+  <p class="cloud-disclosure">GitHub pubblico · invia solo contenuti condivisibili.</p>
   <p id="cloudFeedback" role="status" aria-live="polite"></p>
   <div class="dialog-footer"><button type="button" class="button button-dark" id="cloudKeepLocal">Solo su iPhone</button><button type="button" class="button" id="cloudUploadButton">Salva su GitHub</button></div>
 </dialog>
