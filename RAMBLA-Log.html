@@ -951,7 +951,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
       
     </div>
 
-    <div class="workspace-foot"><span>RAMBLA LOG <b>1.5.1</b></span><span id="offlineReady">Salvataggio locale immediato</span></div>
+    <div class="workspace-foot"><span>RAMBLA LOG <b>1.5.2</b></span><span id="offlineReady">Salvataggio locale immediato</span></div>
   </main>
 </div>
 
@@ -1468,7 +1468,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
   return Object.freeze({ rates, rateInfo, parseTC, formatTC, secondsToFrames, framesToSeconds, framesAt, makeTimecodeAnchor, srtTime, parseSRT, validateSession, makeEDL, makeSRT, makeCSV, makeTXT });
 }));
 </script>
-<script>window.RAMBLA_BUILD={version:"1.5.1",build:"7bcf7228f8c1"};</script>
+<script>window.RAMBLA_BUILD={version:"1.5.2",build:"a54e1c903d72"};</script>
 <script>/*
  * RAMBLA Log — optional, experimental local speech recognition.
  * Loading this file does not contact a server or request the microphone.
@@ -3568,7 +3568,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
   }
   async function closeScanner() {scanGeneration++;const old=scanner;scanner=null;latestReading=null;try{await old?.stop();}catch{} }
   function bind() {
-    $('markerPads').innerHTML=CATEGORIES.filter(c=>c.id!=='funny').sort((a,b)=>({highlight:0,emotion:1,keep:2,turn:3,check:4}[a.id]??99)-({highlight:0,emotion:1,keep:2,turn:3,check:4}[b.id]??99)).map((c,i)=>`<button class="marker-pad" data-category="${c.id}" style="--pad-bg:${c.bg};--pad-border:${c.border};--pad-ink:${c.ink}">${icon(c.icon)}<span>${c.name}</span><span class="shortcut">${i+1}</span></button>`).join('');
+    $('markerPads').innerHTML=CATEGORIES.slice().sort((a,b)=>({funny:0,highlight:1,keep:2,emotion:3,turn:4,check:5}[a.id]??99)-({funny:0,highlight:1,keep:2,emotion:3,turn:4,check:5}[b.id]??99)).map((c,i)=>`<button class="marker-pad" data-category="${c.id}" style="--pad-bg:${c.bg};--pad-border:${c.border};--pad-ink:${c.ink}">${icon(c.icon)}<span>${c.name}</span><span class="shortcut">${i+1}</span></button>`).join('');
     $('settingsFps').innerHTML=C.rates.map(r=>`<option value="${esc(r.id)}">${esc(r.label)}</option>`).join('');
     $('noteCategory').innerHTML=CATEGORIES.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
     $('voiceCategory').innerHTML=$('noteCategory').innerHTML;
@@ -3650,7 +3650,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         scanner?.setExposure(value).catch(error=>{if(token===scanGeneration)$('scanStatus').textContent=error.message;});
       };
     }
-    document.addEventListener('keydown',e=>{if(e.repeat||e.ctrlKey||e.metaKey||e.altKey||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)||document.querySelector('dialog[open]'))return;const n=Number(e.key);if(n>=1&&n<=6){e.preventDefault();mark(CATEGORIES[n-1].id);}});
+    document.addEventListener('keydown',e=>{if(e.repeat||e.ctrlKey||e.metaKey||e.altKey||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)||document.querySelector('dialog[open]'))return;const n=Number(e.key);if(n>=1&&n<=6){e.preventDefault();{const pad=$('markerPads').querySelectorAll('[data-category]')[n-1];if(pad)mark(pad.dataset.category);}}});
     const backgroundPause=()=>{
       cancelSessionHold();suppressedSessionClick=null;
       const finished=active?pauseSession('background'):(persist(),Promise.resolve());
