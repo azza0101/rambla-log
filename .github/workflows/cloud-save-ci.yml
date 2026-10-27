@@ -5,6 +5,8 @@ on:
     paths:
       - index.html
       - RAMBLA-Log.html
+      - version.json
+      - sw.js
       - tests/cloud-upload.test.mjs
       - .github/workflows/cloud-save-ci.yml
   workflow_dispatch:
