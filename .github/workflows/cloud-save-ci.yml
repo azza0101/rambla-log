@@ -1,15 +1,16 @@
 name: RAMBLA Cloud save tests
 on:
   push:
-    branches: [feat/iphone-github-cloud-save, feat/mobile-resume-cloud-ui, main]
+    branches: [feat/iphone-github-cloud-save, feat/mobile-resume-cloud-ui, fix/iphone-default-one-second, main]
     paths:
       - index.html
       - RAMBLA-Log.html
       - version.json
       - sw.js
       - tests/cloud-upload.test.mjs
+      - tests/iphone-one-second.test.mjs
       - tests/mobile-resume-ui.test.mjs
-      - tests/cloud-credentials.test.mjs
+      - tests/cloud-credentials.test.mjs tests/iphone-one-second.test.mjs
       - .github/workflows/cloud-save-ci.yml
   workflow_dispatch:
 permissions:
