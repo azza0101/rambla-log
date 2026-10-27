@@ -43,7 +43,7 @@ test('Success toast is short and away from bottom controls',()=>{
 });
 test('Marker list uses category accent on entire note card',()=>{
  assert.match(html, /class="marker-row" style="--note-accent:/);
- assert.match(html, /\.marker-row\s*\{[^}]*var\(--note-accent\)/);
+ assert.match(html, /\.marker-row\s*\{[^}]*var\(--note-accent(?:,|\))/);
 });
 test('GitHub pairing persists locally without a token in public HTML',()=>{
  assert.match(html,/rememberToken/);
