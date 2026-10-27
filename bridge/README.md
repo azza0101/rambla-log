@@ -1,4 +1,12 @@
-# RAMBLA Log Bridge 0.1.0 — Windows
+# RAMBLA Log Bridge — Windows
+
+## Bridge v0.2.0 — Aggiornamento integrato
+Il pulsante **↻ Aggiorna** ora mostra una barra di avanzamento con le fasi **controllo versione, download con percentuale, verifica SHA-256, riavvio**. Scarica soltanto i file delle GitHub Releases di `azza0101/rambla-log`, confronta la checksum prima di consentire l'installazione e mette il nuovo EXE in una cartella versionata sotto `%LOCALAPPDATA%\RAMBLA Log Bridge\versions`. Poi avvia il nuovo programma e chiude il precedente. Il file precedente resta intatto in caso di download errato o errore di lancio.
+
+**Passaggio iniziale dalla v0.1.0:** il vecchio pulsante Aggiorna era soltanto un collegamento alla Release, quindi scarica **una sola volta** `bridge-v0.2.0` e avvia il suo EXE. Nella nuova app premi **Installa in Workflow Integrations**, quindi riavvia Resolve, per aggiornare il launcher del menu. Dal prossimo rilascio la v0.2.0 scaricherà e aprirà autonomamente le nuove versioni, senza reinstallare manualmente. L'installazione del launcher in ProgramData può richiedere privilegi amministrativi.
+
+La build non è firmata con un certificato di code signing commerciale: Windows SmartScreen potrebbe chiedere conferma. Controlla la provenienza e non ignorare avvisi inattesi. Il nuovo sistema verifica SHA-256 per proteggere da download incompleti/manomessi, ma non sostituisce una firma digitale dell'editore.
+
 
 **EXE:** https://github.com/azza0101/rambla-log/releases/tag/bridge-v0.1.0
 
@@ -23,7 +31,7 @@ Premi **Installa in Workflow Integrations** nel Bridge. Il programma crea un lau
 La web app iPhone è statica: **non carica automaticamente i dati su GitHub**. Per provarla con le tue sessioni, esporta il file `.edl` oppure il backup `.json` da RAMBLA Log, quindi usa GitHub `Add file → Upload files` dentro `sessions/`. **Il repository è pubblico**: non caricare nomi o appunti di riprese riservate. Per produzioni reali usa Cartella o passa in seguito a uno scambio autenticato e privato.
 
 ## Aggiornamenti
-Il pulsante **↻ Aggiorna** legge l'ultima Release GitHub. Se è uscita una versione nuova, apre la pagina ufficiale per scaricarla. **Non sostituisce automaticamente l'EXE**: per questa prima versione il passo di installazione resta manuale. I build successivi sono generati da `.github/workflows/bridge-windows.yml` su Windows, con un SHA256 pubblicato.
+Dalla v0.2.0 il pulsante **↻ Aggiorna** scarica, verifica e riavvia automaticamente l'EXE. Il passaggio dalla precedente v0.1.0 richiede un aggiornamento manuale una volta sola. I build successivi sono generati da `.github/workflows/bridge-windows.yml` su Windows, con un SHA256 pubblicato.
 
 ## Limiti
 I marker vengono posizionati sul timecode della timeline attiva, non automaticamente sui singoli file video. Verifica che sorgente e timeline condividano FPS e riferimento timecode. Il Bridge usa i metodi `GetStartTimecode()`, `GetMarkers()` e `AddMarker()` dell'API di Resolve. Le note e i colori sono riportati nei marker.
