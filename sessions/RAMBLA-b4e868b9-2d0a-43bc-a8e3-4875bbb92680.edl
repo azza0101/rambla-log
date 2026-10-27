@@ -1,0 +1,164 @@
+TITLE: Test upload
+FCM: NON-DROP FRAME
+* RAMBLA WARNING: 17 marker coincidenti nello stesso fotogramma; tutti preservati nel file. Verificare l’importazione in Resolve.
+
+001  001      V     C        08:31:45:15 08:31:45:16 08:31:45:15 08:31:45:16
+[funny] 
+ |C:ResolveColorPurple |M:Divertente |D:50
+
+002  001      V     C        08:31:45:15 08:31:45:16 08:31:45:15 08:31:45:16
+[keep] 
+ |C:ResolveColorGreen |M:Da tenere |D:81
+
+003  001      V     C        08:31:45:15 08:31:45:16 08:31:45:15 08:31:45:16
+[keep] 
+ |C:ResolveColorGreen |M:Da tenere |D:100
+
+004  001      V     C        08:31:45:15 08:31:45:16 08:31:45:15 08:31:45:16
+[keep] 
+ |C:ResolveColorGreen |M:Da tenere |D:105
+
+005  001      V     C        08:31:45:15 08:31:45:16 08:31:45:15 08:31:45:16
+[turn] 
+ |C:ResolveColorRed |M:SCARTA |D:115
+
+006  001      V     C        08:31:45:15 08:31:45:16 08:31:45:15 08:31:45:16
+[keep] 
+ |C:ResolveColorGreen |M:Da tenere |D:130
+
+007  001      V     C        08:31:45:15 08:31:45:16 08:31:45:15 08:31:45:16
+[turn] 
+ |C:ResolveColorRed |M:SCARTA |D:143
+
+008  001      V     C        08:31:48:04 08:31:48:05 08:31:48:04 08:31:48:05
+[keep] 
+ |C:ResolveColorGreen |M:Da tenere |D:125
+
+009  001      V     C        08:31:48:15 08:31:48:16 08:31:48:15 08:31:48:16
+[turn] 
+ |C:ResolveColorRed |M:SCARTA |D:125
+
+010  001      V     C        08:31:49:01 08:31:49:02 08:31:49:01 08:31:49:02
+[keep] 
+ |C:ResolveColorGreen |M:Da tenere |D:125
+
+011  001      V     C        08:31:49:07 08:31:49:08 08:31:49:07 08:31:49:08
+[turn] 
+ |C:ResolveColorRed |M:SCARTA |D:125
+
+012  001      V     C        08:31:49:20 08:31:49:21 08:31:49:20 08:31:49:21
+[check] 
+ |C:ResolveColorBlue |M:Da rivedere |D:125
+
+013  001      V     C        08:31:50:07 08:31:50:08 08:31:50:07 08:31:50:08
+[emotion] 
+ |C:ResolveColorPink |M:Emozione |D:125
+
+014  001      V     C        08:31:51:13 08:31:51:14 08:31:51:13 08:31:51:14
+[highlight] 
+ |C:ResolveColorYellow |M:Highlight |D:125
+
+015  001      V     C        08:31:53:16 08:31:53:17 08:31:53:16 08:31:53:17
+[turn] 
+ |C:ResolveColorRed |M:SCARTA |D:125
+
+016  001      V     C        08:31:54:05 08:31:54:06 08:31:54:05 08:31:54:06
+[check] 
+ |C:ResolveColorBlue |M:Da rivedere |D:125
+
+017  001      V     C        08:31:56:17 08:31:56:18 08:31:56:17 08:31:56:18
+[check] Molto bello
+ |C:ResolveColorBlue |M:Da rivedere · nota vocale |D:125
+
+018  001      V     C        08:32:06:01 08:32:06:02 08:32:06:01 08:32:06:02
+[funny] Figo
+ |C:ResolveColorPurple |M:Divertente |D:500
+
+019  001      V     C        08:32:06:10 08:32:06:11 08:32:06:10 08:32:06:11
+[emotion] Figo
+ |C:ResolveColorPink |M:Emozione |D:500
+
+020  001      V     C        08:32:10:19 08:32:10:20 08:32:10:19 08:32:10:20
+[keep] Figo
+ |C:ResolveColorGreen |M:Da tenere |D:125
+
+021  001      V     C        08:32:18:14 08:32:18:15 08:32:18:14 08:32:18:15
+[emotion] 
+ |C:ResolveColorPink |M:Emozione |D:125
+
+022  001      V     C        08:32:18:18 08:32:18:19 08:32:18:18 08:32:18:19
+[emotion] 
+ |C:ResolveColorPink |M:Emozione |D:125
+
+023  001      V     C        08:32:18:22 08:32:18:23 08:32:18:22 08:32:18:23
+[emotion] 
+ |C:ResolveColorPink |M:Emozione |D:125
+
+024  001      V     C        08:32:20:06 08:32:20:07 08:32:20:06 08:32:20:07
+[keep] 
+ |C:ResolveColorGreen |M:Da tenere |D:125
+
+025  001      V     C        08:32:22:15 08:32:22:16 08:32:22:15 08:32:22:16
+[highlight] 
+ |C:ResolveColorYellow |M:Highlight |D:125
+
+026  001      V     C        08:32:23:04 08:32:23:05 08:32:23:04 08:32:23:05
+[turn] 
+ |C:ResolveColorRed |M:SCARTA |D:125
+
+027  001      V     C        08:32:24:21 08:32:24:22 08:32:24:21 08:32:24:22
+[keep] Top
+ |C:ResolveColorGreen |M:Da tenere |D:125
+
+028  001      V     C        09:04:12:14 09:04:12:15 09:04:12:14 09:04:12:15
+[turn] 
+ |C:ResolveColorRed |M:SCARTA |D:22
+
+029  001      V     C        09:04:12:14 09:04:12:15 09:04:12:14 09:04:12:15
+[check] 
+ |C:ResolveColorBlue |M:Da rivedere |D:36
+
+030  001      V     C        09:04:12:14 09:04:12:15 09:04:12:14 09:04:12:15
+[emotion] 
+ |C:ResolveColorPink |M:Emozione |D:39
+
+031  001      V     C        09:04:12:14 09:04:12:15 09:04:12:14 09:04:12:15
+[keep] 
+ |C:ResolveColorGreen |M:Da tenere |D:42
+
+032  001      V     C        09:04:12:14 09:04:12:15 09:04:12:14 09:04:12:15
+[highlight] 
+ |C:ResolveColorYellow |M:Highlight |D:49
+
+033  001      V     C        09:04:12:14 09:04:12:15 09:04:12:14 09:04:12:15
+[turn] 
+ |C:ResolveColorRed |M:SCARTA |D:56
+
+034  001      V     C        09:04:12:14 09:04:12:15 09:04:12:14 09:04:12:15
+[funny] 
+ |C:ResolveColorPurple |M:Divertente |D:59
+
+035  001      V     C        09:04:12:14 09:04:12:15 09:04:12:14 09:04:12:15
+[check] 
+ |C:ResolveColorBlue |M:Da rivedere |D:62
+
+036  001      V     C        09:04:16:18 09:04:16:19 09:04:16:18 09:04:16:19
+[emotion] 
+ |C:ResolveColorPink |M:Emozione |D:12
+
+037  001      V     C        09:04:16:18 09:04:16:19 09:04:16:18 09:04:16:19
+[turn] 
+ |C:ResolveColorRed |M:SCARTA |D:14
+
+038  001      V     C        09:04:16:18 09:04:16:19 09:04:16:18 09:04:16:19
+[funny] 
+ |C:ResolveColorPurple |M:Divertente |D:18
+
+039  001      V     C        09:04:16:18 09:04:16:19 09:04:16:18 09:04:16:19
+[keep] 
+ |C:ResolveColorGreen |M:Da tenere |D:20
+
+040  001      V     C        09:04:16:18 09:04:16:19 09:04:16:18 09:04:16:19
+[check] 
+ |C:ResolveColorBlue |M:Da rivedere |D:25
+
