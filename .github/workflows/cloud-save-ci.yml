@@ -10,7 +10,7 @@ on:
       - tests/cloud-upload.test.mjs
       - tests/iphone-one-second.test.mjs
       - tests/mobile-resume-ui.test.mjs
-      - tests/cloud-credentials.test.mjs tests/iphone-one-second.test.mjs
+      - tests/cloud-credentials.test.mjs
       - .github/workflows/cloud-save-ci.yml
   workflow_dispatch:
 permissions:
@@ -23,4 +23,4 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - run: node --test tests/cloud-upload.test.mjs tests/phone-release.test.mjs tests/mobile-resume-ui.test.mjs tests/cloud-credentials.test.mjs
+      - run: node --test tests/cloud-upload.test.mjs tests/phone-release.test.mjs tests/mobile-resume-ui.test.mjs tests/cloud-credentials.test.mjs tests/iphone-one-second.test.mjs
