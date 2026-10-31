@@ -1,11 +1,16 @@
-# KURA Editor
+# KURA Editor — web app PWA
 
-Editor grafico KURA 4:5. Aprire `index.html` via GitHub Pages.
+Editor verticale 4:5 KURA Viaggi, pubblicato nello stesso repository di RAMBLA Log ma in directory autonoma.
 
-- Layout responsive, seed, 4 composizioni, 4 sfondi, 4 post-it.
-- PNG e ZIP, JSON progetto e asset personalizzati.
-- Bottone **Aggiorna da GitHub** che verifica `version.json`.
-- Per Feeling Passionate è necessario importare localmente il proprio font autorizzato. Non distribuirlo nel repository pubblico.
-- Dati del progetto salvati in IndexedDB sul dispositivo; aggiornare non cancella i progetti.
+- App: https://azza0101.github.io/rambla-log/kura-editor/
+- Versione: 1.1.0 (`01e114c8ef33`)
+- 4 layout, 4 sfondi, 4 post-it, decorazioni e pennellate PNG.
+- Seed riproducibile, campi testo modificabili, importazione PNG Giulia, file progetto JSON, PNG/ZIP 1080×1350.
+- Font Montserrat caricato da Google Fonts quando online; Feeling Passionate è **facoltativo** e si carica localmente dal proprio file font, mai incluso nel repository pubblico.
+- Il pulsante **⟳ Aggiorna app** controlla `version.json` su GitHub Pages, salva i dati locali e ricarica quando il build cambia.
+- I dati personali e le immagini importate vengono salvati nel browser dell'utente, non su GitHub.
+- PWA iPhone: apri in Safari → Condividi → Aggiungi alla schermata Home.
 
-Pubblicazione prevista: `https://azza0101.github.io/rambla-log/kura-editor/` (dipende dalla configurazione GitHub Pages del repository).
+## Note tecniche
+
+Tutto statico, nessun backend. `sw.js` ha scope soltanto `./` e non interferisce con RAMBLA Log. Aggiornare contemporaneamente `index.html`, `version.json`, il cache name di `sw.js` e gli asset per un rilascio.

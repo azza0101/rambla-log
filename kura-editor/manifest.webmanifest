@@ -1,0 +1,26 @@
+{
+  "id": "./",
+  "name": "KURA Editor — Pagine di viaggio",
+  "short_name": "KURA Editor",
+  "description": "Editor paper-cut KURA Viaggi 4:5 con seed, post-it e PNG modificabili",
+  "lang": "it",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f0e5",
+  "theme_color": "#183d31",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

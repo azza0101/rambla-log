@@ -4,7 +4,13 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <meta name="theme-color" content="#183d31"/>
-<title>KURA · Editor pagine viaggio</title>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="KURA Editor"/>
+<link rel="manifest" href="./manifest.webmanifest"/>
+<link rel="icon" href="./icon.svg" type="image/svg+xml"/>
+<link rel="apple-touch-icon" href="./icon-192.png"/>
+<title>KURA Editor · Caroselli 4:5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Caveat:wght@600;700&display=swap" rel="stylesheet"/>
@@ -17,16 +23,36 @@
 .canvas-wrap{min-width:0;display:flex;flex-direction:column;align-items:center;gap:10px}.stage-head{width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px}.stage-head strong{font-size:14px}.stage-head small{font-size:10px;color:#77877a}.stage-bg{padding:16px;background:#e6e9df;border-radius:16px;border:1px solid #dbe3d8;width:100%;display:flex;justify-content:center}.stage-inner{position:relative;width:min(100%,560px);aspect-ratio:4/5;background:white;box-shadow:var(--shadow);border-radius:2px;overflow:hidden;touch-action:none}.stage-inner canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}.stage-inner canvas.dragging{cursor:grabbing}.stage-footer{display:flex;justify-content:space-between;align-items:center;width:100%;gap:9px;color:#637569;font-size:10px}.stage-footer span{max-width:65%}.stage-footer strong{color:#b0643a}.preview-scroll{position:sticky;top:84px}.inspector{padding:16px}.inspector h3{margin:0 0 10px;font-size:15px}.inspector p{line-height:1.6;font-size:12px;color:#728072}.inspector .field input[type=range]{padding:0;accent-color:#d07834;border:0;background:transparent}.compact-actions{display:flex;gap:6px;flex-wrap:wrap}.thumbrow{display:flex;gap:7px;overflow:auto;padding:6px 0 12px}.thumb{border:2px solid transparent;border-radius:8px;padding:4px;background:#f5f0e6;flex:0 0 auto;cursor:pointer}.thumb.active{border-color:#c77a38}.thumb img{width:58px;height:73px;object-fit:cover;display:block;border-radius:4px}.thumb small{display:block;font-size:9px;margin-top:4px;text-align:center;max-width:58px}.preset-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.preset{display:flex;flex-direction:column;align-items:flex-start;gap:7px;border:1px solid #dfe6dc;background:#fbfbf7;border-radius:11px;padding:10px;text-align:left;color:var(--green)}.preset.active{border-color:#c78144;background:#fffaef}.preset-title{font-size:12px;font-weight:800}.mini-layout{width:100%;height:97px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(4,1fr);gap:3px;background:#f4e9d6;padding:8px;border-radius:6px}.mini-layout span{border-radius:2px;background:#94ab8e;grid-column:1;grid-row:1/3}.mini-layout em{background:#eed092;grid-column:2;grid-row:1/3}.mini-layout i{background:#c57650;grid-column:1/3;grid-row:4}.mini-layout.flip span{grid-column:2}.mini-layout.flip em{grid-column:1}.mini-layout.scatter em{grid-column:2;grid-row:2/4}.mini-layout.scatter span{grid-column:1;grid-row:1/3}.mini-layout.diagonal em{grid-column:1;grid-row:2/4}.mini-layout.diagonal span{grid-column:2;grid-row:1/3}.stickers{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.sticker-btn{border:1px solid #e4e5dc;border-radius:9px;background:#f8f5eb;aspect-ratio:1;display:grid;place-items:center;padding:5px}.sticker-btn img{max-width:100%;max-height:100%;object-fit:contain}.pageitem{display:flex;align-items:center;gap:10px;padding:9px;border:1px solid #e7ebe1;border-radius:11px;margin:0 0 9px;cursor:pointer;background:#fff}.pageitem.active{background:#eaf0e6;border-color:#c1d5bf}.pageitem .num{font-size:12px;font-weight:900;color:#bc7543;background:#faedda;border-radius:7px;width:28px;height:31px;display:grid;place-items:center}.pageitem .title{font-size:12px;font-weight:800}.pageitem small{display:block;font-size:10px;color:#809184;margin-top:4px}.pageitem .spacer{flex:1}.pageitem button{border:0;background:transparent;color:#9d5a3e;font-size:12px;padding:6px}.file-label{display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;font-weight:800!important;text-align:center}.file-label input{display:none}.footnote{margin:14px 0 0;font-size:10px;color:#6c786d;line-height:1.65}.kbd{background:#e8ebe4;padding:3px 6px;border-radius:5px;font-size:10px}.jsonbox{width:100%;min-height:160px;font-family:ui-monospace,monospace!important;font-size:11px!important}.toast{position:fixed;left:50%;bottom:24px;z-index:50;transform:translateX(-50%) translateY(120px);border-radius:12px;background:#12382b;color:white;padding:14px 22px;font-size:12px;font-weight:700;box-shadow:0 8px 35px rgba(0,0,0,.2);transition:transform .2s;pointer-events:none;max-width:90vw}.toast.show{transform:translateX(-50%) translateY(0)}.hidden{display:none!important}
 @media(max-width:1190px){.shell{grid-template-columns:minmax(270px,315px) minmax(340px,1fr)}.inspector{grid-column:1;grid-row:2}.canvas-wrap{grid-column:2;grid-row:1/3}.preview-scroll{top:83px}}
 @media(max-width:760px){.topbar{position:relative;flex-wrap:wrap;gap:8px;padding:10px 12px}.brand{min-width:0}.brand-icon{width:34px;height:34px}.brand b{font-size:13px}.brand small{font-size:9px}.top-actions{width:100%;justify-content:space-between;gap:5px}.top-actions .btn{min-height:37px;padding:7px 9px;font-size:10px;flex:1}.shell{display:flex;flex-direction:column;padding:10px;gap:12px}.canvas-wrap{order:0;width:100%}.preview-scroll{position:static}.stage-bg{padding:8px}.stage-inner{max-width:440px}.stage-footer{padding:0 4px}.panel{width:100%}.editor-panel{order:1}.inspector{order:2}.tabpane{max-height:none}.panehead{padding:12px 14px}.panehead h2{font-size:16px}.field textarea{min-height:85px}.inspector{padding:14px}.stage-head{padding:0 5px}.stage-footer span{max-width:75%}}
+
+/* KURA PWA · Mobile-first usability. A compact toolbar, preview first and touch-sized controls. */
+@media(max-width:760px){
+ .topbar{position:sticky;top:0;z-index:60;padding:8px 10px 7px;gap:6px;padding-top:max(8px,env(safe-area-inset-top))}
+ .top-actions{width:100%;display:flex;flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;gap:6px;padding-bottom:2px}
+ .top-actions::-webkit-scrollbar{display:none}
+ .top-actions .btn{flex:0 0 auto;min-height:44px;padding:8px 11px;font-size:11px;white-space:nowrap}
+ .shell{display:flex;flex-direction:column;gap:10px;padding:8px 8px max(14px,env(safe-area-inset-bottom))}
+ .canvas-wrap{order:0;width:100%;min-width:0;grid-column:auto;grid-row:auto}
+ .editor-panel{order:1;width:100%;min-width:0}
+ .inspector{order:2;width:100%;grid-column:auto;grid-row:auto}
+ .preview-scroll{position:static;top:auto;width:100%}
+ .stage-bg{padding:8px;border-radius:11px}
+ #stage{max-width:100%;height:auto;touch-action:none}
+ .panehead{padding:12px 14px}
+ .tabs{overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch}
+ .tabs .tab{flex:0 0 auto;min-width:80px;min-height:42px}
+ .stage-head{padding:0 3px}
+}
+@media (pointer:coarse){.btn,.tab{min-height:44px}}
 </style>
 </head>
 <body>
 <header class="topbar">
  <div class="brand"><span class="brand-icon">⛰</span><div><b>KURA VIAGGI</b><small>Atelier · Pagine editoriali 4:5</small></div></div>
- <div class="top-actions"><button id="topNew" class="btn ghost">＋ Pagina</button><button id="topSeed" class="btn ghost">↻ Seed</button><button id="topJson" class="btn ghost">💾 Progetto</button><button id="topExport" class="btn primary">↓ PNG</button><button id="topZip" class="btn ghost">ZIP tutte</button></div>
+ <div class="top-actions"><button id="topNew" class="btn ghost">＋ Pagina</button><button id="topSeed" class="btn ghost">↻ Seed</button><button id="topUpdate" class="btn ghost" title="Controlla se GitHub ha una nuova versione" aria-label="Aggiorna KURA Editor da GitHub">⟳ Aggiorna app</button><button id="topJson" class="btn ghost">💾 Progetto</button><button id="topExport" class="btn primary">↓ PNG</button><button id="topZip" class="btn ghost">ZIP tutte</button></div>
 </header>
 <div class="shell">
  <section class="panel editor-panel">
-  <div class="panehead"><div class="eyebrow">Editor KURA v1.0</div><h2>Costruisci la pagina</h2></div>
+  <div class="panehead"><div class="eyebrow">Editor KURA v1.1 · Web app</div><h2>Costruisci la pagina</h2></div>
   <div class="tabs"><button class="tab active" data-tab="texts">Testi</button><button class="tab" data-tab="layouts">Varianti</button><button class="tab" data-tab="elements">Elementi</button><button class="tab" data-tab="pages">Pagine</button></div>
   <div class="tabpane active" id="tab-texts">
    <p class="hint">Cambia le parole qui: ogni campo è un livello modificabile. Usa <b>**due asterischi**</b> per evidenziare i passaggi in grassetto.</p>
@@ -104,7 +130,9 @@
 <div class="toast" id="toast" role="status"></div>
 <script>
 'use strict';
-const ASSETS={"sticker_map":"assets/sticker_map.png","sticker_berries":"assets/sticker_berries.png","sticker_stamp":"assets/sticker_stamp.png","postit_4":"assets/postit_4.png","postit_1":"assets/postit_1.png","pennellata_3":"assets/pennellata_3.png","sticker_olive":"assets/sticker_olive.png","sticker_monstera":"assets/sticker_monstera.png","sticker_tape":"assets/sticker_tape.png","pennellata_1":"assets/pennellata_1.png","cartolina_kenrokuen":"assets/cartolina_kenrokuen.png","sticker_compass":"assets/sticker_compass.png","pennellata_2":"assets/pennellata_2.png","sticker_camera":"assets/sticker_camera.png","postit_3":"assets/postit_3.png","giulia_kanazawa":"assets/giulia_kanazawa.png","postit_2":"assets/postit_2.png","sfondo_3":"assets/sfondo_3.png","sfondo_4":"assets/sfondo_4.png","sfondo_1":"assets/sfondo_1.png","sfondo_2":"assets/sfondo_2.png"};
+const KURA_BUILD='1.1.0';
+window.KURA_BUILD={version:'1.1.0',build:'01e114c8ef33'};
+const ASSETS={"sticker_map":"./assets/sticker_map.png","sticker_berries":"./assets/sticker_berries.png","sticker_stamp":"./assets/sticker_stamp.png","postit_4":"./assets/postit_4.png","postit_1":"./assets/postit_1.png","pennellata_3":"./assets/pennellata_3.png","sticker_olive":"./assets/sticker_olive.png","sticker_monstera":"./assets/sticker_monstera.png","sticker_tape":"./assets/sticker_tape.png","pennellata_1":"./assets/pennellata_1.png","cartolina_kenrokuen":"./assets/cartolina_kenrokuen.png","sticker_compass":"./assets/sticker_compass.png","pennellata_2":"./assets/pennellata_2.png","sticker_camera":"./assets/sticker_camera.png","postit_3":"./assets/postit_3.png","giulia_kanazawa":"./assets/giulia_kanazawa.png","postit_2":"./assets/postit_2.png","sfondo_3":"./assets/sfondo_3.jpg","sfondo_4":"./assets/sfondo_4.jpg","sfondo_1":"./assets/sfondo_1.jpg","sfondo_2":"./assets/sfondo_2.jpg"};
 const W=1080,H=1350, GREEN='#153d2d',ORANGE='#cf7931',GREEN2='#17402f';
 const DEFAULT_FIELDS={
  eyebrow:'04 / GIAPPONE',head1:'Tradizioni d’inverno',
@@ -285,6 +313,37 @@ function dbDelete(k){if(!db)return Promise.resolve(false);return new Promise(res
 function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>dbPut('project',exportProject()),900)}
 window.addEventListener('keydown',e=>{const editing=['TEXTAREA','INPUT'].includes(document.activeElement?.tagName);if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'&&!editing){e.preventDefault();if(e.shiftKey)redo();else undo()}if((e.key==='Delete'||e.key==='Backspace')&&!editing&&selected){e.preventDefault();deleteSelected()}});
 async function start(){pages=[newDemo()];current=0;refreshStickerGrid();await initDb();const saved=await dbGet('project');if(saved?.pages?.length){try{pages=saved.pages.map(normalizePage);for(const[k,v]of Object.entries(saved.customAssets||{}))ASSETS[k]=v;current=0}catch(e){console.warn(e)}}const font=await dbGet('font');if(font?.buf)await installFont(font.buf,true);for(const key of Object.keys(ASSETS))assetImage(key);await Promise.allSettled(Array.from(imageCache.values()).map(im=>im.decode?.().catch(()=>{})||Promise.resolve()));refreshAll();document.fonts.ready.then(queueRender).catch(()=>{});updateHistory();}start();
+
+ // Dedicated PWA registration and explicit GitHub Pages update check (same approach as Rambla Log).
+async function kuraUpdateFromGitHub(){
+ const btn=document.getElementById('topUpdate');if(!btn)return;
+ if(!navigator.onLine){emitToast('Sei offline: riprova con internet attivo');return}
+ btn.disabled=true;const original=btn.textContent;btn.textContent='Controllo…';
+ try{
+  const response=await fetch('./version.json?check='+Date.now(),{cache:'no-store'});
+  if(!response.ok)throw new Error('Versione GitHub non raggiungibile');
+  const release=await response.json();
+  if(!release||typeof release.build!=='string'||!/^[a-f0-9]{12}$/.test(release.build))throw new Error('Versione GitHub non valida');
+  if(release.build===window.KURA_BUILD.build){emitToast('KURA Editor è già aggiornato ('+release.version+')');return}
+  // Preserve user-editable pages and the privately loaded font in IndexedDB.
+  await dbPut('project',exportProject());
+  emitToast('Nuova versione '+release.version+': aggiornamento…');
+  if('serviceWorker' in navigator){
+   const reg=await navigator.serviceWorker.getRegistration('./');
+   if(reg)await reg.update();
+  }
+  const target=new URL(location.href);target.searchParams.set('v',release.build);
+  location.replace(target.toString());
+ }catch(err){console.error('KURA update:',err);emitToast('Aggiornamento non disponibile: '+err.message)}
+ finally{btn.disabled=false;btn.textContent=original}
+}
+document.getElementById('topUpdate').addEventListener('click',kuraUpdateFromGitHub);
+function initKuraPWA(){
+ if(location.protocol==='https:'&&'serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js',{scope:'./',updateViaCache:'none'}).catch(err=>console.warn('KURA offline:',err));
+ }
+}
+initKuraPWA();
 </script>
-<style>#kura-update-btn{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom,0px));right:12px;z-index:10010;border:1px solid #bb9b64;background:#ffe2a0;color:#183d31;border-radius:24px;padding:10px 14px;font:700 12px Montserrat,sans-serif;box-shadow:0 4px 20px #0003}</style><button id="kura-update-btn" type="button">↻ Aggiorna da GitHub</button><script>(function(){const V='1.0.1',btn=document.getElementById('kura-update-btn');btn.addEventListener('click',async()=>{btn.disabled=true;btn.textContent='Controllo...';try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);const v=await r.json();if(v.version!==V){if(confirm('Nuova versione '+v.version+' disponibile. Aggiornare? I progetti restano salvati sul dispositivo.')){const u=new URL(location.href);u.searchParams.set('v',v.version);location.assign(u.href);return}}else alert('KURA Editor già aggiornato ('+V+')')}catch(e){alert('Controllo non riuscito: '+e.message)}finally{btn.disabled=false;btn.textContent='↻ Aggiorna da GitHub'}})})();</script></body>
+</body>
 </html>
