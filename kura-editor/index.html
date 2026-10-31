@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#183d31"/>
+<title>KURA · Editor pagine viaggio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Caveat:wght@600;700&display=swap" rel="stylesheet"/>
+<style>
+@font-face{font-family:'Feeling Passionate';src:local('Feeling Passionate'),local('Feeling Passionate Regular');font-style:normal;font-weight:400;font-display:swap}
+:root{--green:#173d2e;--deep:#102b23;--orange:#d07834;--cream:#f7f1e6;--sand:#f3e8d6;--muted:#61766b;--stroke:#d4dfd3;--paper:#fffdf8;--shadow:0 16px 45px rgba(20,34,24,.12)}
+*{box-sizing:border-box} body{margin:0;background:#eff1ea;font-family:'Montserrat',sans-serif;color:var(--deep);-webkit-font-smoothing:antialiased} button,input,select,textarea{font:inherit} button{cursor:pointer} button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #d88b44;outline-offset:2px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--green);padding:12px clamp(14px,2vw,28px);color:white;position:sticky;top:0;z-index:20;box-shadow:0 4px 25px rgba(0,0,0,.1)} .brand{display:flex;gap:13px;align-items:center;min-width:200px}.brand-icon{display:grid;place-items:center;width:40px;height:40px;border:1px solid rgba(255,255,255,.32);border-radius:12px;font-size:20px}.brand b{display:block;font-weight:900;letter-spacing:.14em;font-size:15px}.brand small{display:block;font-size:10px;opacity:.75;letter-spacing:.09em;text-transform:uppercase;margin-top:2px}.top-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.btn{border:1px solid #d1dcd0;border-radius:10px;background:white;color:var(--green);padding:10px 13px;font-size:12px;font-weight:750;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;transition:background .14s,transform .14s}.btn:active{transform:scale(.975)}.btn.primary{background:#e7ad68;color:#243527;border-color:#e7ad68}.btn.dark{background:#294d3e;color:white;border-color:#557564}.btn.ghost{background:transparent;border-color:rgba(255,255,255,.3);color:#fff}.btn.small{padding:7px 10px;min-height:34px}.btn.flat{border-color:transparent;background:#eaf0e8}.btn.danger{color:#994636}.btn:disabled{opacity:.45;cursor:not-allowed}
+.shell{display:grid;grid-template-columns:minmax(305px,345px) minmax(390px,1fr) minmax(235px,260px);gap:20px;max-width:1620px;margin:0 auto;padding:20px;align-items:start}.panel{background:#fffdf9;border-radius:17px;border:1px solid #e3e6dd;box-shadow:0 5px 20px rgba(25,50,35,.045);overflow:hidden}.panehead{padding:18px 19px 14px;border-bottom:1px solid #edf0e9}.eyebrow{font-size:10px;letter-spacing:.17em;text-transform:uppercase;color:#8e976d;font-weight:800}.panehead h2{margin:6px 0 0;font-size:19px;font-weight:850;letter-spacing:-.035em}.tabs{display:grid;grid-template-columns:repeat(4,1fr);padding:8px;gap:5px;border-bottom:1px solid #e9ede6}.tab{padding:10px 3px;border:0;border-radius:8px;background:transparent;color:#66766a;font-size:11px;font-weight:800}.tab.active{background:#e8efe4;color:var(--green)}.tabpane{display:none;padding:16px 18px 22px;max-height:calc(100vh - 210px);overflow:auto;overscroll-behavior:contain}.tabpane.active{display:block}.section-title{margin:15px 0 11px;font-size:12px;font-weight:850;letter-spacing:.06em;text-transform:uppercase;color:var(--green)}.section-title:first-child{margin-top:2px}.field{display:flex;flex-direction:column;margin:0 0 13px;gap:6px}.field label{font-size:11px;font-weight:850;color:#4b6353}.field input,.field textarea,.field select,.field .file-label{border:1px solid #dce3d8;border-radius:10px;background:#fbfdf9;color:#183d31;padding:11px 12px;min-width:0;width:100%;font-size:12px;line-height:1.5}.field textarea{resize:vertical;min-height:74px}.field input:focus,.field textarea:focus,.field select:focus{background:#fff}.field input[type=number]{appearance:textfield}.hint{font-size:11px;color:#6c7a70;line-height:1.6}.field.error input,.field.error textarea{border-color:#d8874e}.dual{display:grid;grid-template-columns:1fr 1fr;gap:10px}.triple{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.softbox{padding:13px;background:#f2f6ed;border:1px solid #e4eadd;border-radius:12px;margin:12px 0}.softbox.orange{background:#fff7e8;border-color:#f0dfc0}.softbox p{font-size:11px;color:#647064;margin:6px 0 0;line-height:1.5}.pill{font-size:10px;background:#e9e8d9;border-radius:999px;padding:4px 7px;display:inline-flex;align-items:center;font-weight:800;letter-spacing:.02em}.pill.ok{color:#2b5a38;background:#dcf0dc}.pill.warn{color:#8a5b28;background:#fff0d1}
+.canvas-wrap{min-width:0;display:flex;flex-direction:column;align-items:center;gap:10px}.stage-head{width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px}.stage-head strong{font-size:14px}.stage-head small{font-size:10px;color:#77877a}.stage-bg{padding:16px;background:#e6e9df;border-radius:16px;border:1px solid #dbe3d8;width:100%;display:flex;justify-content:center}.stage-inner{position:relative;width:min(100%,560px);aspect-ratio:4/5;background:white;box-shadow:var(--shadow);border-radius:2px;overflow:hidden;touch-action:none}.stage-inner canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}.stage-inner canvas.dragging{cursor:grabbing}.stage-footer{display:flex;justify-content:space-between;align-items:center;width:100%;gap:9px;color:#637569;font-size:10px}.stage-footer span{max-width:65%}.stage-footer strong{color:#b0643a}.preview-scroll{position:sticky;top:84px}.inspector{padding:16px}.inspector h3{margin:0 0 10px;font-size:15px}.inspector p{line-height:1.6;font-size:12px;color:#728072}.inspector .field input[type=range]{padding:0;accent-color:#d07834;border:0;background:transparent}.compact-actions{display:flex;gap:6px;flex-wrap:wrap}.thumbrow{display:flex;gap:7px;overflow:auto;padding:6px 0 12px}.thumb{border:2px solid transparent;border-radius:8px;padding:4px;background:#f5f0e6;flex:0 0 auto;cursor:pointer}.thumb.active{border-color:#c77a38}.thumb img{width:58px;height:73px;object-fit:cover;display:block;border-radius:4px}.thumb small{display:block;font-size:9px;margin-top:4px;text-align:center;max-width:58px}.preset-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.preset{display:flex;flex-direction:column;align-items:flex-start;gap:7px;border:1px solid #dfe6dc;background:#fbfbf7;border-radius:11px;padding:10px;text-align:left;color:var(--green)}.preset.active{border-color:#c78144;background:#fffaef}.preset-title{font-size:12px;font-weight:800}.mini-layout{width:100%;height:97px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(4,1fr);gap:3px;background:#f4e9d6;padding:8px;border-radius:6px}.mini-layout span{border-radius:2px;background:#94ab8e;grid-column:1;grid-row:1/3}.mini-layout em{background:#eed092;grid-column:2;grid-row:1/3}.mini-layout i{background:#c57650;grid-column:1/3;grid-row:4}.mini-layout.flip span{grid-column:2}.mini-layout.flip em{grid-column:1}.mini-layout.scatter em{grid-column:2;grid-row:2/4}.mini-layout.scatter span{grid-column:1;grid-row:1/3}.mini-layout.diagonal em{grid-column:1;grid-row:2/4}.mini-layout.diagonal span{grid-column:2;grid-row:1/3}.stickers{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.sticker-btn{border:1px solid #e4e5dc;border-radius:9px;background:#f8f5eb;aspect-ratio:1;display:grid;place-items:center;padding:5px}.sticker-btn img{max-width:100%;max-height:100%;object-fit:contain}.pageitem{display:flex;align-items:center;gap:10px;padding:9px;border:1px solid #e7ebe1;border-radius:11px;margin:0 0 9px;cursor:pointer;background:#fff}.pageitem.active{background:#eaf0e6;border-color:#c1d5bf}.pageitem .num{font-size:12px;font-weight:900;color:#bc7543;background:#faedda;border-radius:7px;width:28px;height:31px;display:grid;place-items:center}.pageitem .title{font-size:12px;font-weight:800}.pageitem small{display:block;font-size:10px;color:#809184;margin-top:4px}.pageitem .spacer{flex:1}.pageitem button{border:0;background:transparent;color:#9d5a3e;font-size:12px;padding:6px}.file-label{display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;font-weight:800!important;text-align:center}.file-label input{display:none}.footnote{margin:14px 0 0;font-size:10px;color:#6c786d;line-height:1.65}.kbd{background:#e8ebe4;padding:3px 6px;border-radius:5px;font-size:10px}.jsonbox{width:100%;min-height:160px;font-family:ui-monospace,monospace!important;font-size:11px!important}.toast{position:fixed;left:50%;bottom:24px;z-index:50;transform:translateX(-50%) translateY(120px);border-radius:12px;background:#12382b;color:white;padding:14px 22px;font-size:12px;font-weight:700;box-shadow:0 8px 35px rgba(0,0,0,.2);transition:transform .2s;pointer-events:none;max-width:90vw}.toast.show{transform:translateX(-50%) translateY(0)}.hidden{display:none!important}
+@media(max-width:1190px){.shell{grid-template-columns:minmax(270px,315px) minmax(340px,1fr)}.inspector{grid-column:1;grid-row:2}.canvas-wrap{grid-column:2;grid-row:1/3}.preview-scroll{top:83px}}
+@media(max-width:760px){.topbar{position:relative;flex-wrap:wrap;gap:8px;padding:10px 12px}.brand{min-width:0}.brand-icon{width:34px;height:34px}.brand b{font-size:13px}.brand small{font-size:9px}.top-actions{width:100%;justify-content:space-between;gap:5px}.top-actions .btn{min-height:37px;padding:7px 9px;font-size:10px;flex:1}.shell{display:flex;flex-direction:column;padding:10px;gap:12px}.canvas-wrap{order:0;width:100%}.preview-scroll{position:static}.stage-bg{padding:8px}.stage-inner{max-width:440px}.stage-footer{padding:0 4px}.panel{width:100%}.editor-panel{order:1}.inspector{order:2}.tabpane{max-height:none}.panehead{padding:12px 14px}.panehead h2{font-size:16px}.field textarea{min-height:85px}.inspector{padding:14px}.stage-head{padding:0 5px}.stage-footer span{max-width:75%}}
+</style>
+</head>
+<body>
+<header class="topbar">
+ <div class="brand"><span class="brand-icon">⛰</span><div><b>KURA VIAGGI</b><small>Atelier · Pagine editoriali 4:5</small></div></div>
+ <div class="top-actions"><button id="topNew" class="btn ghost">＋ Pagina</button><button id="topSeed" class="btn ghost">↻ Seed</button><button id="topJson" class="btn ghost">💾 Progetto</button><button id="topExport" class="btn primary">↓ PNG</button><button id="topZip" class="btn ghost">ZIP tutte</button></div>
+</header>
+<div class="shell">
+ <section class="panel editor-panel">
+  <div class="panehead"><div class="eyebrow">Editor KURA v1.0</div><h2>Costruisci la pagina</h2></div>
+  <div class="tabs"><button class="tab active" data-tab="texts">Testi</button><button class="tab" data-tab="layouts">Varianti</button><button class="tab" data-tab="elements">Elementi</button><button class="tab" data-tab="pages">Pagine</button></div>
+  <div class="tabpane active" id="tab-texts">
+   <p class="hint">Cambia le parole qui: ogni campo è un livello modificabile. Usa <b>**due asterischi**</b> per evidenziare i passaggi in grassetto.</p>
+   <div class="section-title">Introduzione</div>
+   <div class="field" data-field="eyebrow"><label for="f-eyebrow">Numero / Paese</label><input id="f-eyebrow" data-text="eyebrow" placeholder="04 / GIAPPONE"/></div>
+   <div class="field" data-field="head1"><label for="f-head1">Minititolo 1 · Feeling Passionate</label><input id="f-head1" data-text="head1" placeholder="Tradizioni d’inverno"/></div>
+   <div class="field" data-field="body1"><label for="f-body1">Paragrafo principale</label><textarea id="f-body1" data-text="body1" rows="7"></textarea></div>
+   <div class="section-title">Secondo paragrafo</div>
+   <div class="field" data-field="head2"><label for="f-head2">Minititolo 2 · Feeling Passionate</label><input id="f-head2" data-text="head2" placeholder="Clima e consigli"/></div>
+   <div class="field" data-field="body2"><label for="f-body2">Secondo testo</label><textarea id="f-body2" data-text="body2" rows="5"></textarea></div>
+   <div class="section-title">Post-it · Info di viaggio</div>
+   <div class="dual"><div class="field" data-field="base"><label>Base</label><input data-text="base"/></div><div class="field" data-field="duration"><label>Durata</label><input data-text="duration"/></div></div>
+   <div class="field" data-field="highlight"><label>Da non perdere</label><textarea data-text="highlight" rows="3"></textarea></div>
+   <div class="field" data-field="tips"><label>Da sapere</label><textarea data-text="tips" rows="3"></textarea></div>
+   <div class="softbox"><b style="font-size:11px">Controllo impaginazione</b><p id="fitStatus">Testi verificati: nessuna sovrapposizione.</p></div>
+  </div>
+  <div class="tabpane" id="tab-layouts">
+   <div class="section-title">Composizione</div>
+   <div class="preset-grid" id="layoutGrid"></div>
+   <div class="section-title">Seed e variazioni</div>
+   <div class="field"><label for="seedField">Seed riproducibile</label><input id="seedField" placeholder="es. 2407" inputmode="numeric"/></div>
+   <div class="dual"><button class="btn flat" id="seedApply">Applica seed</button><button class="btn flat" id="seedRandom">Seed casuale ↻</button></div>
+   <p class="hint">Un seed cambia sfondo, post-it e piccoli dettagli. I contenuti rimangono invariati.</p>
+   <div class="section-title">Sfondi carta</div><div class="thumbrow" id="bgGallery"></div>
+   <div class="section-title">Post-it</div><div class="thumbrow" id="noteGallery"></div>
+   <div class="section-title">Spaziatura dei testi</div>
+   <div class="field"><label>Dimensione corpo <strong id="bodyScaleLabel">100%</strong></label><input id="bodyScale" type="range" min="84" max="112" value="100" step="1"/></div>
+   <div class="field"><label>Dimensione note <strong id="noteScaleLabel">100%</strong></label><input id="noteScale" type="range" min="85" max="110" value="100" step="1"/></div>
+  </div>
+  <div class="tabpane" id="tab-elements">
+   <div class="section-title">Illustrazione della destinazione</div>
+   <div class="softbox orange"><b style="font-size:12px">Solo questa cambia a ogni meta</b><p>Carica l'illustrazione 2D paper-cut di Giulia nel luogo. Il resto della tavola rimane già pronto.</p></div>
+   <label class="btn file-label" style="width:100%;margin-bottom:9px">＋ Carica Giulia / panorama PNG<input type="file" accept="image/*" id="sceneFile"/></label>
+   <label class="btn file-label" style="width:100%;margin-bottom:12px">＋ Carica cartolina PNG<input type="file" accept="image/*" id="postcardFile"/></label>
+   <div class="dual"><button class="btn flat" id="useDemoScene">Giulia demo</button><button class="btn flat" id="hideScene">Nascondi Giulia</button></div>
+   <div class="section-title">Decorazioni KURA</div><div class="stickers" id="stickerGrid"></div>
+   <p class="hint">Tocca un elemento per aggiungerlo. Poi trascinalo direttamente sulla tavola; dimensioni e rotazione si regolano a destra.</p>
+   <div class="section-title">Caratteri</div>
+   <div class="softbox" id="fontStatus"><b>Feeling Passionate</b><p>Pronto a usare il font originale appena carichi il tuo file .otf/.ttf/.woff. Il font rimane sul tuo dispositivo e verrà usato anche nell'esportazione.</p></div>
+   <label class="btn file-label" style="width:100%;margin-bottom:8px">Carica Feeling Passionate<input id="fontFile" type="file" accept=".otf,.ttf,.woff,.woff2,font/otf,font/ttf,font/woff,font/woff2"/></label>
+   <div class="dual"><button class="btn flat" id="fontRemember">Salva font locale</button><button class="btn flat" id="fontReset">Rimuovi font locale</button></div>
+   <p class="footnote">Il file del font non viene redistribuito nell'HTML. Puoi utilizzare il tuo file originale; se non è caricato, viene mostrato un brush di riserva.</p>
+  </div>
+  <div class="tabpane" id="tab-pages">
+   <div class="section-title">Le tue pagine</div><div id="pageList"></div>
+   <div class="dual"><button class="btn flat" id="addPage">＋ Nuova</button><button class="btn flat" id="duplicatePage">Duplica</button></div>
+   <div class="section-title">Progetto e MCP</div>
+   <div class="dual"><button class="btn flat" id="saveJson">↓ Salva JSON</button><label class="btn flat file-label">↑ Apri JSON<input id="jsonFile" type="file" accept=".json,application/json"/></label></div>
+   <div class="dual" style="margin-top:8px"><button class="btn flat" id="copyFast">Copia dati pagina</button><button class="btn flat" id="showFast">Incolla JSON</button></div>
+   <div id="fastBox" class="hidden" style="margin-top:12px"><label class="hint" for="fastText">JSON pagina o progetto, compilabile anche da MCP</label><textarea id="fastText" class="jsonbox" spellcheck="false"></textarea><button class="btn primary" id="applyFast">Applica JSON</button></div>
+   <p class="footnote">Le modifiche vengono salvate automaticamente nel browser quando disponibile. Esporta il JSON per un backup che puoi riaprire su telefono o computer.</p>
+  </div>
+ </section>
+ <main class="canvas-wrap">
+  <div class="stage-head"><div><strong id="stageName">04 / GIAPPONE</strong><small id="stageMeta"> &nbsp;·&nbsp; 1080 × 1350 px</small></div><div class="compact-actions"><button class="btn small flat" id="undoBtn" title="Annulla">↶</button><button class="btn small flat" id="redoBtn" title="Ripristina">↷</button><button class="btn small flat" id="resetPosBtn" title="Reimposta posizione">↺</button></div></div>
+  <div class="stage-bg"><div class="stage-inner"><canvas id="stage" width="1080" height="1350" aria-label="Anteprima KURA: trascina gli elementi per spostarli"></canvas></div></div>
+  <div class="stage-footer"><span>Trascina immagini, post-it, decorazioni e caselle di testo. Su telefono funziona con il dito.</span><strong id="selectionName">Nessuna selezione</strong></div>
+ </main>
+ <aside class="panel inspector preview-scroll">
+  <div class="eyebrow">Livelli modificabili</div><h3 style="margin:7px 0 10px">Elemento selezionato</h3>
+  <div id="inspectEmpty"><p>Seleziona un elemento sulla tavola per regolare posizione, dimensioni o rotazione.</p></div>
+  <div id="inspectControls" class="hidden">
+   <div class="pill" id="selectedKind">Elemento</div>
+   <div class="field" style="margin-top:12px"><label>Dimensione <span id="sizeValue"></span></label><input id="elementSize" type="range" min="45" max="190" step="1" value="100"/></div>
+   <div class="field"><label>Rotazione <span id="rotateValue"></span></label><input id="elementRotate" type="range" min="-25" max="25" step="1" value="0"/></div>
+   <div class="field"><label>Opacità <span id="opacityValue"></span></label><input id="elementOpacity" type="range" min="30" max="100" step="1" value="100"/></div>
+   <div class="compact-actions"><button class="btn flat small" id="layerFront">Porta avanti</button><button class="btn flat small" id="layerBack">Porta dietro</button><button class="btn flat small danger" id="deleteElement">Rimuovi</button></div>
+  </div>
+  <div class="section-title">Esporta</div>
+  <button id="inspectPng" class="btn primary" style="width:100%;margin-bottom:7px">↓ PNG 1080 × 1350</button>
+  <button id="inspectAll" class="btn flat" style="width:100%">↓ Tutte le pagine ZIP</button>
+  <p class="footnote">I PNG sono generati localmente, senza caricare le immagini su un server. Nessun watermark.</p>
+ </aside>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+'use strict';
+const ASSETS={"sticker_map":"assets/sticker_map.png","sticker_berries":"assets/sticker_berries.png","sticker_stamp":"assets/sticker_stamp.png","postit_4":"assets/postit_4.png","postit_1":"assets/postit_1.png","pennellata_3":"assets/pennellata_3.png","sticker_olive":"assets/sticker_olive.png","sticker_monstera":"assets/sticker_monstera.png","sticker_tape":"assets/sticker_tape.png","pennellata_1":"assets/pennellata_1.png","cartolina_kenrokuen":"assets/cartolina_kenrokuen.png","sticker_compass":"assets/sticker_compass.png","pennellata_2":"assets/pennellata_2.png","sticker_camera":"assets/sticker_camera.png","postit_3":"assets/postit_3.png","giulia_kanazawa":"assets/giulia_kanazawa.png","postit_2":"assets/postit_2.png","sfondo_3":"assets/sfondo_3.png","sfondo_4":"assets/sfondo_4.png","sfondo_1":"assets/sfondo_1.png","sfondo_2":"assets/sfondo_2.png"};
+const W=1080,H=1350, GREEN='#153d2d',ORANGE='#cf7931',GREEN2='#17402f';
+const DEFAULT_FIELDS={
+ eyebrow:'04 / GIAPPONE',head1:'Tradizioni d’inverno',
+ body1:'A gennaio Kanazawa mostra un **volto tranquillo e autentico**. Il **giardino Kenrokuen**, con le corde yukitsuri che proteggono gli alberi dalla neve, è uno dei luoghi più suggestivi del paese. Nel quartiere di **Nagamachi** le antiche case dei samurai e le botteghe artigiane raccontano la storia della città, mentre le case da tè invitano a scoprire le tradizioni locali.',
+ head2:'Clima e consigli',body2:'Gennaio è freddo e può portare **piogge e nevicate**. Servono **abiti impermeabili e scarpe adatte** per visitare giardini e quartieri storici all’aperto.',
+ base:'Kanazawa',duration:'3–4 giorni',highlight:'Giardino Kenrokuen, Nagamachi, botteghe artigiane e cerimonia del tè',tips:'Possibili nevicate e piogge: porta abiti impermeabili e scarpe adatte.'
+};
+const LAYOUTS=[
+ {name:'Classico arioso',id:'left',hint:'Testo sinistra · note destra',eyebrow:[72,64,430,52],head1:[72,154,485,61],body1:[74,241,485,430],head2:[74,699,478,62],body2:[74,788,480,224],note:[623,105,411,543],postcard:[684,690,319,242,-5],scene:[0,987,1070,580,0]},
+ {name:'Specchio',id:'right',hint:'Testo destra · note sinistra',eyebrow:[592,64,422,50],head1:[570,185,457,60],body1:[571,273,465,416],head2:[571,718,450,60],body2:[571,798,461,212],note:[40,283,407,531],postcard:[95,72,310,240,5],scene:[-12,988,1070,580,0]},
+ {name:'Cartolina alta',id:'magazine',hint:'Cartolina sopra · note centrale',eyebrow:[70,64,445,49],head1:[70,168,471,60],body1:[70,255,471,413],head2:[70,693,470,58],body2:[70,779,471,216],note:[613,415,405,533],postcard:[671,90,320,240,8],scene:[-20,997,1040,580,0]},
+ {name:'Sfalsato',id:'diagonal',hint:'Note sinistra · testo destra',eyebrow:[678,55,378,45],head1:[562,164,471,60],body1:[562,254,466,427],head2:[563,698,468,60],body2:[563,782,466,200],note:[56,165,409,540],postcard:[106,737,300,240,-6],scene:[-35,999,1080,600,0]}
+];
+const stickerDefs=[['olive','Ulivo'],['berries','Bacche'],['monstera','Foglie'],['map','Mappa'],['compass','Bussola'],['stamp','Timbro'],['tape','Scotch'],['camera','Fotocamera']];
+const imageCache=new Map(), canvas=document.getElementById('stage'),ctx=canvas.getContext('2d',{alpha:false});
+let pages=[],current=0,selected=null,drag=null,history=[],future=[],fontBlob=null,faceLoaded=false,renderTimer=0,saveTimer=0,toastTimer=0,hitboxes=[],fitIssues=[];
+const $=s=>document.querySelector(s),$$=s=>Array.from(document.querySelectorAll(s));
+function keyImg(k){return 'img_'+k;} function dataUrl(k){return ASSETS[k]||null;} function uuid(){return 'k'+Math.random().toString(36).slice(2,10)}
+function hashSeed(str){let h=2166136261>>>0;for(const ch of String(str)){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+function rng(seed){let x=hashSeed(seed)||1;return()=>{x|=0;x=x+0x6D2B79F5|0;let t=Math.imul(x^x>>>15,1|x);t^=t+Math.imul(t^t>>>7,61|t);return((t^t>>>14)>>>0)/4294967296}}
+function assetImage(key){if(imageCache.has(key))return imageCache.get(key);let src=ASSETS[key];if(!src)return null;const im=new Image();im.decoding='async';im.src=src;im.onload=queueRender;imageCache.set(key,im);return im}
+function makePage(layout=0,copy=null){let seed=String(2240+Math.floor(Math.random()*7500));let p={id:uuid(),name:'Nuova destinazione',seed,layout,background:layout,note:layout,fields:copy?structuredClone(copy.fields):structuredClone(DEFAULT_FIELDS),visuals:{note:{x:LAYOUTS[layout].note[0],y:LAYOUTS[layout].note[1],w:LAYOUTS[layout].note[2],h:LAYOUTS[layout].note[3],rot:layout%2?2:-1,scale:1,opacity:1,visible:true},postcard:{x:LAYOUTS[layout].postcard[0],y:LAYOUTS[layout].postcard[1],w:LAYOUTS[layout].postcard[2],h:LAYOUTS[layout].postcard[3],rot:LAYOUTS[layout].postcard[4],scale:1,opacity:1,visible:!!copy},scene:{x:LAYOUTS[layout].scene[0],y:LAYOUTS[layout].scene[1],w:LAYOUTS[layout].scene[2],h:LAYOUTS[layout].scene[3],rot:0,scale:1,opacity:1,visible:!!copy}},imageKeys:{scene:copy?.imageKeys?.scene||null,postcard:copy?.imageKeys?.postcard||null},stickers:[],offsets:{},bodyScale:1,noteScale:1};if(!copy){p.fields={...structuredClone(DEFAULT_FIELDS),eyebrow:'01 / DESTINAZIONE',base:'',duration:'3–4 giorni',highlight:'',tips:'',head1:'Un luogo diverso',body1:'Scrivi qui il primo paragrafo. Racconta cosa rende speciale la destinazione e perché vale la pena visitarla.',head2:'Quando partire',body2:'Scrivi qui il secondo paragrafo con le condizioni del periodo, i consigli pratici e un dettaglio utile.'};p.visuals.scene.visible=false;p.visuals.postcard.visible=false;}else{p.name=copy.name+' · variante'}return p}
+function newDemo(){let p=makePage(0,{fields:DEFAULT_FIELDS,imageKeys:{scene:'giulia_kanazawa',postcard:'cartolina_kenrokuen'},name:'Kanazawa'});p.name='Kanazawa · Giappone';p.seed='2407';p.visuals.scene.visible=true;p.visuals.postcard.visible=true;p.stickers=[{id:uuid(),key:'sticker_olive',x:885,y:10,w:190,h:97,rot:10,scale:1,opacity:.93},{id:uuid(),key:'sticker_stamp',x:19,y:1010,w:123,h:81,rot:-5,scale:1,opacity:.95}];return p}
+function page(){return pages[current]}
+function deepClone(x){return JSON.parse(JSON.stringify(x))}
+function snapshot(){history.push(JSON.stringify({pages,current}));if(history.length>45)history.shift();future=[];updateHistory()}
+function undo(){if(!history.length)return;future.push(JSON.stringify({pages,current}));const prev=JSON.parse(history.pop());pages=prev.pages;current=prev.current;selected=null;refreshAll();updateHistory()}
+function redo(){if(!future.length)return;history.push(JSON.stringify({pages,current}));const next=JSON.parse(future.pop());pages=next.pages;current=next.current;selected=null;refreshAll();updateHistory()}
+function updateHistory(){$('#undoBtn').disabled=!history.length;$('#redoBtn').disabled=!future.length}
+function emitToast(s){clearTimeout(toastTimer);const x=$('#toast');x.textContent=s;x.classList.add('show');toastTimer=setTimeout(()=>x.classList.remove('show'),2400)}
+function formatName(p){return (p.fields.eyebrow||p.name||'Nuova pagina').trim()}
+function addPage(layout){snapshot();pages.push(makePage(layout));current=pages.length-1;selected=null;refreshAll();emitToast('Nuova tavola 4:5 creata')}
+function duplicate(){snapshot();let p=deepClone(page());p.id=uuid();p.name+=' · copia';pages.splice(current+1,0,p);current++;selected=null;refreshAll()}
+function deleteCurrent(){if(pages.length===1){emitToast('Lascia almeno una pagina nel progetto');return;}snapshot();pages.splice(current,1);current=Math.min(current,pages.length-1);selected=null;refreshAll()}
+function selectPage(i){current=Math.max(0,Math.min(i,pages.length-1));selected=null;refreshAll()}
+function applyLayout(i){if(!page())return;snapshot();const p=page();const old=LAYOUTS[p.layout],lay=LAYOUTS[i];p.layout=i;for(const id of ['note','postcard','scene']){const a=lay[id];p.visuals[id]={...p.visuals[id],x:a[0],y:a[1],w:a[2],h:a[3],rot:a[4]||0,scale:1}}p.offsets={};regenerateDecorations(false);refreshAll()}
+function applySeed(seed,random=false){snapshot();const p=page();p.seed=String(seed||Math.floor(Math.random()*100000));const rand=rng(p.seed);p.background=Math.floor(rand()*4);p.note=Math.floor(rand()*4);p.visuals.note.rot=Math.round(rand()*6-3);p.visuals.postcard.rot=Math.round(rand()*12-6);p.visuals.note.x=LAYOUTS[p.layout].note[0]+Math.round((rand()-.5)*22);p.visuals.note.y=LAYOUTS[p.layout].note[1]+Math.round((rand()-.5)*14);regenerateDecorations(true);refreshAll();emitToast('Seed '+p.seed+' applicato')}
+function regenerateDecorations(addNew){const p=page(),r=rng(p.seed+'decor');if(!p.stickers.length||addNew){p.stickers=[];for(let j=0;j<2;j++){let names=['olive','berries','monstera','map','stamp','compass'];let n=names[Math.floor(r()*names.length)];let zone=j===0?{x:0,y:0}:{x:750,y:1000};let x=zone.x+Math.round(r()*140),y=zone.y+Math.round(r()*140);p.stickers.push({id:uuid(),key:'sticker_'+n,x,y,w:100+Math.round(r()*100),h:0,rot:Math.round((r()-.5)*26),scale:1,opacity:.8+Math.round(r()*15)/100})}}}
+function setTab(s){$$('.tab').forEach(n=>n.classList.toggle('active',n.dataset.tab===s));$$('.tabpane').forEach(n=>n.classList.toggle('active',n.id==='tab-'+s))}
+function updateTextControls(){for(const el of $$('[data-text]')){const k=el.dataset.text;if(document.activeElement!==el)el.value=page().fields[k]??''} $('#seedField').value=page().seed;$('#bodyScale').value=Math.round(page().bodyScale*100);$('#bodyScaleLabel').textContent=$('#bodyScale').value+'%';$('#noteScale').value=Math.round(page().noteScale*100);$('#noteScaleLabel').textContent=$('#noteScale').value+'%';$('#stageName').textContent=formatName(page());$('#stageMeta').textContent=' · pagina '+(current+1)+' di '+pages.length+' · 1080 × 1350'}
+function refreshGalleries(){for(const [el,type] of [['bgGallery','sfondo'],['noteGallery','postit']]){const target=$('#'+el);target.innerHTML='';for(let i=0;i<4;i++){const btn=document.createElement('button');btn.className='thumb '+(page()[type==='sfondo'?'background':'note']===i?'active':'');btn.innerHTML='<img src="'+ASSETS[type+'_'+(i+1)]+'" alt="'+type+' '+(i+1)+'"/><small>Variante '+(i+1)+'</small>';btn.onclick=()=>{snapshot();page()[type==='sfondo'?'background':'note']=i;refreshGalleries();queueRender()};target.appendChild(btn)}}}
+function refreshLayoutGrid(){const root=$('#layoutGrid');root.innerHTML='';LAYOUTS.forEach((l,i)=>{const b=document.createElement('button');b.className='preset '+(i===page().layout?'active':'');b.innerHTML='<div class="mini-layout '+(['','flip','scatter','diagonal'][i])+'"><span></span><em></em><i></i></div><span class="preset-title">'+l.name+'</span><span class="hint">'+l.hint+'</span>';b.onclick=()=>applyLayout(i);root.appendChild(b)})}
+function refreshStickerGrid(){const root=$('#stickerGrid');root.innerHTML='';for(const [key,name] of stickerDefs){const b=document.createElement('button');b.className='sticker-btn';b.title='Aggiungi '+name;b.innerHTML='<img src="'+ASSETS['sticker_'+key]+'" alt="'+name+'"/>';b.onclick=()=>addSticker(key);root.appendChild(b)}}
+function refreshPages(){const root=$('#pageList');root.innerHTML='';pages.forEach((p,i)=>{const b=document.createElement('div');b.className='pageitem '+(i===current?'active':'');b.innerHTML='<span class="num">'+String(i+1).padStart(2,'0')+'</span><div class="spacer"><div class="title">'+escapeHTML(p.name||'Tavola')+'</div><small>'+escapeHTML(formatName(p))+' · '+LAYOUTS[p.layout].name+'</small></div><button type="button" title="Rimuovi">×</button>';b.onclick=()=>selectPage(i);b.lastElementChild.onclick=e=>{e.stopPropagation();if(i!==current)selectPage(i);deleteCurrent()};root.appendChild(b)})}
+function escapeHTML(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function refreshInspector(){const e=selected?elementById(selected):null;$('#inspectEmpty').classList.toggle('hidden',!!e);$('#inspectControls').classList.toggle('hidden',!e);$('#selectionName').textContent=e?(e.label||e.id):'Nessuna selezione';if(!e)return;$('#selectedKind').textContent=e.type==='text'?'Casella testo':e.type==='note'?'Post-it':e.type==='scene'?'Illustrazione':e.type==='postcard'?'Cartolina':'Decorazione';$('#elementSize').value=Math.round((e.model.scale||1)*100);$('#sizeValue').textContent=$('#elementSize').value+'%';$('#elementRotate').value=e.model.rot||0;$('#rotateValue').textContent=(e.model.rot||0)+'°';$('#elementOpacity').value=Math.round((e.model.opacity??1)*100);$('#opacityValue').textContent=$('#elementOpacity').value+'%';}
+function refreshAll(){updateTextControls();refreshLayoutGrid();refreshGalleries();refreshPages();refreshInspector();queueRender();scheduleSave()}
+function addSticker(key){snapshot();const r=rng(page().seed+'add'+page().stickers.length);const s={id:uuid(),key:'sticker_'+key,x:W*.38+Math.round(r()*W*.18),y:H*.6+Math.round(r()*H*.18),w:160,h:0,rot:Math.round((r()-.5)*26),scale:1,opacity:1};page().stickers.push(s);selected='sticker:'+s.id;refreshInspector();queueRender();emitToast('Trascina la decorazione sulla tavola')}
+function elementById(id){const p=page();if(!p)return null;if(id==='note'||id==='scene'||id==='postcard')return {id,type:id,model:p.visuals[id],label:({note:'Info di viaggio',scene:'Giulia / panorama',postcard:'Cartolina'})[id]};if(id.startsWith('sticker:')){const s=p.stickers.find(v=>v.id===id.slice(8));return s?{id,type:'sticker',model:s,label:s.key.replace('sticker_','')}:null}if(id.startsWith('text:')){const k=id.slice(5);if(p.fields[k]!==undefined){p.offsets[k]??={dx:0,dy:0,scale:1,rot:0,opacity:1};return{id,type:'text',model:p.offsets[k],label:'Testo · '+k}}}return null}
+function moveLayer(id,step){const p=page();if(!id?.startsWith('sticker:'))return;const i=p.stickers.findIndex(x=>x.id===id.slice(8));if(i<0)return;const j=Math.max(0,Math.min(p.stickers.length-1,i+step));snapshot();const [it]=p.stickers.splice(i,1);p.stickers.splice(j,0,it);queueRender()}
+function deleteSelected(){if(!selected)return;const p=page();snapshot();if(selected.startsWith('sticker:'))p.stickers=p.stickers.filter(x=>x.id!==selected.slice(8));else if(['scene','postcard'].includes(selected))p.visuals[selected].visible=false;else if(selected==='note')p.visuals.note.visible=false;else if(selected.startsWith('text:')){p.offsets[selected.slice(5)]={dx:0,dy:0,scale:1,rot:0,opacity:1}}selected=null;refreshInspector();queueRender()}
+// Canvas drawing: exact pixel export at 1080x1350. All template assets are preloaded and images keep their aspect ratio.
+function box(base,p,k){const o=p.offsets?.[k]||{};return{x:base[0]+(o.dx||0),y:base[1]+(o.dy||0),w:base[2]*(o.scale||1),h:base[3]*(o.scale||1)}}
+function drawImageFit(c,im,x,y,w,h,rot=0,opacity=1,flipX=false){if(!im||!im.complete||!im.naturalWidth)return;const sx=w/im.naturalWidth,sy=h/im.naturalHeight,scale=Math.min(sx,sy);const ww=im.naturalWidth*scale,hh=im.naturalHeight*scale;c.save();c.translate(x+w/2,y+h/2);c.rotate(rot*Math.PI/180);c.globalAlpha=opacity;if(flipX)c.scale(-1,1);c.drawImage(im,-ww/2,-hh/2,ww,hh);c.restore()}
+function drawAsset(key,r,rot=0,opacity=1,flip=false){drawImageFit(ctx,assetImage(key),r.x,r.y,r.w,r.h,rot,opacity,flip)}
+function textFont(sz,bold=false,script=false){const fam=script?(faceLoaded?'"Feeling Passionate"':'"Caveat"'):'"Montserrat"';return`${script?'400':(bold?'800':'500')} ${sz}px ${fam},sans-serif`}
+function wrapTokens(raw){return String(raw||'').replace(/\r/g,'').split(/(\*\*[^*]+\*\*|\n|\s+)/).filter(x=>x!==''&&x!==undefined).map(x=>({text:x.startsWith('**')&&x.endsWith('**')?x.slice(2,-2):x,bold:x.startsWith('**')&&x.endsWith('**')}))}
+function measureLines(c,raw,w,fontSize,lineH,script=false,maxLines=99){
+  const tokens=wrapTokens(raw),lines=[[]];
+  let lineWidth=0;
+  for(const token of tokens){
+    if(token.text==='\n'){lines.push([]);lineWidth=0;continue;}
+    const chunks=token.text.match(/\S+\s*|\s+/g)||[token.text];
+    for(let chunk of chunks){
+      if(!chunk)continue;
+      c.font=textFont(fontSize,token.bold,script);
+      let cw=c.measureText(chunk).width;
+      if(lineWidth+cw>w&&lines[lines.length-1].length){
+        lines.push([]);lineWidth=0;chunk=chunk.replace(/^\s+/,'');cw=c.measureText(chunk).width;
+      }
+      if(cw>w && chunk.trim()){
+        for(const ch of chunk){
+          const charW=c.measureText(ch).width;
+          if(lineWidth+charW>w && lines[lines.length-1].length){lines.push([]);lineWidth=0;}
+          lines[lines.length-1].push({text:ch,bold:token.bold});lineWidth+=charW;
+        }
+      }else if(chunk.trim()||lineWidth){
+        lines[lines.length-1].push({text:chunk,bold:token.bold});lineWidth+=cw;
+      }
+    }
+  }
+  return lines.slice(0,maxLines+30);
+}
+function drawText(c,raw,rect,opt={}){let fs=opt.fontSize||30, color=opt.color||GREEN,script=!!opt.script, bold=!!opt.bold;let lh=opt.lineHeight||1.3,max=rect.h,lines,overflow=false;const original=fs;
+ do{lines=measureLines(c,raw,rect.w,fs,lh,script);overflow=lines.length*fs*lh>max;if(overflow&&fs>(opt.minFont||original*.79))fs-=.6;else break}while(fs>9);
+ if(overflow&&opt.track)fitIssues.push((opt.label||'Testo')+' troppo lungo');
+ c.save();c.fillStyle=color;c.textBaseline='top';let y=rect.y;
+ for(const line of lines){let x=rect.x;for(const run of line){c.font=textFont(fs,run.bold||bold,script);c.fillText(run.text,x,y);x+=c.measureText(run.text).width}y+=fs*lh;if(y>rect.y+max+fs*.35)break}
+ c.restore();return{fontSize:fs,overflow,lines:lines.length}
+}
+function getFields(p){return p.fields||DEFAULT_FIELDS}
+function noteBlocks(note,p){const f=getFields(p),s=p.noteScale||1;const x=note.x,y=note.y,w=note.w*(note.scale||1),h=note.h*(note.scale||1);const left=x+w*.365,right=x+w*.94;
+ return [
+  {key:'base',label:'Base',value:f.base,top:y+h*.34,labSize:20*s,valueSize:19*s,height:h*.075},
+  {key:'duration',label:'Durata',value:f.duration,top:y+h*.455,labSize:20*s,valueSize:19*s,height:h*.075},
+  {key:'highlight',label:'Da non perdere',value:f.highlight,top:y+h*.57,labSize:20*s,valueSize:16*s,height:h*.16},
+  {key:'tips',label:'Da sapere',value:f.tips,top:y+h*.765,labSize:20*s,valueSize:16*s,height:h*.14}
+ ].map(z=>({...z,x:left,w:right-left}));
+}
+function render(p=page(),dest=ctx,selectedDraw=true){if(!p)return;const c=dest;if(c!==ctx){/* export uses independent context */}hitboxes=[];fitIssues=[];c.save();c.clearRect(0,0,W,H);c.fillStyle='#f7efde';c.fillRect(0,0,W,H);
+ const bg=assetImage('sfondo_'+(p.background+1));if(bg?.complete&&bg.naturalWidth)c.drawImage(bg,0,0,W,H);
+ const lay=LAYOUTS[p.layout];
+ const scene=p.visuals.scene,postcard=p.visuals.postcard,note=p.visuals.note;
+ if(scene.visible){const key=p.imageKeys?.scene||'giulia_kanazawa';drawImageFit(c,assetImage(key),scene.x,scene.y,scene.w*scene.scale,scene.h*scene.scale,scene.rot,scene.opacity??1,p.layout===1||p.layout===3);hitboxes.push({id:'scene',x:scene.x,y:scene.y,w:scene.w*scene.scale,h:scene.h*scene.scale})}
+ if(postcard.visible){const key=p.imageKeys?.postcard||'cartolina_kenrokuen';drawImageFit(c,assetImage(key),postcard.x,postcard.y,postcard.w*postcard.scale,postcard.h*postcard.scale,postcard.rot,postcard.opacity??1);hitboxes.push({id:'postcard',x:postcard.x,y:postcard.y,w:postcard.w*postcard.scale,h:postcard.h*postcard.scale})}
+ if(note.visible){drawImageFit(c,assetImage('postit_'+(p.note+1)),note.x,note.y,note.w*note.scale,note.h*note.scale,note.rot,note.opacity??1);hitboxes.push({id:'note',x:note.x,y:note.y,w:note.w*note.scale,h:note.h*note.scale})}
+ for(const s of p.stickers){const im=assetImage(s.key);let w=s.w*s.scale,h=s.h||s.w*(im?.naturalHeight||1)/(im?.naturalWidth||1);h*=s.scale;drawImageFit(c,im,s.x,s.y,w,h,s.rot,s.opacity??1);hitboxes.push({id:'sticker:'+s.id,x:s.x,y:s.y,w,h})}
+ // Editable note text. The note image owns only paper, heading and icons; labels & values are drawn live.
+ if(note.visible){for(const item of noteBlocks(note,p)){const lab={x:item.x,y:item.top,w:item.w,h:27};drawText(c,item.label,lab,{fontSize:item.labSize,bold:true,minFont:item.labSize*.85,lineHeight:1.12});const val={x:item.x,y:item.top+27,w:item.w,h:item.height};drawText(c,item.value,val,{fontSize:item.valueSize,minFont:item.valueSize*.74,lineHeight:1.18,track:true,label:'Info '+item.label})}}
+ // Eyebrow
+ const eyebrow=box(lay.eyebrow,p,'eyebrow'),h1=box(lay.head1,p,'head1'),h2=box(lay.head2,p,'head2'),b1=box(lay.body1,p,'body1'),b2=box(lay.body2,p,'body2');
+ drawText(c,p.fields.eyebrow.toUpperCase(),eyebrow,{fontSize:32,minFont:25,bold:true,lineHeight:1.12});hitboxes.push({id:'text:eyebrow',...eyebrow});
+ // hand-painted orange accents are independent PNG overlays; headings editable via true font.
+ const brushHead={x:eyebrow.x+3,y:eyebrow.y+43,w:190,h:18};drawImageFit(c,assetImage('pennellata_1'),brushHead.x,brushHead.y,brushHead.w,brushHead.h);
+ for(const [tbox,key] of [[h1,'head1'],[h2,'head2']]){
+  const br={x:tbox.x-1,y:tbox.y+40,w:64,h:13};drawImageFit(c,assetImage('pennellata_2'),br.x,br.y,br.w,br.h);
+  const heading={x:tbox.x+70,y:tbox.y,w:tbox.w-72,h:tbox.h};drawText(c,p.fields[key],heading,{fontSize:47,script:true,minFont:37,lineHeight:1.1,color:ORANGE,track:true,label:'Minititolo'});hitboxes.push({id:'text:'+key,...tbox});
+ }
+ drawText(c,p.fields.body1,b1,{fontSize:30*p.bodyScale,minFont:23*p.bodyScale,lineHeight:1.26,color:GREEN,track:true,label:'Paragrafo 1'});hitboxes.push({id:'text:body1',...b1});
+ drawText(c,p.fields.body2,b2,{fontSize:30*p.bodyScale,minFont:23*p.bodyScale,lineHeight:1.26,color:GREEN,track:true,label:'Paragrafo 2'});hitboxes.push({id:'text:body2',...b2});
+ if(selectedDraw&&selected){const sel=hitboxes.find(b=>b.id===selected);if(sel){c.save();c.strokeStyle='#de8741';c.lineWidth=3;c.setLineDash([11,7]);c.strokeRect(sel.x+2,sel.y+2,sel.w-4,sel.h-4);c.setLineDash([]);c.fillStyle='#e08c48';c.fillRect(sel.x,sel.y,10,10);c.restore()}}
+ c.restore();if(selectedDraw)$('#fitStatus').textContent=fitIssues.length?fitIssues.join(' · '):'Tutti i blocchi rientrano nello spazio previsto.';return fitIssues;
+}
+function queueRender(){cancelAnimationFrame(renderTimer);renderTimer=requestAnimationFrame(()=>render())}
+// Navigation and canvas pointer/drag controls.
+function xyFromPointer(e){const b=canvas.getBoundingClientRect();return{x:(e.clientX-b.left)/b.width*W,y:(e.clientY-b.top)/b.height*H}}
+canvas.addEventListener('pointerdown',e=>{const q=xyFromPointer(e);const top=[...hitboxes].reverse().find(b=>q.x>=b.x&&q.x<=b.x+b.w&&q.y>=b.y&&q.y<=b.y+b.h);selected=top?.id||null;refreshInspector();queueRender();if(!selected)return;const target=elementById(selected);if(!target)return;canvas.setPointerCapture(e.pointerId);drag={origin:q,model:deepClone(target.model),id:selected,moved:false,before:JSON.stringify({pages,current})};canvas.classList.add('dragging')});
+canvas.addEventListener('pointermove',e=>{if(!drag)return;const q=xyFromPointer(e),dx=q.x-drag.origin.x,dy=q.y-drag.origin.y;if(Math.abs(dx)+Math.abs(dy)>5)drag.moved=true;const target=elementById(drag.id);if(!target)return;const m=target.model;if(target.type==='text'){m.dx=(drag.model.dx||0)+dx;m.dy=(drag.model.dy||0)+dy}else{m.x=drag.model.x+dx;m.y=drag.model.y+dy}queueRender()});
+function endDrag(){if(!drag)return;if(drag.moved){history.push(drag.before);if(history.length>45)history.shift();future=[];scheduleSave();updateHistory()}drag=null;canvas.classList.remove('dragging')}
+canvas.addEventListener('pointerup',endDrag);canvas.addEventListener('pointercancel',endDrag);
+canvas.addEventListener('dblclick',e=>{if(!selected)return;const txt=selected.startsWith('text:')?selected.slice(5):null;if(txt){setTab('texts');const el=$('[data-text="'+txt+'"]');if(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.focus()}}});
+function setSelectedProperty(k,v){const e=elementById(selected);if(!e)return;const t=e.model;t[k]=v;queueRender();scheduleSave()}
+$('#elementSize').addEventListener('input',e=>{setSelectedProperty('scale',+e.target.value/100);$('#sizeValue').textContent=e.target.value+'%'});
+$('#elementRotate').addEventListener('input',e=>{setSelectedProperty('rot',+e.target.value);$('#rotateValue').textContent=e.target.value+'°'});
+$('#elementOpacity').addEventListener('input',e=>{setSelectedProperty('opacity',+e.target.value/100);$('#opacityValue').textContent=e.target.value+'%'});
+$('#layerFront').onclick=()=>moveLayer(selected,1);$('#layerBack').onclick=()=>moveLayer(selected,-1);$('#deleteElement').onclick=deleteSelected;
+$('#resetPosBtn').onclick=()=>{if(selected?.startsWith('text:')){snapshot();page().offsets[selected.slice(5)]={dx:0,dy:0,scale:1,rot:0,opacity:1};refreshInspector();queueRender()}else if(['scene','postcard','note'].includes(selected)){snapshot();const z=LAYOUTS[page().layout][selected];Object.assign(page().visuals[selected],{x:z[0],y:z[1],w:z[2],h:z[3],rot:z[4]||0,scale:1,opacity:1});refreshInspector();queueRender()}};
+$('#undoBtn').onclick=undo;$('#redoBtn').onclick=redo;
+for(const el of $$('[data-text]')){el.addEventListener('focus',()=>{selected='text:'+el.dataset.text;refreshInspector();queueRender()});el.addEventListener('input',()=>{const oldBase=page().fields.base;page().fields[el.dataset.text]=el.value;if(el.dataset.text==='base'&&el.value!==oldBase){if(page().imageKeys.scene==='giulia_kanazawa')page().visuals.scene.visible=false;if(page().imageKeys.postcard==='cartolina_kenrokuen')page().visuals.postcard.visible=false;}page().name=page().fields.base||'Nuova destinazione';$('#stageName').textContent=formatName(page());queueRender();scheduleSave()})}
+$$('.tab').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+$('#topNew').onclick=()=>addPage((page().layout+1)%4);$('#addPage').onclick=()=>addPage((page().layout+1)%4);$('#duplicatePage').onclick=duplicate;
+$('#seedApply').onclick=()=>applySeed($('#seedField').value);$('#seedRandom').onclick=()=>applySeed(Math.floor(Math.random()*999999));$('#topSeed').onclick=()=>applySeed(Math.floor(Math.random()*999999));
+$('#bodyScale').oninput=e=>{page().bodyScale=+e.target.value/100;$('#bodyScaleLabel').textContent=e.target.value+'%';queueRender();scheduleSave()};
+$('#noteScale').oninput=e=>{page().noteScale=+e.target.value/100;$('#noteScaleLabel').textContent=e.target.value+'%';queueRender();scheduleSave()};
+$('#useDemoScene').onclick=()=>{snapshot();page().imageKeys.scene='giulia_kanazawa';page().visuals.scene.visible=true;queueRender();emitToast('Giulia dimostrativa inserita')};$('#hideScene').onclick=()=>{snapshot();page().visuals.scene.visible=false;queueRender()};
+async function fileDataURL(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})}
+async function setUpload(file,type){if(!file)return;if(!file.type.startsWith('image/')){emitToast('Carica un PNG o JPG');return}const data=await fileDataURL(file);const id='custom_'+uuid();ASSETS[id]=data;imageCache.delete(id);snapshot();page().imageKeys[type]=id;page().visuals[type].visible=true;queueRender();scheduleSave();emitToast('Immagine inserita come livello indipendente')}
+$('#sceneFile').onchange=e=>setUpload(e.target.files?.[0],'scene');$('#postcardFile').onchange=e=>setUpload(e.target.files?.[0],'postcard');
+// FontFace: user's own Feeling Passionate font loaded locally; font bytes are never bundled in this HTML.
+async function installFont(buffer,persist=false){try{const ff=new FontFace('Feeling Passionate',buffer,{style:'normal',weight:'400'});await ff.load();document.fonts.add(ff);faceLoaded=true;fontBlob=buffer;$('#fontStatus').innerHTML='<b>Feeling Passionate <span class="pill ok">Caricato ✓</span></b><p>Il font reale è attivo su tutti i minititoli, anche nei PNG. '+(persist?'Salvato su questo dispositivo.':'Puoi salvarlo localmente con il pulsante sotto.')+'</p>';queueRender();return true}catch(err){console.error(err);emitToast('Font non valido o non compatibile');return false}}
+$('#fontFile').onchange=async e=>{const f=e.target.files?.[0];if(f){const b=await f.arrayBuffer();await installFont(b)}};
+$('#fontRemember').onclick=async()=>{if(!fontBlob){emitToast('Carica prima il font Feeling Passionate');return}await dbPut('font',{buf:fontBlob});emitToast('Font salvato nel browser per le prossime visite')};
+$('#fontReset').onclick=async()=>{await dbDelete('font');faceLoaded=false;fontBlob=null;$('#fontStatus').innerHTML='<b>Feeling Passionate</b><p>Carica il tuo file font per attivare la tipografia originale KURA.</p>';emitToast('Font locale rimosso. Se rimane in memoria, ricarica la pagina.')};
+// Offline ZIP (uncompressed PKZIP; works in Safari/Firefox/Chrome without libraries).
+const enc=new TextEncoder();function le16(x){return [x&255,(x>>>8)&255]}function le32(x){return[x&255,(x>>>8)&255,(x>>>16)&255,(x>>>24)&255]}const crcTable=(()=>{let t=[];for(let n=0;n<256;n++){let c=n;for(let j=0;j<8;j++)c=c&1?0xedb88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();function crc32(bytes){let c=0xffffffff;for(const b of bytes)c=crcTable[(c^b)&255]^(c>>>8);return(c^0xffffffff)>>>0}
+async function zipFiles(entries){let parts=[],central=[],offset=0;for(const [name,blob] of entries){const bytes=new Uint8Array(await blob.arrayBuffer()),nm=enc.encode(name),crc=crc32(bytes);const head=new Uint8Array([80,75,3,4,20,0,0,0,0,0,0,0,0,0,...le32(crc),...le32(bytes.length),...le32(bytes.length),...le16(nm.length),0,0]);parts.push(head,nm,bytes);const ch=new Uint8Array([80,75,1,2,20,0,20,0,0,0,0,0,0,0,0,0,...le32(crc),...le32(bytes.length),...le32(bytes.length),...le16(nm.length),0,0,0,0,0,0,0,0,0,0,0,0,...le32(offset)]);central.push(ch,nm);offset+=head.length+nm.length+bytes.length}const cc=central.reduce((n,p)=>n+p.length,0);const end=new Uint8Array([80,75,5,6,0,0,0,0,...le16(entries.length),...le16(entries.length),...le32(cc),...le32(offset),0,0]);return new Blob([...parts,...central,end],{type:'application/zip'})}
+function fileSafe(s){return String(s||'kura').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\w\d-]+/g,'_').slice(0,60).replace(/^_+|_+$/g,'')||'kura'}
+async function exportPagePNG(p){await Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,1500))]);const off=document.createElement('canvas');off.width=W;off.height=H;const out=off.getContext('2d',{alpha:false});render(p,out,false);return new Promise(resolve=>off.toBlob(resolve,'image/png'))}
+async function download(blob,name){if(!blob)return;const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000)}
+async function exportPNG(){const blob=await exportPagePNG(page());await download(blob,'KURA_'+fileSafe(page().fields.base||page().name)+'_'+page().seed+'.png');queueRender();emitToast('PNG 1080 × 1350 esportato')}
+async function exportAll(){emitToast('Preparazione ZIP...');const entries=[];for(let i=0;i<pages.length;i++){const p=pages[i];const blob=await exportPagePNG(p);entries.push([String(i+1).padStart(2,'0')+'_KURA_'+fileSafe(p.fields.base||p.name)+'.png',blob])}entries.push(['progetto_KURA.json',new Blob([JSON.stringify(exportProject(),null,2)],{type:'application/json'})]);await download(await zipFiles(entries),'KURA_carosello_'+pages.length+'_pagine.zip');queueRender();emitToast('Carosello esportato')}
+$('#topExport').onclick=$('#inspectPng').onclick=exportPNG;$('#topZip').onclick=$('#inspectAll').onclick=exportAll;
+// Fast mode / MCP JSON schema plus saved project roundtrip.
+function exportProject(){const usedCustom={};for(const p of pages){for(const id of Object.values(p.imageKeys||{})){if(id&&id.startsWith('custom_')&&ASSETS[id])usedCustom[id]=ASSETS[id]}}return{format:'KURA_EDITOR_V1',width:W,height:H,version:1,pages:deepClone(pages),customAssets:usedCustom}}
+function jsonFile(){return new Blob([JSON.stringify(exportProject(),null,2)],{type:'application/json;charset=utf-8'})}
+$('#saveJson').onclick=()=>{download(jsonFile(),'KURA_progetto_'+Date.now()+'.json');emitToast('Progetto JSON salvato')};$('#topJson').onclick=()=>{$('#saveJson').click()};
+$('#copyFast').onclick=async()=>{const p=page(),out={seed:p.seed,layout:LAYOUTS[p.layout].id,background:p.background+1,postit:p.note+1,fields:p.fields};const s=JSON.stringify(out,null,2);try{await navigator.clipboard.writeText(s);emitToast('Dati copiati per ChatGPT / MCP')}catch{$('#fastText').value=s;$('#fastBox').classList.remove('hidden');emitToast('Copia il JSON dalla casella')}};
+$('#showFast').onclick=()=>{$('#fastBox').classList.toggle('hidden');$('#fastText').value=JSON.stringify({seed:page().seed,layout:LAYOUTS[page().layout].id,fields:page().fields},null,2)};
+function importFast(obj){if(!obj||typeof obj!=='object')throw Error('Formato JSON non valido');snapshot();if(Array.isArray(obj.pages)){pages=obj.pages.map(x=>normalizePage(x));current=0;for(const [k,v]of Object.entries(obj.customAssets||{})){if(k.startsWith('custom_')&&typeof v==='string'&&v.startsWith('data:image/'))ASSETS[k]=v}}else{const p=page();const wasBase=p.fields.base;if(obj.fields&&typeof obj.fields==='object')Object.assign(p.fields,obj.fields);else{for(const k of Object.keys(DEFAULT_FIELDS))if(typeof obj[k]==='string')p.fields[k]=obj[k]};if(p.fields.base!==wasBase){if(p.imageKeys?.scene==='giulia_kanazawa')p.visuals.scene.visible=false;if(p.imageKeys?.postcard==='cartolina_kenrokuen')p.visuals.postcard.visible=false;}if(obj.seed!==undefined)p.seed=String(obj.seed);if(obj.layout!==undefined){const li=LAYOUTS.findIndex(v=>v.id===obj.layout);const next=li>=0?li:(Number.isInteger(obj.layout)&&obj.layout>=0&&obj.layout<4?obj.layout:p.layout);if(next!==p.layout){p.layout=next;for(const k of ['note','postcard','scene']){const a=LAYOUTS[next][k];Object.assign(p.visuals[k],{x:a[0],y:a[1],w:a[2],h:a[3],rot:a[4]||0,scale:1})}p.offsets={}}}if(obj.background!==undefined)p.background=Math.max(0,Math.min(3,+obj.background-1));if(obj.postit!==undefined)p.note=Math.max(0,Math.min(3,+obj.postit-1));if(obj.visuals)Object.assign(p.visuals,obj.visuals)}selected=null;refreshAll();emitToast('Dati JSON applicati')}
+function normalizePage(p){const li=LAYOUTS.findIndex(v=>v.id===p.layout);const ix=li>=0?li:Math.max(0,Math.min(3,Number(p.layout)||0));const out=makePage(ix,{fields:{...DEFAULT_FIELDS,...(p.fields||{})},imageKeys:p.imageKeys,name:p.name||'Pagina'});return{...out,...p,fields:{...out.fields,...(p.fields||{})},visuals:{...out.visuals,...(p.visuals||{})},background:Math.max(0,Math.min(3,p.background??ix)),note:Math.max(0,Math.min(3,p.note??ix)),layout:ix,stickers:Array.isArray(p.stickers)?p.stickers:[],offsets:p.offsets||{}}}
+$('#applyFast').onclick=()=>{try{importFast(JSON.parse($('#fastText').value))}catch(e){emitToast('Errore JSON: '+e.message)}};
+$('#jsonFile').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{importFast(JSON.parse(await f.text()))}catch(err){emitToast('Impossibile aprire: '+err.message)}};
+// IndexedDB autosave; works without network, on the device only.
+let db=null;async function initDb(){try{db=await new Promise((resolve,reject)=>{const r=indexedDB.open('KURA_EDITOR_V1',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)});return true}catch(err){console.warn('IndexedDB unavailable',err);return false}}
+function dbPut(k,v){if(!db)return Promise.resolve(false);return new Promise(resolve=>{try{const tr=db.transaction('kv','readwrite');tr.objectStore('kv').put(v,k);tr.oncomplete=()=>resolve(true);tr.onerror=()=>resolve(false)}catch{resolve(false)}})}
+function dbGet(k){if(!db)return Promise.resolve(null);return new Promise(resolve=>{try{const tr=db.transaction('kv','readonly'),r=tr.objectStore('kv').get(k);r.onsuccess=()=>resolve(r.result??null);r.onerror=()=>resolve(null)}catch{resolve(null)}})}
+function dbDelete(k){if(!db)return Promise.resolve(false);return new Promise(resolve=>{try{const t=db.transaction('kv','readwrite');t.objectStore('kv').delete(k);t.oncomplete=()=>resolve(true);t.onerror=()=>resolve(false)}catch{resolve(false)}})}
+function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>dbPut('project',exportProject()),900)}
+window.addEventListener('keydown',e=>{const editing=['TEXTAREA','INPUT'].includes(document.activeElement?.tagName);if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'&&!editing){e.preventDefault();if(e.shiftKey)redo();else undo()}if((e.key==='Delete'||e.key==='Backspace')&&!editing&&selected){e.preventDefault();deleteSelected()}});
+async function start(){pages=[newDemo()];current=0;refreshStickerGrid();await initDb();const saved=await dbGet('project');if(saved?.pages?.length){try{pages=saved.pages.map(normalizePage);for(const[k,v]of Object.entries(saved.customAssets||{}))ASSETS[k]=v;current=0}catch(e){console.warn(e)}}const font=await dbGet('font');if(font?.buf)await installFont(font.buf,true);for(const key of Object.keys(ASSETS))assetImage(key);await Promise.allSettled(Array.from(imageCache.values()).map(im=>im.decode?.().catch(()=>{})||Promise.resolve()));refreshAll();document.fonts.ready.then(queueRender).catch(()=>{});updateHistory();}start();
+</script>
+<style>#kura-update-btn{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom,0px));right:12px;z-index:10010;border:1px solid #bb9b64;background:#ffe2a0;color:#183d31;border-radius:24px;padding:10px 14px;font:700 12px Montserrat,sans-serif;box-shadow:0 4px 20px #0003}</style><button id="kura-update-btn" type="button">↻ Aggiorna da GitHub</button><script>(function(){const V='1.0.1',btn=document.getElementById('kura-update-btn');btn.addEventListener('click',async()=>{btn.disabled=true;btn.textContent='Controllo...';try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);const v=await r.json();if(v.version!==V){if(confirm('Nuova versione '+v.version+' disponibile. Aggiornare? I progetti restano salvati sul dispositivo.')){const u=new URL(location.href);u.searchParams.set('v',v.version);location.assign(u.href);return}}else alert('KURA Editor già aggiornato ('+V+')')}catch(e){alert('Controllo non riuscito: '+e.message)}finally{btn.disabled=false;btn.textContent='↻ Aggiorna da GitHub'}})})();</script></body>
+</html>
