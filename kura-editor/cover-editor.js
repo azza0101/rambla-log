@@ -12,7 +12,7 @@ const $=id=>document.getElementById(id);
 const clone=x=>JSON.parse(JSON.stringify(x));
 const id=()=>Math.random().toString(36).slice(2,10);
 const assets=new Map();
-function coverDefaults(){return {id:id(),name:'Copertina',month:10,year:2026,destinations:['Valle del Vipacco','Maiorca','Kruger'],giuliaSide:'right',seasonHint:'auto',assets:{logo:null,giulia:null,fixedTitle:null,strap:null,islands:[null,null,null]},geometry:{
+function coverDefaults(){return {id:id(),name:'Copertina',month:10,year:2026,destinations:['','',''],giuliaSide:'right',seasonHint:'auto',assets:{logo:null,giulia:null,fixedTitle:null,strap:null,islands:[null,null,null]},geometry:{
  island1:{x:26,y:83,w:515,h:400,angle:-3},island2:{x:558,y:85,w:493,h:395,angle:4},island3:{x:35,y:937,w:626,h:346,angle:-2},
  giulia:{x:772,y:913,w:281,h:400,angle:0},
  fixedTitle:{x:229,y:502,w:622,h:224,angle:-2},
@@ -102,7 +102,7 @@ function uiHTML(){return `<section class="panel" id="kuraCoverPanel" style="padd
  <div class="field"><label>Destinazione 3</label><input id="coverDest3" type="text"/></div>
  <div class="field"><label>Posizione Giulia</label><select id="coverSide"><option value="right">A destra</option><option value="left">A sinistra</option></select></div>
  <div class="section-title">Immagini modificabili</div>
- <p class="hint">Per rispettare la Bible carica le tre illustrazioni papercut e Giulia canonica come PNG trasparenti. Le anteprime segnaposto non sono asset KURA definitivi.</p>
+ <p class="hint"><strong>Modalità GOLD MASTER:</strong> senza gli asset canonici il sistema mostra solo segnaposto editoriali e non esporta una cover finta. Carica le tre isole KURA, logo originale, titolo fisso, cartiglio e Giulia.</p>
  <div class="field"><label>Logo KURA originale</label><input id="coverLogoFile" type="file" accept="image/png,image/webp,image/svg+xml"/></div>
  <div class="field"><label>Giulia canonica</label><input id="coverGiuliaFile" type="file" accept="image/png,image/webp"/></div><div class="field"><label>Cartiglio originale (SENZA OVERTOURISM) · PNG trasparente</label><input id="coverStrapFile" type="file" accept="image/png,image/webp"/></div><div class="field"><label>Titolo fisso PNG trasparente (3 VIAGGI / da fare a)</label><input id="coverFixedFile" type="file" accept="image/png,image/webp"/></div>
  ${[1,2,3].map(i=>'<div class="field"><label>Isola '+i+'</label><input id="coverIsland'+i+'" type="file" accept="image/png,image/webp,image/svg+xml"/></div>').join('')}
@@ -140,6 +140,6 @@ function setup(){
  $('coverImportJSON').onchange=async e=>{try{const obj=JSON.parse(await e.target.files[0].text());doc=clone(obj.cover||obj);if(!doc.geometry)throw Error('Missing geometry');save();render()}catch(err){alert('Progetto non valido: '+err.message)}};
  load();render();
 }
-window.KURA_COVER_MCP={schemaVersion:2,get:()=>clone(doc),validate:()=>{if(!doc)load();return{valid:validateCover().length===0,missing:validateCover()}},set:(patch)=>{if(!doc)load();for(const key of ['month','year','destinations','giuliaSide','seasonHint'])if(Object.prototype.hasOwnProperty.call(patch,key))doc[key]=clone(patch[key]);if(patch.geometry)for(const[k,g]of Object.entries(patch.geometry))if(doc.geometry[k])Object.assign(doc.geometry[k],g);later();render();return clone(doc)},setImage:(key,dataURL,index)=>{if(key==='islands')doc.assets.islands[index]=dataURL;else doc.assets[key]=dataURL;later();render()},exportJSON:()=>JSON.stringify({format:'KURA_COVER_V1',cover:doc})};
+window.KURA_COVER_MCP={schemaVersion:2,get:()=>clone(doc),validate:()=>{if(!doc)load();return{valid:validateCover().length===0,missing:validateCover()}},set:(patch)=>{if(!doc)load();for(const key of ['month','year','destinations','giuliaSide','seasonHint'])if(Object.prototype.hasOwnProperty.call(patch,key))doc[key]=clone(patch[key]);if(patch.geometry)for(const[k,g]of Object.entries(patch.geometry)){if(FIXED_KEYS.has(k))throw Error('Il livello master '+k+' è bloccato');if(doc.geometry[k]&&['island1','island2','island3','giulia'].includes(k))Object.assign(doc.geometry[k],g)};later();render();return clone(doc)},setImage:(key,dataURL,index)=>{if(key==='islands')doc.assets.islands[index]=dataURL;else doc.assets[key]=dataURL;later();render()},exportJSON:()=>JSON.stringify({format:'KURA_COVER_V1',cover:doc})};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
 })();
