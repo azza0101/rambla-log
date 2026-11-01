@@ -1,7 +1,7 @@
 {
   "format": "KURA_COVER_V1",
   "api": "window.KURA_COVER_MCP",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "master": "GOLD MASTER NOVEMBRE 2026",
   "referenceWarning": "Immagini reference forniscono vincoli di composizione; non usarle come illustrazioni statiche di default.",
   "size": {
@@ -48,16 +48,24 @@
   },
   "geometryUnit": "1080x1350 canvas pixels; x,y,w,h,angle",
   "validation": [
-    "exactly three nonempty destinations",
-    "month and year present and valid",
-    "three island assets provided",
-    "Giulia canonical art asset provided",
-    "logo is original uploaded asset",
-    "fixed title transparent PNG provided",
-    "no month cartiglio",
-    "three islands with no white frames",
-    "no foreground decoration overlapping typography",
-    "adequate negative space"
+    "Original KURA logo present",
+    "Fixed title original transparent PNG present",
+    "Overtourism strip original PNG present",
+    "Canonical Giulia PNG present",
+    "Exactly 3 user/MCP-generated KURA papercut destination illustrations",
+    "Month and year valid",
+    "No free moving of immutable logo, title or banner"
   ],
-  "note": "Current cover workshop is an editable layout prototype and requires canon illustration assets for final on-brand export. The brush uses a fallback unless Feeling Passionate is licensed and hosted."
+  "note": "Current cover workshop is an editable layout prototype and requires canon illustration assets for final on-brand export. The brush uses a fallback unless Feeling Passionate is licensed and hosted.",
+  "schemaVersion": 2,
+  "requiredAssets": [
+    "logo",
+    "fixedTitle",
+    "strap",
+    "giulia",
+    "islands[0]",
+    "islands[1]",
+    "islands[2]"
+  ],
+  "editorPolicy": "Only islands and Giulia geometry can be moved; immutable layers locked. No drawn substitute for original art. Export disabled until required assets supplied."
 }
