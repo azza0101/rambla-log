@@ -5,13 +5,14 @@ const CW=1080,CH=1350,LS='kura-cover-projects-v1';
 const monthNames=['GENNAIO','FEBBRAIO','MARZO','APRILE','MAGGIO','GIUGNO','LUGLIO','AGOSTO','SETTEMBRE','OTTOBRE','NOVEMBRE','DICEMBRE'];
 const season=(m)=>m<=1||m===11?'winter':m<=4?'spring':m<=7?'summer':'autumn';
 const seasons={winter:{coat:'#b76b42',scarf:'#667c50'},spring:{coat:'#b88a66',scarf:'#8caa7c'},summer:{coat:'#ce8a55',scarf:'#e1b65c'},autumn:{coat:'#bc6948',scarf:'#526c44'}};
-const fallbackIslands=['./assets/sfondo_spring_2.svg','./assets/sfondo_summer_1.svg','./assets/sfondo_autumn_2.svg'];
+const REQUIRED_COVER_ASSETS=['logo','fixedTitle','strap','giulia'];
+const FIXED_KEYS=new Set(['logo','fixedTitle','month','strap','year']);
 let doc=null, canvas,ctx,wrap,ui,selected='month',drag=null,lastProject=null;
 const $=id=>document.getElementById(id);
 const clone=x=>JSON.parse(JSON.stringify(x));
 const id=()=>Math.random().toString(36).slice(2,10);
 const assets=new Map();
-function coverDefaults(){return {id:id(),name:'Copertina',month:10,year:2026,destinations:['Valle del Vipacco','Maiorca','Kruger'],giuliaSide:'right',seasonHint:'auto',assets:{logo:null,giulia:null,fixedTitle:null,islands:[null,null,null]},geometry:{
+function coverDefaults(){return {id:id(),name:'Copertina',month:10,year:2026,destinations:['Valle del Vipacco','Maiorca','Kruger'],giuliaSide:'right',seasonHint:'auto',assets:{logo:null,giulia:null,fixedTitle:null,strap:null,islands:[null,null,null]},geometry:{
  island1:{x:26,y:83,w:515,h:400,angle:-3},island2:{x:558,y:85,w:493,h:395,angle:4},island3:{x:35,y:937,w:626,h:346,angle:-2},
  giulia:{x:772,y:913,w:281,h:400,angle:0},
  fixedTitle:{x:229,y:502,w:622,h:224,angle:-2},
@@ -36,51 +37,62 @@ function rag(c,x,y,w,h,fill,seed=0){
 function fitImg(c,im,g){if(!im?.complete||!im.naturalWidth)return false;const r=Math.min(g.w/im.naturalWidth,g.h/im.naturalHeight);c.drawImage(im,(g.w-im.naturalWidth*r)/2,(g.h-im.naturalHeight*r)/2,im.naturalWidth*r,im.naturalHeight*r);return true}
 function image(src){if(!src)return null;if(assets.has(src))return assets.get(src);const im=new Image();im.onload=()=>render();im.onerror=()=>{};im.src=src;assets.set(src,im);return im}
 function centerText(c,txt,x,y,size,color,hand=false){c.fillStyle=color;c.textAlign='center';c.textBaseline='middle';c.font=hand?`italic 700 ${size}px cursive`:`900 ${size}px Montserrat,Arial,sans-serif`;c.fillText(txt,x,y)}
-function island(c,key,i){const g=doc.geometry[key];c.save();c.translate(g.x+g.w/2,g.y+g.h/2);c.rotate(g.angle*Math.PI/180);const x=-g.w/2,y=-g.h/2;
- c.save();c.beginPath();const k=g.w/17;for(let t=0;t<=17;t++){const px=x+t*k,py=y+17*Math.sin(t*2.7+i);if(t===0)c.moveTo(px,py);else c.lineTo(px,py)}for(let t=17;t>=0;t--){const px=x+t*k,py=y+g.h+12*Math.sin(t*1.8+i+1);c.lineTo(px,py)}c.closePath();c.clip();
- c.fillStyle=['#c2d5c0','#9cc5d9','#d6c9a0'][i];c.fillRect(x,y,g.w,g.h);
- const src=doc.assets.islands[i]||fallbackIslands[i];const im=image(src);if(im?.naturalWidth){const ratio=Math.max(g.w/im.naturalWidth,g.h/im.naturalHeight);c.drawImage(im,x+(g.w-im.naturalWidth*ratio)/2,y+(g.h-im.naturalHeight*ratio)/2,im.naturalWidth*ratio,im.naturalHeight*ratio)}
- else{c.fillStyle='#688b78';c.beginPath();c.moveTo(x,y+g.h*.85);c.lineTo(x+g.w*.4,y+g.h*.22);c.lineTo(x+g.w*.8,y+g.h*.79);c.fill()}
- c.restore();c.restore();
+function missingAsset(c,g,label){
+ c.save();c.fillStyle='rgba(252,247,233,.09)';c.strokeStyle='rgba(239,191,108,.58)';c.lineWidth=3;c.setLineDash([14,8]);c.strokeRect(g.x+5,g.y+5,g.w-10,g.h-10);
+ c.font='700 23px Montserrat,Arial,sans-serif';c.textAlign='center';c.textBaseline='middle';c.fillStyle='#efd9b2';
+ c.fillText(label,g.x+g.w/2,g.y+g.h/2,Math.max(140,g.w-40));c.restore();
 }
-function drawGiulia(c){const g=doc.geometry.giulia;c.save();c.translate(g.x+g.w/2,g.y+g.h/2);c.rotate(g.angle*Math.PI/180);const x=-g.w/2,y=-g.h/2;
- if(doc.assets.giulia){c.save();c.translate(-g.w/2,-g.h/2);const ok=fitImg(c,image(doc.assets.giulia),{w:g.w,h:g.h});c.restore();if(ok){c.restore();return}}
- // Indicative placeholder only: not canonical Giulia artwork
- const cloth=seasons[season(doc.month)];
- c.fillStyle='#39251e';for(let i=0;i<13;i++){c.beginPath();c.ellipse(x+g.w*.48+Math.cos(i)*g.w*.18,y+g.h*.29+Math.sin(i*1.7)*g.h*.13,g.w*.22,g.h*.19,i/8,0,Math.PI*2);c.fill()}
- c.fillStyle='#ca8a62';c.beginPath();c.ellipse(x+g.w*.49,y+g.h*.26,g.w*.23,g.h*.21,-.08,0,Math.PI*2);c.fill();
- c.strokeStyle='#ecdcb9';c.lineWidth=4;for(let j of [-1,1]){c.beginPath();c.moveTo(x+g.w*(.49+j*.04),y+g.h*.23);for(let i=0;i<8;i++){const a=i*Math.PI/4;c.lineTo(x+g.w*(.49+j*.04)+Math.cos(a)*g.w*.1,y+g.h*.23+Math.sin(a)*g.h*.08)}c.closePath();c.stroke()}
- c.fillStyle=cloth.coat;roundRect(c,x+g.w*.17,y+g.h*.53,g.w*.65,g.h*.47,42,cloth.coat);
- roundRect(c,x+g.w*.24,y+g.h*.52,g.w*.55,25,12,cloth.scarf);c.restore();
+function island(c,key,i){
+ const geom=doc.geometry[key],asset=doc.assets.islands[i];
+ if(!asset){if(c===ctx)missingAsset(c,geom,'ISOLA '+(i+1)+' · PNG KURA');return}
+ const im=image(asset);if(!im?.complete||!im?.naturalWidth)return;
+ c.save();c.translate(geom.x+geom.w/2,geom.y+geom.h/2);c.rotate(geom.angle*Math.PI/180);
+ const width=geom.w,height=geom.h;
+ // The paper-cut silhouette comes from the transparent source artwork, never a generic mask.
+ const k=Math.min(width/im.naturalWidth,height/im.naturalHeight);
+ c.drawImage(im,-im.naturalWidth*k/2,-im.naturalHeight*k/2,im.naturalWidth*k,im.naturalHeight*k);
+ c.restore();
+}
+function drawGiulia(c){
+ const g=doc.geometry.giulia;
+ if(!doc.assets.giulia){if(c===ctx)missingAsset(c,g,'GIULIA · ASSET CANONICO');return}
+ const im=image(doc.assets.giulia);if(!im?.complete||!im.naturalWidth)return;
+ c.save();c.translate(g.x+g.w/2,g.y+g.h/2);c.rotate(g.angle*Math.PI/180);
+ const ratio=Math.min(g.w/im.naturalWidth,g.h/im.naturalHeight);
+ c.drawImage(im,-im.naturalWidth*ratio/2,-im.naturalHeight*ratio/2,im.naturalWidth*ratio,im.naturalHeight*ratio);
+ c.restore();
 }
 function drawTitle(c){
- const g=doc.geometry.fixedTitle;
- if(doc.assets.fixedTitle){drawMove(c,'fixedTitle',o=>{c.save();c.translate(-o.w/2,-o.h/2);fitImg(c,image(doc.assets.fixedTitle),o);c.restore()});return}c.save();c.translate(g.x+g.w/2,g.y+g.h/2);c.rotate(g.angle*Math.PI/180);
- const x=-g.w/2,y=-g.h/2;rag(c,x+5,y+4,g.w-10,g.h*.56,'#f6e9d9',10);
- rag(c,x+g.w*.17,y+g.h*.51,g.w*.64,g.h*.49,'#eab039',13);
- centerText(c,'3 VIAGGI',0,y+g.h*.31,93,'#103a2a');
- centerText(c,'da fare a',0,y+g.h*.76,78,'#103a2a',true);
+ const g=doc.geometry.fixedTitle,asset=doc.assets.fixedTitle;
+ if(!asset){if(c===ctx)missingAsset(c,g,'TITOLO MASTER · PNG');return}
+ const im=image(asset);if(!im?.complete||!im.naturalWidth)return;
+ c.save();c.translate(g.x+g.w/2,g.y+g.h/2);c.rotate(g.angle*Math.PI/180);
+ const scale=Math.min(g.w/im.naturalWidth,g.h/im.naturalHeight);
+ c.drawImage(im,-im.naturalWidth*scale/2,-im.naturalHeight*scale/2,im.naturalWidth*scale,im.naturalHeight*scale);
  c.restore();
 }
 function drawMove(c,key,fn){const g=doc.geometry[key];c.save();c.translate(g.x+g.w/2,g.y+g.h/2);c.rotate(g.angle*Math.PI/180);fn(g);c.restore()}
 function coverRender(c=ctx,selection=true){
- c.clearRect(0,0,CW,CH);c.fillStyle='#08251a';c.fillRect(0,0,CW,CH);noise(c);
+ c.clearRect(0,0,CW,CH);c.fillStyle='#07251a';c.fillRect(0,0,CW,CH);noise(c);
  for(let i=0;i<2;i++)island(c,'island'+(i+1),i);
- // brand: original logo required; placeholder text shown until uploaded
- drawMove(c,'logo',g=>{if(doc.assets.logo){c.save();c.translate(-g.w/2,-g.h/2);fitImg(c,image(doc.assets.logo),g);c.restore()}else{centerText(c,'KURA',0,-20,74,'#fff1e0');centerText(c,'V I A G G I',0,30,27,'#fff1e0')}});
+ const logo=doc.geometry.logo;
+ if(doc.assets.logo){drawMove(c,'logo',g=>{c.save();c.translate(-g.w/2,-g.h/2);fitImg(c,image(doc.assets.logo),g);c.restore()})}
+ else if(c===ctx)missingAsset(c,logo,'LOGO KURA ORIGINALE');
  drawTitle(c);
  drawMove(c,'month',g=>centerText(c,monthNames[doc.month],0,0,doc.type.monthSize,'#fff0df'));
- drawMove(c,'strap',g=>{rag(c,-g.w/2,-g.h/2,g.w,g.h,'#a93b28',36);centerText(c,'(SENZA OVERTOURISM)',0,0,42,'#fdf0e5',true)});
- drawMove(c,'year',g=>{centerText(c,String(doc.year),0,-12,doc.type.yearSize,'#fff0df',true);c.strokeStyle='#efbb44';c.lineWidth=8;c.beginPath();c.moveTo(-55,19);c.quadraticCurveTo(0,11,67,15);c.stroke()});
+ if(doc.assets.strap){drawMove(c,'strap',g=>{c.save();c.translate(-g.w/2,-g.h/2);fitImg(c,image(doc.assets.strap),g);c.restore()})}
+ else if(c===ctx)missingAsset(c,doc.geometry.strap,'CARTIGLIO MASTER');
+ drawMove(c,'year',g=>{c.save();c.textAlign='center';c.textBaseline='middle';c.fillStyle='#f6ecdc';c.font='700 '+doc.type.yearSize+'px Caveat,cursive';c.fillText(String(doc.year),0,-9);c.strokeStyle='#e9b445';c.lineWidth=7;c.beginPath();c.moveTo(-50,20);c.quadraticCurveTo(0,10,62,15);c.stroke();c.restore()});
  island(c,'island3',2);drawGiulia(c);
- if(selection){const g=doc.geometry[selected];if(g){c.save();c.strokeStyle='#e4b15d';c.lineWidth=3;c.setLineDash([8,6]);c.translate(g.x+g.w/2,g.y+g.h/2);c.rotate(g.angle*Math.PI/180);c.strokeRect(-g.w/2,-g.h/2,g.w,g.h);c.restore()}}
+ if(selection&&!FIXED_KEYS.has(selected)){const g=doc.geometry[selected];if(g){c.save();c.strokeStyle='#e7b76d';c.lineWidth=2;c.setLineDash([12,6]);c.translate(g.x+g.w/2,g.y+g.h/2);c.rotate(g.angle*Math.PI/180);c.strokeRect(-g.w/2,-g.h/2,g.w,g.h);c.restore()}}
 }
-function render(){if(!ctx)return;coverRender();$('coverMonth').value=String(doc.month);$('coverYear').value=doc.year;$('coverSeason').textContent=season(doc.month);$('coverDest1').value=doc.destinations[0]||'';$('coverDest2').value=doc.destinations[1]||'';$('coverDest3').value=doc.destinations[2]||'';$('coverSide').value=doc.giuliaSide;updateSelectedControls()}
+function render(){if(!ctx)return;coverRender();const missing=validateCover();const el=$('coverValidation');if(el)el.textContent=missing.length?'Mancano: '+missing.join(' · '):'Asset presenti. Controlla la coerenza visiva prima di esportare.';const exportBtn=$('coverExport');if(exportBtn){exportBtn.disabled=missing.length>0;exportBtn.title=missing.length?missing.join(' · '):'Esporta PNG'}$('coverMonth').value=String(doc.month);$('coverYear').value=doc.year;$('coverSeason').textContent=season(doc.month);$('coverDest1').value=doc.destinations[0]||'';$('coverDest2').value=doc.destinations[1]||'';$('coverDest3').value=doc.destinations[2]||'';$('coverSide').value=doc.giuliaSide;updateSelectedControls()}
 function point(e){const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)*CW/r.width,y:(e.clientY-r.top)*CH/r.height}}
-function hit(p){for(const key of ['giulia','island3','month','strap','fixedTitle','year','logo','island2','island1']){const g=doc.geometry[key];if(p.x>=g.x&&p.x<=g.x+g.w&&p.y>=g.y&&p.y<=g.y+g.h)return key}return null}
+function hit(p){for(const key of ['giulia','island3','island2','island1']){const g=doc.geometry[key];if(p.x>=g.x&&p.x<=g.x+g.w&&p.y>=g.y&&p.y<=g.y+g.h)return key}return null}
 function updateSelectedControls(){const g=doc.geometry[selected];if(!g)return;$('coverSelected').textContent=selected;$('coverSize').value=Math.round(g.w);$('coverRotate').value=g.angle}
 function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),10000)}
-function exportPNG(){const off=document.createElement('canvas');off.width=CW;off.height=CH;coverRender(off.getContext('2d'),false);off.toBlob(b=>download(b,'KURA_COVER_'+monthNames[doc.month]+'_'+doc.year+'.png'))}
+function validateCover(){const errs=[];for(const k of REQUIRED_COVER_ASSETS)if(!doc.assets[k])errs.push(k);for(let i=0;i<3;i++){if(!doc.assets.islands[i])errs.push('isola '+(i+1));if(!doc.destinations[i]?.trim())errs.push('destinazione '+(i+1))}if(!(doc.month>=0&&doc.month<=11))errs.push('mese');if(!(doc.year>=2025&&doc.year<=2100))errs.push('anno');return errs}
+function exportPNG(){const errs=validateCover();if(errs.length){alert('Per una copertina KURA servono: '+errs.join(', '));return}const off=document.createElement('canvas');off.width=CW;off.height=CH;coverRender(off.getContext('2d'),false);off.toBlob(b=>download(b,'KURA_COVER_'+monthNames[doc.month]+'_'+doc.year+'.png'))}
 function setImage(file,key,index){if(!file)return;if(!file.type.startsWith('image/')){alert('Serve un file immagine');return}const r=new FileReader();r.onload=()=>{if(key==='islands')doc.assets.islands[index]=r.result;else doc.assets[key]=r.result;save();render()};r.readAsDataURL(file)}
 function uiHTML(){return `<section class="panel" id="kuraCoverPanel" style="padding:18px;margin-top:12px"><div class="eyebrow">Serie ufficiale 3 viaggi</div><h2>Copertine KURA</h2><p class="hint">Master 4:5: tre isole, logo, blocchi centrali fissi e Giulia indipendente. Trascina gli elementi sull'anteprima e modifica i valori qui.</p>
  <div class="dual"><div class="field"><label>Mese</label><select id="coverMonth">${monthNames.map((m,i)=>'<option value="'+i+'">'+m+'</option>').join('')}</select></div><div class="field"><label>Anno</label><input id="coverYear" type="number" min="2025" max="2100"/></div></div>
@@ -92,12 +104,12 @@ function uiHTML(){return `<section class="panel" id="kuraCoverPanel" style="padd
  <div class="section-title">Immagini modificabili</div>
  <p class="hint">Per rispettare la Bible carica le tre illustrazioni papercut e Giulia canonica come PNG trasparenti. Le anteprime segnaposto non sono asset KURA definitivi.</p>
  <div class="field"><label>Logo KURA originale</label><input id="coverLogoFile" type="file" accept="image/png,image/webp,image/svg+xml"/></div>
- <div class="field"><label>Giulia canonica</label><input id="coverGiuliaFile" type="file" accept="image/png,image/webp"/></div><div class="field"><label>Titolo fisso PNG trasparente (3 VIAGGI / da fare a)</label><input id="coverFixedFile" type="file" accept="image/png,image/webp"/></div>
+ <div class="field"><label>Giulia canonica</label><input id="coverGiuliaFile" type="file" accept="image/png,image/webp"/></div><div class="field"><label>Cartiglio originale (SENZA OVERTOURISM) · PNG trasparente</label><input id="coverStrapFile" type="file" accept="image/png,image/webp"/></div><div class="field"><label>Titolo fisso PNG trasparente (3 VIAGGI / da fare a)</label><input id="coverFixedFile" type="file" accept="image/png,image/webp"/></div>
  ${[1,2,3].map(i=>'<div class="field"><label>Isola '+i+'</label><input id="coverIsland'+i+'" type="file" accept="image/png,image/webp,image/svg+xml"/></div>').join('')}
  <div class="section-title">Livello selezionato: <span id="coverSelected">month</span></div>
  <div class="field"><label>Larghezza</label><input id="coverSize" type="range" min="60" max="1050" step="5"/></div>
  <div class="field"><label>Rotazione</label><input id="coverRotate" type="range" min="-35" max="35" step="1"/></div>
- <div class="compact-actions"><button id="coverExport" class="btn primary">Esporta PNG</button><button id="coverExportJSON" class="btn flat">Esporta progetto</button><label class="btn file-label">Importa JSON<input id="coverImportJSON" type="file" accept=".json,application/json"/></label></div>
+ <div class="softbox orange" role="status" id="coverValidation" style="font-size:11px;line-height:1.6">Verifica asset master</div><div class="compact-actions"><button id="coverExport" class="btn primary">Esporta PNG</button><button id="coverExportJSON" class="btn flat">Esporta progetto</button><label class="btn file-label">Importa JSON<input id="coverImportJSON" type="file" accept=".json,application/json"/></label></div>
  <p class="hint"><span id="coverStatus">Salvato</span> · Il progetto copertina viene salvato nel browser separatamente dalle pagine interne.</p></section>`}
 function setup(){
  const tabs=document.querySelector('.tabs'),workspace=document.querySelector('.shell');if(!tabs||!workspace)return;
@@ -119,6 +131,7 @@ function setup(){
  $('coverSide').onchange=e=>{const side=e.target.value;if(doc.giuliaSide!==side){const g=doc.geometry.giulia;g.x=CW-g.x-g.w;doc.giuliaSide=side;later();render()}};
  $('coverLogoFile').onchange=e=>setImage(e.target.files[0],'logo');
  $('coverGiuliaFile').onchange=e=>setImage(e.target.files[0],'giulia');
+ $('coverStrapFile').onchange=e=>setImage(e.target.files[0],'strap');
  $('coverFixedFile').onchange=e=>setImage(e.target.files[0],'fixedTitle');
  $('coverSize').oninput=e=>{doc.geometry[selected].w=+e.target.value;later();render()};
  $('coverRotate').oninput=e=>{doc.geometry[selected].angle=+e.target.value;later();render()};
@@ -127,6 +140,6 @@ function setup(){
  $('coverImportJSON').onchange=async e=>{try{const obj=JSON.parse(await e.target.files[0].text());doc=clone(obj.cover||obj);if(!doc.geometry)throw Error('Missing geometry');save();render()}catch(err){alert('Progetto non valido: '+err.message)}};
  load();render();
 }
-window.KURA_COVER_MCP={schemaVersion:1,get:()=>clone(doc),set:(patch)=>{if(!doc)load();for(const key of ['month','year','destinations','giuliaSide','seasonHint'])if(Object.prototype.hasOwnProperty.call(patch,key))doc[key]=clone(patch[key]);if(patch.geometry)for(const[k,g]of Object.entries(patch.geometry))if(doc.geometry[k])Object.assign(doc.geometry[k],g);later();render();return clone(doc)},setImage:(key,dataURL,index)=>{if(key==='islands')doc.assets.islands[index]=dataURL;else doc.assets[key]=dataURL;later();render()},exportJSON:()=>JSON.stringify({format:'KURA_COVER_V1',cover:doc})};
+window.KURA_COVER_MCP={schemaVersion:2,get:()=>clone(doc),validate:()=>{if(!doc)load();return{valid:validateCover().length===0,missing:validateCover()}},set:(patch)=>{if(!doc)load();for(const key of ['month','year','destinations','giuliaSide','seasonHint'])if(Object.prototype.hasOwnProperty.call(patch,key))doc[key]=clone(patch[key]);if(patch.geometry)for(const[k,g]of Object.entries(patch.geometry))if(doc.geometry[k])Object.assign(doc.geometry[k],g);later();render();return clone(doc)},setImage:(key,dataURL,index)=>{if(key==='islands')doc.assets.islands[index]=dataURL;else doc.assets[key]=dataURL;later();render()},exportJSON:()=>JSON.stringify({format:'KURA_COVER_V1',cover:doc})};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
 })();
