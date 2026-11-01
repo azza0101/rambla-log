@@ -1,6 +1,6 @@
-/* KURA Editor PWA · scoped to /kura-editor/ · build 20261101a2b0 */
+/* KURA Editor PWA · scoped to /kura-editor/ · build 20261101b2c0 */
 'use strict';
-const CACHE='kura-editor-20261101a2b0';
+const CACHE='kura-editor-20261101b2c0';
 const FILES=["./","./index.html","./editor-v2.js?v=2.0.0","./editor-v2.css?v=2.0.0","./mcp-contract.json","./manifest.webmanifest","./version.json","./icon-192.png","./icon-512.png","./assets/sticker_map.png","./assets/sticker_berries.png","./assets/sticker_stamp.png","./assets/sfondo_3.jpg","./assets/postit_4.png","./assets/postit_1.png","./assets/pennellata_3.png","./assets/sticker_olive.png","./assets/sticker_monstera.png","./assets/sticker_tape.png","./assets/pennellata_1.png","./assets/sfondo_4.jpg","./assets/cartolina_kenrokuen.png","./assets/sticker_compass.png","./assets/sfondo_1.jpg","./assets/pennellata_2.png","./assets/sticker_camera.png","./assets/sfondo_2.jpg","./assets/postit_3.png","./assets/giulia_kanazawa.png","./assets/postit_2.png"];
 self.addEventListener('install',event=>{event.waitUntil((async()=>{const cache=await caches.open(CACHE);await cache.addAll(FILES);await self.skipWaiting()})())});
 self.addEventListener('activate',event=>{event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k.startsWith('kura-editor-')&&k!==CACHE).map(k=>caches.delete(k)));await self.clients.claim()})())});
