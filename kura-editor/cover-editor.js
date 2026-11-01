@@ -11,7 +11,7 @@ const $=id=>document.getElementById(id);
 const clone=x=>JSON.parse(JSON.stringify(x));
 const id=()=>Math.random().toString(36).slice(2,10);
 const assets=new Map();
-function coverDefaults(){return {id:id(),name:'Copertina',month:10,year:2026,destinations:['Valle del Vipacco','Maiorca','Kruger'],giuliaSide:'right',seasonHint:'auto',assets:{logo:null,giulia:null,islands:[null,null,null]},geometry:{
+function coverDefaults(){return {id:id(),name:'Copertina',month:10,year:2026,destinations:['Valle del Vipacco','Maiorca','Kruger'],giuliaSide:'right',seasonHint:'auto',assets:{logo:null,giulia:null,fixedTitle:null,islands:[null,null,null]},geometry:{
  island1:{x:26,y:83,w:515,h:400,angle:-3},island2:{x:558,y:85,w:493,h:395,angle:4},island3:{x:35,y:937,w:626,h:346,angle:-2},
  giulia:{x:772,y:913,w:281,h:400,angle:0},
  fixedTitle:{x:229,y:502,w:622,h:224,angle:-2},
@@ -44,7 +44,7 @@ function island(c,key,i){const g=doc.geometry[key];c.save();c.translate(g.x+g.w/
  c.restore();c.restore();
 }
 function drawGiulia(c){const g=doc.geometry.giulia;c.save();c.translate(g.x+g.w/2,g.y+g.h/2);c.rotate(g.angle*Math.PI/180);const x=-g.w/2,y=-g.h/2;
- if(doc.assets.giulia&&fitImg(c,image(doc.assets.giulia),{w:g.w,h:g.h})){c.restore();return}
+ if(doc.assets.giulia){c.save();c.translate(-g.w/2,-g.h/2);const ok=fitImg(c,image(doc.assets.giulia),{w:g.w,h:g.h});c.restore();if(ok){c.restore();return}}
  // Indicative placeholder only: not canonical Giulia artwork
  const cloth=seasons[season(doc.month)];
  c.fillStyle='#39251e';for(let i=0;i<13;i++){c.beginPath();c.ellipse(x+g.w*.48+Math.cos(i)*g.w*.18,y+g.h*.29+Math.sin(i*1.7)*g.h*.13,g.w*.22,g.h*.19,i/8,0,Math.PI*2);c.fill()}
@@ -54,7 +54,8 @@ function drawGiulia(c){const g=doc.geometry.giulia;c.save();c.translate(g.x+g.w/
  roundRect(c,x+g.w*.24,y+g.h*.52,g.w*.55,25,12,cloth.scarf);c.restore();
 }
 function drawTitle(c){
- const g=doc.geometry.fixedTitle;c.save();c.translate(g.x+g.w/2,g.y+g.h/2);c.rotate(g.angle*Math.PI/180);
+ const g=doc.geometry.fixedTitle;
+ if(doc.assets.fixedTitle){drawMove(c,'fixedTitle',o=>fitImg(c,image(doc.assets.fixedTitle),o));return}c.save();c.translate(g.x+g.w/2,g.y+g.h/2);c.rotate(g.angle*Math.PI/180);
  const x=-g.w/2,y=-g.h/2;rag(c,x+5,y+4,g.w-10,g.h*.56,'#f6e9d9',10);
  rag(c,x+g.w*.17,y+g.h*.51,g.w*.64,g.h*.49,'#eab039',13);
  centerText(c,'3 VIAGGI',0,y+g.h*.31,93,'#103a2a');
@@ -91,7 +92,7 @@ function uiHTML(){return `<section class="panel" id="kuraCoverPanel" style="padd
  <div class="section-title">Immagini modificabili</div>
  <p class="hint">Per rispettare la Bible carica le tre illustrazioni papercut e Giulia canonica come PNG trasparenti. Le anteprime segnaposto non sono asset KURA definitivi.</p>
  <div class="field"><label>Logo KURA originale</label><input id="coverLogoFile" type="file" accept="image/png,image/webp,image/svg+xml"/></div>
- <div class="field"><label>Giulia canonica</label><input id="coverGiuliaFile" type="file" accept="image/png,image/webp"/></div>
+ <div class="field"><label>Giulia canonica</label><input id="coverGiuliaFile" type="file" accept="image/png,image/webp"/></div><div class="field"><label>Titolo fisso PNG trasparente (3 VIAGGI / da fare a)</label><input id="coverFixedFile" type="file" accept="image/png,image/webp"/></div>
  ${[1,2,3].map(i=>'<div class="field"><label>Isola '+i+'</label><input id="coverIsland'+i+'" type="file" accept="image/png,image/webp,image/svg+xml"/></div>').join('')}
  <div class="section-title">Livello selezionato: <span id="coverSelected">month</span></div>
  <div class="field"><label>Larghezza</label><input id="coverSize" type="range" min="60" max="1050" step="5"/></div>
@@ -118,6 +119,7 @@ function setup(){
  $('coverSide').onchange=e=>{const side=e.target.value;if(doc.giuliaSide!==side){const g=doc.geometry.giulia;g.x=CW-g.x-g.w;doc.giuliaSide=side;later();render()}};
  $('coverLogoFile').onchange=e=>setImage(e.target.files[0],'logo');
  $('coverGiuliaFile').onchange=e=>setImage(e.target.files[0],'giulia');
+ $('coverFixedFile').onchange=e=>setImage(e.target.files[0],'fixedTitle');
  $('coverSize').oninput=e=>{doc.geometry[selected].w=+e.target.value;later();render()};
  $('coverRotate').oninput=e=>{doc.geometry[selected].angle=+e.target.value;later();render()};
  $('coverExport').onclick=exportPNG;
