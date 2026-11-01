@@ -284,13 +284,13 @@ async function switchProject(id){
  let pkg=await dbGet('kura:v2:project:'+id);
  if(!pkg?.pages?.length){emitToast('Progetto non disponibile nel browser');return}
  currentProjectId=id;
- pages=pkg.pages.map(normalizePage).map(ensurePage);current=0;selected=null;activeKey=null;
+ pages=pkg.pages.map(normalizePage).map(ensurePage);current=0;selected=null;activeKey=null;history=[];future=[];updateHistory();
  for(const [k,v]of Object.entries(pkg.customAssets||{}))if(k.startsWith('custom_')&&typeof v==='string'&&v.startsWith('data:image/')){ASSETS[k]=v;imageCache.delete(k);assetImage(k)}
  shownPage=null;refreshAll();showProjectOptions();await dbPut('kura:v2:active',id);emitToast('Progetto aperto');
 }
 async function newProject(){
  clearTimeout(saveTimer);await persistNow();const id=uuid();
- pIndex.push({id:id,name:'Nuovo carosello',updatedAt:Date.now()});currentProjectId=id;pages=[ensurePage(makePage(0))];current=0;selected=null;activeKey=null;shownPage=null;
+ pIndex.push({id:id,name:'Nuovo carosello',updatedAt:Date.now()});currentProjectId=id;pages=[ensurePage(makePage(0))];current=0;selected=null;activeKey=null;shownPage=null;history=[];future=[];updateHistory();
  page().background=4+(hashSeed(id)%8);refreshAll();showProjectOptions();await persistNow();emitToast('Nuovo progetto creato')
 }
 function projectPanel(){
@@ -300,8 +300,8 @@ function projectPanel(){
  $('#kuraProjectSelect').onchange=function(e){switchProject(e.target.value)};
  $('#kuraProjectNew').onclick=newProject;
  $('#kuraProjectRename').onclick=async function(){const item=pIndex.find(x=>x.id===currentProjectId);if(!item)return;const next=prompt('Nome progetto',item.name);if(!next?.trim())return;item.name=next.trim().slice(0,80);showProjectOptions();scheduleSave()};
- $('#kuraProjectDuplicate').onclick=async function(){await persistNow();const source=exportProject(),item=pIndex.find(x=>x.id===currentProjectId);const id=uuid();currentProjectId=id;pIndex.push({id:id,name:(item?.name||'Carosello')+' · copia',updatedAt:Date.now()});pages=source.pages.map(normalizePage).map(ensurePage);for(const p of pages)p.id=uuid();current=0;selected=null;shownPage=null;refreshAll();showProjectOptions();await persistNow();emitToast('Copia creata')};
- $('#kuraProjectDelete').onclick=async function(){if(pIndex.length===1){emitToast('Mantieni almeno un progetto');return}const item=pIndex.find(x=>x.id===currentProjectId);if(!confirm('Eliminare il progetto "'+item.name+'"?'))return;await dbDelete('kura:v2:project:'+currentProjectId);pIndex=pIndex.filter(x=>x.id!==currentProjectId);currentProjectId=pIndex[0].id;const target=await dbGet('kura:v2:project:'+currentProjectId);pages=target?.pages?.map(normalizePage).map(ensurePage)||[newDemo()];current=0;selected=null;shownPage=null;refreshAll();showProjectOptions();await persistNow()};
+ $('#kuraProjectDuplicate').onclick=async function(){await persistNow();const source=exportProject(),item=pIndex.find(x=>x.id===currentProjectId);const id=uuid();currentProjectId=id;pIndex.push({id:id,name:(item?.name||'Carosello')+' · copia',updatedAt:Date.now()});pages=source.pages.map(normalizePage).map(ensurePage);for(const p of pages)p.id=uuid();current=0;selected=null;shownPage=null;history=[];future=[];updateHistory();refreshAll();showProjectOptions();await persistNow();emitToast('Copia creata')};
+ $('#kuraProjectDelete').onclick=async function(){if(pIndex.length===1){emitToast('Mantieni almeno un progetto');return}const item=pIndex.find(x=>x.id===currentProjectId);if(!confirm('Eliminare il progetto "'+item.name+'"?'))return;await dbDelete('kura:v2:project:'+currentProjectId);pIndex=pIndex.filter(x=>x.id!==currentProjectId);currentProjectId=pIndex[0].id;const target=await dbGet('kura:v2:project:'+currentProjectId);pages=target?.pages?.map(normalizePage).map(ensurePage)||[newDemo()];current=0;selected=null;shownPage=null;history=[];future=[];updateHistory();refreshAll();showProjectOptions();await persistNow()};
  $('#kuraProjectExport').onclick=function(){download(jsonFile(),'KURA_PROGETTO_'+fileSafe(pIndex.find(x=>x.id===currentProjectId)?.name||'carosello')+'.json')};
 }
 async function initManager(){
