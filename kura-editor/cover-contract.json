@@ -1,0 +1,63 @@
+{
+  "format": "KURA_COVER_V1",
+  "api": "window.KURA_COVER_MCP",
+  "version": "2.3.0",
+  "master": "GOLD MASTER NOVEMBRE 2026",
+  "referenceWarning": "Immagini reference forniscono vincoli di composizione; non usarle come illustrazioni statiche di default.",
+  "size": {
+    "width": 1080,
+    "height": 1350,
+    "aspectRatio": "4:5"
+  },
+  "immutable": [
+    "dark forest green paper texture background",
+    "original KURA logo top center",
+    "exactly three torn-paper destination islands two upper and one lower",
+    "fixed title block 3 VIAGGI + da fare a on ivory and mustard torn paper",
+    "month Montserrat Black ivory, no month banner",
+    "(SENZA OVERTOURISM) ivory handmade uppercase on terracotta strip",
+    "handwritten ivory year underlined mustard"
+  ],
+  "requiredInputs": [
+    "month",
+    "year",
+    "destinations[0]",
+    "destinations[1]",
+    "destinations[2]"
+  ],
+  "variable": [
+    "month",
+    "year",
+    "destinations",
+    "geometry of three islands",
+    "giulia side and positioning",
+    "giulia seasonal clothing",
+    "decorations"
+  ],
+  "assets": {
+    "logo": "Original artwork, not to be reconstructed; user uploads PNG",
+    "fixedTitle": "Transparent PNG extracted from November master; upload via fixed title field",
+    "giulia": "Canon character art PNG with octagonal glasses; user/MCP supplied",
+    "islands": "Three destination-specific 2D papercut transparent PNG/SVGs"
+  },
+  "operation": {
+    "get": "window.KURA_COVER_MCP.get()",
+    "set": "window.KURA_COVER_MCP.set({month,year,destinations,giuliaSide,geometry})",
+    "setImage": "window.KURA_COVER_MCP.setImage('islands',dataURL,index) or .setImage('giulia'|'logo'|'fixedTitle',dataURL)",
+    "exportJSON": "window.KURA_COVER_MCP.exportJSON()"
+  },
+  "geometryUnit": "1080x1350 canvas pixels; x,y,w,h,angle",
+  "validation": [
+    "exactly three nonempty destinations",
+    "month and year present and valid",
+    "three island assets provided",
+    "Giulia canonical art asset provided",
+    "logo is original uploaded asset",
+    "fixed title transparent PNG provided",
+    "no month cartiglio",
+    "three islands with no white frames",
+    "no foreground decoration overlapping typography",
+    "adequate negative space"
+  ],
+  "note": "Current cover workshop is an editable layout prototype and requires canon illustration assets for final on-brand export. The brush uses a fallback unless Feeling Passionate is licensed and hosted."
+}
