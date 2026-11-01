@@ -2,14 +2,14 @@
    Expects the v1 editor's globals in index.html. No external runtime or API keys. */
 'use strict';
 (function(){
-const V2_VERSION='2.2.0';
+const V2_VERSION='2.4.0';
 const NOTE_LABELS={label_base:'Base',label_duration:'Durata',label_highlight:'Da non perdere',label_tips:'Da sapere'};
 const STANDARD=['eyebrow','head1','body1','head2','body2','label_base','base','label_duration','duration','label_highlight','highlight','label_tips','tips'];
 const PAPER=[{"id":"basic_1","name":"Basic 1 · Avorio","season":"basic","colors":["#f7f0e4","#f2e8d9"],"fibers":"#b4a692","direction":0,"tags":["basic","basic 1 · avorio"]},{"id":"basic_2","name":"Basic 2 · Salvia","season":"basic","colors":["#e9eee4","#f5f3e9"],"fibers":"#a0a995","direction":1,"tags":["basic","basic 2 · salvia"]},{"id":"basic_3","name":"Basic 3 · Sabbia","season":"basic","colors":["#f3e7dc","#f9f2e9"],"fibers":"#bc9b89","direction":2,"tags":["basic","basic 3 · sabbia"]},{"id":"basic_4","name":"Basic 4 · Perla","season":"basic","colors":["#f1f1eb","#e6ece5"],"fibers":"#aeb7ae","direction":3,"tags":["basic","basic 4 · perla"]},{"id":"spring_1","name":"Primavera 1 · Boccioli","season":"spring","colors":["#f5efe4","#dce7d7"],"fibers":"#98b689","direction":0,"tags":["spring","primavera 1 · boccioli"]},{"id":"spring_2","name":"Primavera 2 · Botanica","season":"spring","colors":["#edf2e3","#d5e2c7"],"fibers":"#9bb88d","direction":1,"tags":["spring","primavera 2 · botanica"]},{"id":"spring_3","name":"Primavera 3 · Luce","season":"spring","colors":["#f8f2df","#e9eedb"],"fibers":"#aabf9e","direction":2,"tags":["spring","primavera 3 · luce"]},{"id":"summer_1","name":"Estate 1 · Mediterranea","season":"summer","colors":["#f9efd9","#dfe9eb"],"fibers":"#91b0b4","direction":3,"tags":["summer","estate 1 · mediterranea"]},{"id":"summer_2","name":"Estate 2 · Sabbia","season":"summer","colors":["#f4ead6","#efd7b4"],"fibers":"#cfaa78","direction":0,"tags":["summer","estate 2 · sabbia"]},{"id":"summer_3","name":"Estate 3 · Agrumi","season":"summer","colors":["#fff1d9","#f2d59c"],"fibers":"#d29c5d","direction":1,"tags":["summer","estate 3 · agrumi"]},{"id":"autumn_1","name":"Autunno 1 · Terracotta","season":"autumn","colors":["#f3e3d7","#d8b59c"],"fibers":"#bd835d","direction":2,"tags":["autumn","autunno 1 · terracotta"]},{"id":"autumn_2","name":"Autunno 2 · Olivato","season":"autumn","colors":["#ece7d5","#c4c59e"],"fibers":"#8d9b68","direction":3,"tags":["autumn","autunno 2 · olivato"]},{"id":"autumn_3","name":"Autunno 3 · Vendemmia","season":"autumn","colors":["#f2e8dc","#c8a88b"],"fibers":"#9a7c66","direction":0,"tags":["autumn","autunno 3 · vendemmia"]},{"id":"winter_1","name":"Inverno 1 · Nebbia","season":"winter","colors":["#eff0ee","#d9dedd"],"fibers":"#9eafac","direction":1,"tags":["winter","inverno 1 · nebbia"]},{"id":"winter_2","name":"Inverno 2 · Bosco","season":"winter","colors":["#e7ece8","#cbd7cf"],"fibers":"#849e90","direction":2,"tags":["winter","inverno 2 · bosco"]},{"id":"winter_3","name":"Inverno 3 · Ghiaccio","season":"winter","colors":["#f1f3f2","#dde5ea"],"fibers":"#a9bfcc","direction":3,"tags":["winter","inverno 3 · ghiaccio"]}];
 const BACKGROUND_PRESETS=PAPER;
 const NEW_STICKERS=[['blossom','Fiori di primavera'],['lavender','Lavanda'],['citrus','Agrumi estivi'],['shell','Conchiglia'],['autumn_leaf','Foglia autunnale'],['grapes','Vendemmia'],['snowflake','Fiocco di neve'],['pine','Ramo di abete'],['ticket','Biglietto di viaggio']];
 for(const p of BACKGROUND_PRESETS){if(p.season!=='basic')ASSETS['sfondo_'+p.id]='./assets/sfondo_'+p.id+'.svg'}
-for(const [key,label] of NEW_STICKERS){ASSETS['sticker_'+key]='./assets/sticker_'+key+'.svg';if(!stickerDefs.some(x=>x[0]===key))stickerDefs.push([key,label])}
+for(const [key,label] of NEW_STICKERS){ASSETS['sticker_'+key]='./assets/sticker_'+key+'.svg?v=2.4.0';if(!stickerDefs.some(x=>x[0]===key))stickerDefs.push([key,label])}
 
 const KURA_SEASONS=[['basic','Basic'],['spring','Primavera'],['summer','Estate'],['autumn','Autunno'],['winter','Inverno']];
 
@@ -261,6 +261,25 @@ const originalAddPage=addPage;
 addPage=function(layout){originalAddPage(layout);ensurePage(page());const used=new Set(pages.slice(Math.max(0,current-3),current).map(x=>x.background));const options=Array.from({length:16},(_,i)=>i).filter(i=>!used.has(i));page().background=options[hashSeed(page().seed)%options.length];page().backgroundId=BACKGROUND_PRESETS[page().background].id;page().seasonHint=BACKGROUND_PRESETS[page().background].season;refreshGalleries();queueRender();scheduleSave()};
 const originalApplySeed=applySeed;
 applySeed=function(seed,random){originalApplySeed(seed,random);selectSeasonBackground(page(),page().seasonHint||'auto');let bg=page().background;if(pages.length>1){const neighbor=pages[current===0?1:current-1];if(bg===neighbor.background)selectSeasonBackground(page(),page().seasonHint||'auto')}refreshGalleries();queueRender();scheduleSave()};
+const originalStickerGrid=refreshStickerGrid;
+refreshStickerGrid=function(){
+ const root=$('#stickerGrid');if(!root)return;root.innerHTML='';
+ const all=[['basic','ORIGINALI KURA',stickerDefs.filter(x=>!NEW_STICKERS.some(n=>n[0]===x[0]))],
+ ['spring','PRIMAVERA',NEW_STICKERS.filter(x=>['blossom','lavender'].includes(x[0]))],
+ ['summer','ESTATE',NEW_STICKERS.filter(x=>['citrus','shell'].includes(x[0]))],
+ ['autumn','AUTUNNO',NEW_STICKERS.filter(x=>['autumn_leaf','grapes'].includes(x[0]))],
+ ['winter','INVERNO',NEW_STICKERS.filter(x=>['snowflake','pine'].includes(x[0]))],
+ ['other','EDITORIALI',NEW_STICKERS.filter(x=>x[0]==='ticket')]];
+ for(const[season,heading,items]of all){
+  const title=document.createElement('div');title.className='kura-sticker-group';title.textContent=heading;
+  title.style.gridColumn='1 / -1';title.style.fontSize='11px';title.style.fontWeight='850';title.style.marginTop='8px';title.style.color='#173d2e';root.appendChild(title);
+  for(const[key,name]of items){
+   const b=document.createElement('button');b.className='sticker-btn';b.type='button';b.title='Aggiungi '+name;b.dataset.stickerId=key;b.dataset.season=season;
+   const im=document.createElement('img');im.alt=name;im.loading='lazy';im.src=ASSETS['sticker_'+key];b.appendChild(im);
+   b.onclick=()=>addSticker(key);root.appendChild(b);
+  }
+ }
+};
 const originalRegenerateDecorations=regenerateDecorations;
 regenerateDecorations=function(addNew){
  originalRegenerateDecorations(addNew);if(!addNew)return;
