@@ -71,6 +71,7 @@ function drawSeasonMark(c,id,kind){
  c.restore();
 }
 function drawKuraBackground(c,index,mini=false){
+ if(index>=4){const asset=assetImage('sfondo_'+BACKGROUND_PRESETS[index].id);if(asset?.complete&&asset.naturalWidth){c.drawImage(asset,0,0,W,H);return}}
  if(index>=4&&!mini){if(!paperCache.has(index)){const image=document.createElement('canvas');image.width=W;image.height=H;drawKuraBackground(image.getContext('2d'),index,true);paperCache.set(index,image)}c.drawImage(paperCache.get(index),0,0,W,H);return}
  if(index<4){const im=assetImage('sfondo_'+(index+1));if(im&&im.complete&&im.naturalWidth)c.drawImage(im,0,0,W,H);else{c.fillStyle='#f7f0e5';c.fillRect(0,0,W,H)}return}
  const art=assetImage('sfondo_'+BACKGROUND_PRESETS[index].id);if(art?.complete&&art.naturalWidth){c.drawImage(art,0,0,W,H);return}
@@ -385,7 +386,7 @@ function safeStylePatch(style){const out={};if(!style||typeof style!=='object')r
 window.KURA_MCP=Object.freeze({
  apiVersion:'2.2',contract:'./mcp-contract.json',
  getProject:function(){return deepClone(exportProject())},
- inspect:function(){return{apiVersion:'2.2',pageIds:pages.map(x=>x.id),editableTextKeys:STANDARD,backgroundCount:16,backgroundPresets:BACKGROUND_PRESETS.map(x=>({id:x.id,name:x.name,season:x.season,tags:x.tags})),backgroundNames:BACKGROUND_PRESETS.map(x=>x.name),layoutIds:LAYOUTS.map(x=>x.id),decorations:stickerDefs.map(x=>({id:x[0],name:x[1]})),actions:['setText','setBackground','setBackgroundId','setSeason','addText','moveElement','setPageName','addPage']}},
+ inspect:function(){return{apiVersion:'2.2',pageIds:pages.map(x=>x.id),editableTextKeys:STANDARD,backgroundCount:16,backgroundPresets:BACKGROUND_PRESETS.map(x=>({id:x.id,name:x.name,season:x.season,tags:x.tags})),backgroundNames:BACKGROUND_PRESETS.map(x=>x.name),layoutIds:LAYOUTS.map(x=>x.id),decorations:stickerDefs.map(x=>({id:x[0],name:x[1]})),actions:['setText','setBackground','setBackgroundId','setSeason','addSticker','addText','moveElement','setPageName','addPage']}},
  applyPatch:function(operations){
   if(!Array.isArray(operations)||operations.length>200)throw Error('Sono necessarie 1-200 operazioni');
   const before=JSON.stringify({pages,current});let count=0;
@@ -396,6 +397,11 @@ window.KURA_MCP=Object.freeze({
    if(op.op==='setBackground'){p.background=safeNumber(op.background,0,15,0);p.backgroundId=BACKGROUND_PRESETS[p.background].id;p.seasonHint=BACKGROUND_PRESETS[p.background].season;count++;continue}
    if(op.op==='setBackgroundId'){const ix=BACKGROUND_PRESETS.findIndex(x=>x.id===op.backgroundId);if(ix<0)throw Error('Sfondo non disponibile: '+op.backgroundId);p.background=ix;p.backgroundId=BACKGROUND_PRESETS[ix].id;p.seasonHint=BACKGROUND_PRESETS[ix].season;count++;continue}
    if(op.op==='setSeason'){selectSeasonBackground(p,op.season||'auto');count++;continue}
+   if(op.op==='addSticker'){
+     const key=String(op.key||'');if(!stickerDefs.some(x=>x[0]===key))throw Error('Decorazione non disponibile: '+key);
+     p.stickers.push({id:uuid(),key:'sticker_'+key,x:safeNumber(op.x,-200,W,870),y:safeNumber(op.y,-200,H,1120),w:safeNumber(op.w,20,900,140),h:0,rot:safeNumber(op.rot,-180,180,0),scale:safeNumber(op.scale,.2,3,1),opacity:1});
+     count++;continue
+   }
    if(op.op==='setPageName'){p.name=String(op.name||'Pagina').slice(0,130);count++;continue}
    if(op.op==='addText'){const id=uuid();const f={id:id,text:String(op.text||'Nuovo testo'),x:safeNumber(op.x,-200,1080,160),y:safeNumber(op.y,-200,1350,560),w:safeNumber(op.w,50,1080,450),h:safeNumber(op.h,25,1350,90),rot:safeNumber(op.rot,-360,360,0),scale:1,opacity:1};p.freeTexts.push(f);p.textStyles['free:'+id]=safeStylePatch(op.style);count++;continue}
    if(op.op==='moveElement'){
