@@ -1,4 +1,4 @@
-# KURA Editor — Carousel v2.0
+# KURA Editor — Carousel v2.2
 
 Web app per caroselli KURA formato 4:5, pubblicata a https://azza0101.github.io/rambla-log/kura-editor/ . Il codice è autonomo dal resto del repository RAMBLA.
 
@@ -6,7 +6,7 @@ Web app per caroselli KURA formato 4:5, pubblicata a https://azza0101.github.io/
 - Clicca direttamente qualsiasi testo effettivamente disegnato sulla tavola per scrivere.
 - Seleziona una parola e usa **B** nella barra flottante o il menu con il tasto destro. I segmenti in grassetto sono memorizzati come `**testo**`, quindi restano leggibili anche da MCP.
 - Trascina **⠿** per spostare, **↻** per ruotare, **↘** per ridimensionare una casella. La toolbar cambia font, dimensione e grassetto.
-- Fino a **12 sfondi**: 4 sfondi originali e 8 varianti di carta procedurale. La scelta è salvata per pagina, anche con i seed.
+- Fino a **16 sfondi**: 4 originali e 12 illustrazioni papercut stagionali (3 primavera, 3 estate, 3 autunno, 3 inverno). La scelta è salvata per pagina, anche con i seed.
 - I 4 layout, i post-it originali, gli sticker, Giulia, il PNG 1080×1350 e lo ZIP delle pagine sono conservati.
 - Da **Pagine**: crea, rinomina, duplica, elimina e riapri progetti. Autosalvataggio locale (IndexedDB, debounce 650ms). **Esporta progetto** come JSON e **Apri JSON** per trasferirlo.
 - Su iPhone: Safari → Condividi → Aggiungi a Home (PWA); autosalvataggio nel browser del dispositivo, non condiviso tra persone.
@@ -30,3 +30,10 @@ Il font Feeling Passionate di Din Studio è proprietario: per renderlo disponibi
 - Le modifiche v1.1 sono recuperabili dal branch `kura-editor-v1.1-backup-2026-11-01`.
 
 **Limiti**: non è una soluzione realtime multiutente; non viene sincronizzata automaticamente su cloud o GitHub. Un post-it con testo stampato direttamente nell'immagine non diventa modificabile senza un asset di carta pulita.
+
+## Release 2.2.0 — Asset stagionali
+- 12 sfondi illustrati SVG su GitHub: sfondo_spring_1..3.svg, sfondo_summer_1..3.svg, sfondo_autumn_1..3.svg, sfondo_winter_1..3.svg; i 4 originali rimangono invariati.
+- 9 nuovi sticker papercut SVG: blossom, lavender, citrus, shell, autumn_leaf, grapes, snowflake, pine, ticket (17 totali).
+- La gallery espone 5 gruppi: Basic, Primavera, Estate, Autunno, Inverno.
+- MCP: utilizzare setBackgroundId e setSeason; addSticker accetta gli ID delle decorazioni e li aggiunge come livelli editabili.
+- Build 20261101d4e0 e cache PWA dedicata; i progetti esistenti sono conservati in IndexedDB.
