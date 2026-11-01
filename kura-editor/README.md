@@ -37,3 +37,9 @@ Il font Feeling Passionate di Din Studio è proprietario: per renderlo disponibi
 - La gallery espone 5 gruppi: Basic, Primavera, Estate, Autunno, Inverno.
 - MCP: utilizzare setBackgroundId e setSeason; addSticker accetta gli ID delle decorazioni e li aggiunge come livelli editabili.
 - Build 20261101d4e0 e cache PWA dedicata; i progetti esistenti sono conservati in IndexedDB.
+
+## 2.4.0 — Identità grafica KURA
+- Rimpiazzati i nove sticker stagionali precedenti con nuovi SVG a più livelli, texture carta, contorni leggermente irregolari e ombre di contatto. Le otto decorazioni originali non sono state toccate.
+- Galleria divisa in Originali, Primavera, Estate, Autunno, Inverno, Editoriali; ogni asset rimane un livello spostabile.
+- Cover editor: rimossi i disegni segnaposto fuori stile, il logo ridisegnato e le false illustrazioni. Master bloccato; i sette asset canonici sono obbligatori per esportare.
+- Il titolo originale deve essere fornito come PNG realmente trasparente e il font proprietario Feeling Passionate non è compreso senza licenza di incorporamento.
