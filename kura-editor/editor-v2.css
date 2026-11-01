@@ -1,0 +1,34 @@
+/* KURA Carousel v2 — editor overlay, isolated from the original template. */
+.stage-inner{isolation:isolate}
+.kura-overlays{position:absolute;left:0;top:0;width:1080px;height:1350px;transform-origin:top left;pointer-events:none;z-index:4}
+.kura-text-frame{position:absolute;transform-origin:center center;pointer-events:none;box-sizing:border-box;border:2px solid transparent;border-radius:2px}
+.kura-text-frame.is-selected{border:2px solid #db7834;box-shadow:0 0 0 2px rgba(255,255,255,.7)}
+.kura-text-edit{position:absolute;inset:0;padding:0;margin:0;border:0;outline:0;background:transparent;color:transparent!important;cursor:text;pointer-events:auto;white-space:pre-wrap;overflow:hidden;overflow-wrap:break-word;word-break:normal;text-align:left;user-select:text;-webkit-user-select:text;-webkit-tap-highlight-color:transparent}
+.kura-text-edit:not(.editing)::selection{background:rgba(235,158,89,.38)}
+.kura-text-edit.editing{color:var(--kura-ink,#173d2e)!important;caret-color:#da7834;box-shadow:inset 0 0 0 1px rgba(255,255,255,.3);background:rgba(253,251,240,.28)}
+.kura-text-edit b,.kura-text-edit strong{font-weight:800}
+.kura-text-frame.is-editing{background:rgba(255,255,255,.14)}
+.kura-manip-handle{display:none;position:absolute;pointer-events:auto;z-index:12;width:36px;height:36px;border-radius:9px;align-items:center;justify-content:center;border:1px solid #d07b38;background:#fffdf7;color:#17503a;font-size:22px;line-height:1;box-shadow:0 3px 12px rgba(0,0,0,.2);touch-action:none;user-select:none}
+.kura-text-frame.is-selected .kura-manip-handle{display:flex}
+.kura-move-handle{top:-42px;left:-2px;cursor:grab}
+.kura-rotate-handle{top:-42px;right:-2px;cursor:crosshair}
+.kura-resize-handle{right:-22px;bottom:-23px;cursor:nwse-resize}
+.kura-selection-toolbar{position:absolute;pointer-events:auto;z-index:30;display:flex;gap:4px;align-items:center;flex-wrap:wrap;max-width:560px;min-height:44px;padding:5px 7px;border-radius:10px;background:#173d2e;box-shadow:0 6px 22px rgba(0,0,0,.2);color:white}
+.kura-selection-toolbar button,.kura-selection-toolbar select,.kura-selection-toolbar input{border-radius:6px;border:1px solid rgba(255,255,255,.28);padding:5px;min-height:29px;font:600 16px Montserrat,Arial,sans-serif;background:#fffdf7;color:#173d2e}
+.kura-selection-toolbar button{min-width:30px;cursor:pointer}
+.kura-selection-toolbar button.is-on{background:#e9b673}
+.kura-selection-toolbar select{width:148px}
+.kura-selection-toolbar input[type=number]{width:66px}
+.kura-selection-toolbar .kura-control-label{font-size:11px;opacity:.8;font-weight:700;letter-spacing:.02em}
+.kura-selection-toolbar .kura-bar-grip{font-weight:900;font-size:14px;opacity:.7;padding:0 4px;cursor:move}
+.kura-context-menu{position:fixed;z-index:1000;background:#fffefa;border:1px solid #e3d8bc;border-radius:12px;padding:7px;min-width:190px;box-shadow:0 10px 32px rgba(0,0,0,.2)}
+.kura-context-menu button{display:block;width:100%;text-align:left;background:none;border:0;border-radius:7px;padding:9px;color:#143e2d;font:700 12px Montserrat,sans-serif}
+.kura-context-menu button:hover{background:#f3e8d4}
+.kura-saved-label{font-size:10px;color:rgba(255,255,255,.8);font-weight:600;white-space:nowrap}
+.kura-project-panel{margin-top:14px;padding:12px;border-radius:13px;background:#f2f5ed;border:1px solid #dce3d8}
+.kura-project-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.kura-project-row select{min-width:0;flex:1;border:1px solid #c9d7c7;border-radius:9px;min-height:39px;padding:6px;background:#fff}
+.kura-bg-procedural{width:58px;height:73px;display:block;border-radius:4px;overflow:hidden}
+.kura-project-panel .hint{margin:7px 0 0}
+.kura-font-alert{border-left:3px solid #c9853a;padding:7px 10px;margin-top:8px;font-size:11px;line-height:1.5;background:#fff7e8}
+@media(max-width:760px){.kura-selection-toolbar{max-width:700px;padding:8px;gap:5px}.kura-selection-toolbar button,.kura-selection-toolbar select,.kura-selection-toolbar input{min-height:36px;font-size:17px}.kura-project-row .btn{min-height:42px}}
