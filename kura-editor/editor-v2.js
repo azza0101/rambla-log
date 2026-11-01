@@ -423,5 +423,12 @@ window.KURA_MCP=Object.freeze({
 });
 window.KURA_V2={version:'2.2.0',drawKuraBackground:drawKuraBackground,paintEditable:paintEditable,paintFreeTexts:paintFreeTexts};
 addV2Controls();initOverlay();
+(function(){
+ const top=document.querySelector('.top-actions');
+ if(top&&!document.getElementById('kuraCoverLaunch')){
+  const link=document.createElement('a');link.id='kuraCoverLaunch';link.href='./covers.html';link.className='btn ghost';link.textContent='✂ Copertine';
+  link.setAttribute('aria-label','Apri editor copertine KURA');top.insertBefore(link,top.querySelector('#topJson')||null);
+ }
+})();
 window.addEventListener('load',function(){initManager();checkHostedFont();});
 })();
