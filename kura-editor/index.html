@@ -313,7 +313,7 @@ function dbGet(k){if(!db)return Promise.resolve(null);return new Promise(resolve
 function dbDelete(k){if(!db)return Promise.resolve(false);return new Promise(resolve=>{try{const t=db.transaction('kv','readwrite');t.objectStore('kv').delete(k);t.oncomplete=()=>resolve(true);t.onerror=()=>resolve(false)}catch{resolve(false)}})}
 function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>dbPut('project',exportProject()),900)}
 window.addEventListener('keydown',e=>{const editing=['TEXTAREA','INPUT'].includes(document.activeElement?.tagName)||!!document.activeElement?.isContentEditable;if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'&&!editing){e.preventDefault();if(e.shiftKey)redo();else undo()}if((e.key==='Delete'||e.key==='Backspace')&&!editing&&selected){e.preventDefault();deleteSelected()}});
-async function start(){pages=[newDemo()];current=0;refreshStickerGrid();await initDb();const saved=await dbGet('project');if(saved?.pages?.length){try{pages=saved.pages.map(normalizePage);for(const[k,v]of Object.entries(saved.customAssets||{}))ASSETS[k]=v;current=0}catch(e){console.warn(e)}}const font=await dbGet('font');if(font?.buf)await installFont(font.buf,true);for(const key of Object.keys(ASSETS))assetImage(key);await Promise.allSettled(Array.from(imageCache.values()).map(im=>im.decode?.().catch(()=>{})||Promise.resolve()));refreshAll();document.fonts.ready.then(queueRender).catch(()=>{});updateHistory();}start();
+async function start(){pages=[newDemo()];current=0;refreshStickerGrid();await initDb();const saved=await dbGet('project');if(saved?.pages?.length){try{pages=saved.pages.map(normalizePage);for(const[k,v]of Object.entries(saved.customAssets||{}))ASSETS[k]=v;current=0}catch(e){console.warn(e)}}const font=await dbGet('font');if(font?.buf)await installFont(font.buf,true);for(const key of Object.keys(ASSETS))assetImage(key);await Promise.allSettled(Array.from(imageCache.values()).map(im=>im.decode?.().catch(()=>{})||Promise.resolve()));refreshAll();document.fonts.ready.then(queueRender).catch(()=>{});updateHistory();}
 
  // Dedicated PWA registration and explicit GitHub Pages update check (same approach as Rambla Log).
 async function kuraUpdateFromGitHub(){
@@ -347,5 +347,6 @@ function initKuraPWA(){
 initKuraPWA();
 </script>
 <script src="./editor-v2.js?v=2.0.0"></script>
+<script>start();</script>
 </body>
 </html>
