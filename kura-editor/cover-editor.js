@@ -55,7 +55,7 @@ function drawGiulia(c){const g=doc.geometry.giulia;c.save();c.translate(g.x+g.w/
 }
 function drawTitle(c){
  const g=doc.geometry.fixedTitle;
- if(doc.assets.fixedTitle){drawMove(c,'fixedTitle',o=>fitImg(c,image(doc.assets.fixedTitle),o));return}c.save();c.translate(g.x+g.w/2,g.y+g.h/2);c.rotate(g.angle*Math.PI/180);
+ if(doc.assets.fixedTitle){drawMove(c,'fixedTitle',o=>{c.save();c.translate(-o.w/2,-o.h/2);fitImg(c,image(doc.assets.fixedTitle),o);c.restore()});return}c.save();c.translate(g.x+g.w/2,g.y+g.h/2);c.rotate(g.angle*Math.PI/180);
  const x=-g.w/2,y=-g.h/2;rag(c,x+5,y+4,g.w-10,g.h*.56,'#f6e9d9',10);
  rag(c,x+g.w*.17,y+g.h*.51,g.w*.64,g.h*.49,'#eab039',13);
  centerText(c,'3 VIAGGI',0,y+g.h*.31,93,'#103a2a');
@@ -67,7 +67,7 @@ function coverRender(c=ctx,selection=true){
  c.clearRect(0,0,CW,CH);c.fillStyle='#08251a';c.fillRect(0,0,CW,CH);noise(c);
  for(let i=0;i<2;i++)island(c,'island'+(i+1),i);
  // brand: original logo required; placeholder text shown until uploaded
- drawMove(c,'logo',g=>{if(doc.assets.logo){fitImg(c,image(doc.assets.logo),g)}else{centerText(c,'KURA',0,-20,74,'#fff1e0');centerText(c,'V I A G G I',0,30,27,'#fff1e0')}});
+ drawMove(c,'logo',g=>{if(doc.assets.logo){c.save();c.translate(-g.w/2,-g.h/2);fitImg(c,image(doc.assets.logo),g);c.restore()}else{centerText(c,'KURA',0,-20,74,'#fff1e0');centerText(c,'V I A G G I',0,30,27,'#fff1e0')}});
  drawTitle(c);
  drawMove(c,'month',g=>centerText(c,monthNames[doc.month],0,0,doc.type.monthSize,'#fff0df'));
  drawMove(c,'strap',g=>{rag(c,-g.w/2,-g.h/2,g.w,g.h,'#a93b28',36);centerText(c,'(SENZA OVERTOURISM)',0,0,42,'#fdf0e5',true)});
