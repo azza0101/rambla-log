@@ -5,16 +5,10 @@
 const V2_VERSION='2.0.0';
 const NOTE_LABELS={label_base:'Base',label_duration:'Durata',label_highlight:'Da non perdere',label_tips:'Da sapere'};
 const STANDARD=['eyebrow','head1','body1','head2','body2','label_base','base','label_duration','duration','label_highlight','highlight','label_tips','tips'];
-const PAPER=[
- {name:'Avorio materico',colors:['#f7f0e4','#f2e8d9'],fibers:'#b4a692',direction:0},
- {name:'Salvia delicata',colors:['#e9eee4','#f5f3e9'],fibers:'#a0a995',direction:1},
- {name:'Terra chiara',colors:['#f3e7dc','#f9f2e9'],fibers:'#bc9b89',direction:2},
- {name:'Lino naturale',colors:['#e9e1d1','#f4ede0'],fibers:'#b3a58e',direction:3},
- {name:'Perla e carta',colors:['#f1f1eb','#e6ece5'],fibers:'#aeb7ae',direction:1},
- {name:'Oro spento',colors:['#f3ead6','#e9dfc7'],fibers:'#bea77f',direction:0},
- {name:'Rosa cipria',colors:['#f5e8df','#f5f0e8'],fibers:'#b4a49a',direction:2},
- {name:'Pistacchio tenue',colors:['#e4e8d8','#f2f0e4'],fibers:'#a4ad93',direction:3}
-];
+const PAPER=[{"id":"basic_1","name":"Basic 1 · Avorio","season":"basic","colors":["#f7f0e4","#f2e8d9"],"fibers":"#b4a692","direction":0,"tags":["basic","basic 1 · avorio"]},{"id":"basic_2","name":"Basic 2 · Salvia","season":"basic","colors":["#e9eee4","#f5f3e9"],"fibers":"#a0a995","direction":1,"tags":["basic","basic 2 · salvia"]},{"id":"basic_3","name":"Basic 3 · Sabbia","season":"basic","colors":["#f3e7dc","#f9f2e9"],"fibers":"#bc9b89","direction":2,"tags":["basic","basic 3 · sabbia"]},{"id":"basic_4","name":"Basic 4 · Perla","season":"basic","colors":["#f1f1eb","#e6ece5"],"fibers":"#aeb7ae","direction":3,"tags":["basic","basic 4 · perla"]},{"id":"spring_1","name":"Primavera 1 · Boccioli","season":"spring","colors":["#f5efe4","#dce7d7"],"fibers":"#98b689","direction":0,"tags":["spring","primavera 1 · boccioli"]},{"id":"spring_2","name":"Primavera 2 · Botanica","season":"spring","colors":["#edf2e3","#d5e2c7"],"fibers":"#9bb88d","direction":1,"tags":["spring","primavera 2 · botanica"]},{"id":"spring_3","name":"Primavera 3 · Luce","season":"spring","colors":["#f8f2df","#e9eedb"],"fibers":"#aabf9e","direction":2,"tags":["spring","primavera 3 · luce"]},{"id":"summer_1","name":"Estate 1 · Mediterranea","season":"summer","colors":["#f9efd9","#dfe9eb"],"fibers":"#91b0b4","direction":3,"tags":["summer","estate 1 · mediterranea"]},{"id":"summer_2","name":"Estate 2 · Sabbia","season":"summer","colors":["#f4ead6","#efd7b4"],"fibers":"#cfaa78","direction":0,"tags":["summer","estate 2 · sabbia"]},{"id":"summer_3","name":"Estate 3 · Agrumi","season":"summer","colors":["#fff1d9","#f2d59c"],"fibers":"#d29c5d","direction":1,"tags":["summer","estate 3 · agrumi"]},{"id":"autumn_1","name":"Autunno 1 · Terracotta","season":"autumn","colors":["#f3e3d7","#d8b59c"],"fibers":"#bd835d","direction":2,"tags":["autumn","autunno 1 · terracotta"]},{"id":"autumn_2","name":"Autunno 2 · Olivato","season":"autumn","colors":["#ece7d5","#c4c59e"],"fibers":"#8d9b68","direction":3,"tags":["autumn","autunno 2 · olivato"]},{"id":"autumn_3","name":"Autunno 3 · Vendemmia","season":"autumn","colors":["#f2e8dc","#c8a88b"],"fibers":"#9a7c66","direction":0,"tags":["autumn","autunno 3 · vendemmia"]},{"id":"winter_1","name":"Inverno 1 · Nebbia","season":"winter","colors":["#eff0ee","#d9dedd"],"fibers":"#9eafac","direction":1,"tags":["winter","inverno 1 · nebbia"]},{"id":"winter_2","name":"Inverno 2 · Bosco","season":"winter","colors":["#e7ece8","#cbd7cf"],"fibers":"#849e90","direction":2,"tags":["winter","inverno 2 · bosco"]},{"id":"winter_3","name":"Inverno 3 · Ghiaccio","season":"winter","colors":["#f1f3f2","#dde5ea"],"fibers":"#a9bfcc","direction":3,"tags":["winter","inverno 3 · ghiaccio"]}];
+const BACKGROUND_PRESETS=PAPER;
+const KURA_SEASONS=[['basic','Basic'],['spring','Primavera'],['summer','Estate'],['autumn','Autunno'],['winter','Inverno']];
+
 let overlay=null, toolbar=null, ctxMenu=null, nodeMap=new Map(), activeKey=null, shownPage=null;
 let pIndex=[], currentProjectId=null, managerReady=false, savingNow=false, saveAgain=false;
 let fontReadyFromHost=false;
@@ -60,15 +54,36 @@ function textRect(p,key){
 function textKeys(p){ensurePage(p);const list=p.visuals.note.visible?STANDARD:STANDARD.filter(k=>!['label_base','base','label_duration','duration','label_highlight','highlight','label_tips','tips'].includes(k));return list.concat(p.freeTexts.map(x=>'free:'+x.id))}
 function paperRandom(seed){let n=hashSeed(seed||'paper');return function(){n^=n<<13;n^=n>>>17;n^=n<<5;return(n>>>0)/4294967296}}
 const paperCache=new Map();
+function drawSeasonMark(c,id,kind){
+ const r=paperRandom(id+'-mark');
+ c.save();
+ const stroke=(color,width=2)=>{c.strokeStyle=color;c.lineWidth=width;c.lineCap='round'};
+ function leaf(x,y,size,color,rot){c.save();c.translate(x,y);c.rotate(rot);c.fillStyle=color;c.beginPath();c.moveTo(0,0);c.quadraticCurveTo(size*.55,-size*.62,0,-size*1.35);c.quadraticCurveTo(-size*.45,-size*.66,0,0);c.fill();c.restore()}
+ if(kind==='basic'){stroke('rgba(120,104,81,.16)',2);c.strokeRect(56,103,120,32);c.fillStyle='rgba(215,134,70,.17)';c.fillRect(66,120,110,11)}
+ if(kind==='spring'){for(let i=0;i<7;i++)leaf(76+r()*170,103+r()*125,20+r()*13,['#9dbb94','#c3d5a2','#e6c9bb'][i%3],-.6+r()*1.4)}
+ if(kind==='summer'){for(let i=0;i<4;i++){c.fillStyle=['#edc989','#e5b36b','#d3dfe0'][i%3];c.globalAlpha=.48;c.beginPath();c.arc(925+r()*90,103+r()*100,16+r()*15,0,Math.PI*2);c.fill()}stroke('rgba(103,145,155,.26)',3);for(let i=0;i<3;i++){c.beginPath();for(let x=0;x<200;x+=12)c.lineTo(73+x,1195+i*16+Math.sin((x+i*12)/30)*5);c.stroke()}}
+ if(kind==='autumn'){for(let i=0;i<8;i++)leaf(80+r()*180,105+r()*145,17+r()*19,['#bd835d','#ac966b','#84916f'][i%3],-.6+r()*1.7)}
+ if(kind==='winter'){stroke('rgba(155,181,185,.37)',2);for(let i=0;i<7;i++){const x=875+r()*135,y=112+r()*135;c.beginPath();c.moveTo(x-10,y);c.lineTo(x+10,y);c.moveTo(x,y-10);c.lineTo(x,y+10);c.moveTo(x-7,y-7);c.lineTo(x+7,y+7);c.moveTo(x-7,y+7);c.lineTo(x+7,y-7);c.stroke()}}
+ c.restore();
+}
 function drawKuraBackground(c,index,mini=false){
  if(index>=4&&!mini){if(!paperCache.has(index)){const image=document.createElement('canvas');image.width=W;image.height=H;drawKuraBackground(image.getContext('2d'),index,true);paperCache.set(index,image)}c.drawImage(paperCache.get(index),0,0,W,H);return}
  if(index<4){const im=assetImage('sfondo_'+(index+1));if(im&&im.complete&&im.naturalWidth)c.drawImage(im,0,0,W,H);else{c.fillStyle='#f7f0e5';c.fillRect(0,0,W,H)}return}
- const a=PAPER[Math.max(0,Math.min(PAPER.length-1,index-4))],gr=c.createLinearGradient(a.direction%2?0:W,0,a.direction%2?W:0,H);
+ const a=PAPER[index],gr=c.createLinearGradient(a.direction%2?0:W,0,a.direction%2?W:0,H);
  gr.addColorStop(0,a.colors[0]);gr.addColorStop(1,a.colors[1]);c.fillStyle=gr;c.fillRect(0,0,W,H);
- const rand=paperRandom('kura-bg-v2-'+index);
- c.save();c.globalAlpha=.055;c.fillStyle=a.fibers;
- for(let i=0;i<(mini?150:1250);i++){const x=rand()*W,y=rand()*H,w=1+rand()*8;c.fillRect(x,y,w,rand()<.86?1:2)}
- c.globalAlpha=.028;for(let i=0;i<13;i++){const x=rand()*W,y=rand()*H;const g=c.createRadialGradient(x,y,1,x,y,100+rand()*330);g.addColorStop(0,a.fibers);g.addColorStop(1,'rgba(0,0,0,0)');c.fillStyle=g;c.fillRect(0,0,W,H)}c.restore();
+ const rand=paperRandom('kura-bg-v3-'+a.id);
+ c.save();c.globalAlpha=.06;c.fillStyle=a.fibers;
+ for(let i=0;i<(mini?1400:700);i++){const x=rand()*W,y=rand()*H;c.fillRect(x,y,1+rand()*9,rand()<.9?1:2)}
+ c.restore();
+ // Pre-rendered torn-paper layer. Kept in the background bitmap, not in editable foreground.
+ c.save();c.shadowColor='rgba(74,66,55,.13)';c.shadowBlur=12;c.shadowOffsetY=7;
+ c.fillStyle='rgba(255,253,246,.26)';c.beginPath();c.moveTo(0,0);
+ for(let x=0;x<=W;x+=18)c.lineTo(x,76+(rand()-.5)*19);
+ c.lineTo(W,0);c.closePath();c.fill();c.restore();
+ c.save();c.fillStyle='rgba(255,255,255,.18)';c.beginPath();c.moveTo(0,H);
+ for(let x=0;x<=W;x+=20)c.lineTo(x,H-82+(rand()-.5)*17);
+ c.lineTo(W,H);c.closePath();c.fill();c.restore();
+ drawSeasonMark(c,a.id,a.season);
 }
 function paintEditable(c,p,key,raw,unusedRect,opt){
  ensurePage(p);
@@ -237,24 +252,44 @@ queueRender=function(){originalQueue();requestAnimationFrame(updateOverlays)};
 const originalRefresh=refreshAll;
 refreshAll=function(){if(page())ensurePage(page());originalRefresh();requestAnimationFrame(updateOverlays)};
 const originalAddPage=addPage;
-addPage=function(layout){originalAddPage(layout);ensurePage(page());const used=new Set(pages.slice(Math.max(0,current-3),current).map(x=>x.background));const options=Array.from({length:12},(_,i)=>i).filter(i=>!used.has(i));page().background=options[hashSeed(page().seed)%options.length];refreshGalleries();queueRender();scheduleSave()};
+addPage=function(layout){originalAddPage(layout);ensurePage(page());const used=new Set(pages.slice(Math.max(0,current-3),current).map(x=>x.background));const options=Array.from({length:16},(_,i)=>i).filter(i=>!used.has(i));page().background=options[hashSeed(page().seed)%options.length];page().backgroundId=BACKGROUND_PRESETS[page().background].id;page().seasonHint=BACKGROUND_PRESETS[page().background].season;refreshGalleries();queueRender();scheduleSave()};
 const originalApplySeed=applySeed;
-applySeed=function(seed,random){originalApplySeed(seed,random);let bg=page().background;if(pages.length>1){const neighbor=pages[current===0?1:current-1];if(bg===neighbor.background)page().background=(bg+3)%12}refreshGalleries();queueRender();scheduleSave()};
+applySeed=function(seed,random){originalApplySeed(seed,random);selectSeasonBackground(page(),page().seasonHint||'auto');let bg=page().background;if(pages.length>1){const neighbor=pages[current===0?1:current-1];if(bg===neighbor.background)selectSeasonBackground(page(),page().seasonHint||'auto')}refreshGalleries();queueRender();scheduleSave()};
 const originalRefreshGalleries=refreshGalleries;
 refreshGalleries=function(){
  originalRefreshGalleries();
  const root=$('#bgGallery');if(!root)return;root.innerHTML='';
- for(let i=0;i<12;i++){
-  const b=document.createElement('button');b.className='thumb '+(page().background===i?'active':'');b.title=i<4?'Carta originale '+(i+1):PAPER[i-4].name;
-  const sample=document.createElement('canvas');sample.width=108;sample.height=135;sample.className='kura-bg-procedural';
-  const c=sample.getContext('2d'),im=i<4?assetImage('sfondo_'+(i+1)):null;
-  if(im?.complete&&im.naturalWidth)c.drawImage(im,0,0,108,135);
-  else if(i<4){c.fillStyle='#f8f0e5';c.fillRect(0,0,108,135);const pic=new Image();pic.src=ASSETS['sfondo_'+(i+1)];pic.onload=function(){c.drawImage(pic,0,0,108,135)}}
-  else{const p=PAPER[i-4],g=c.createLinearGradient(0,0,108,135);g.addColorStop(0,p.colors[0]);g.addColorStop(1,p.colors[1]);c.fillStyle=g;c.fillRect(0,0,108,135);c.fillStyle=p.fibers;c.globalAlpha=.08;for(let n=0;n<70;n++){const a=paperRandom('thumb-'+i+'-'+n);c.fillRect(a()*108,a()*135,4,1)}}
-  b.appendChild(sample);const label=document.createElement('small');label.textContent=i<4?'Originale '+(i+1):PAPER[i-4].name;b.appendChild(label);
-  b.onclick=function(){snapshot();page().background=i;refreshGalleries();queueRender();scheduleSave()};root.appendChild(b)
+ for(const [season,heading] of KURA_SEASONS){
+  const group=document.createElement('div');group.style.cssText='width:100%;flex:0 0 100%;font-size:11px;font-weight:900;letter-spacing:.06em;color:#173d2e;margin-top:7px';group.textContent=heading.toUpperCase();root.appendChild(group);
+  BACKGROUND_PRESETS.forEach((p,i)=>{
+   if(p.season!==season)return;
+   const b=document.createElement('button');b.className='thumb '+(page().background===i?'active':'');b.title=p.name;b.dataset.backgroundId=p.id;
+   const sample=document.createElement('canvas');sample.width=108;sample.height=135;sample.className='kura-bg-procedural';const c=sample.getContext('2d');
+   if(i<4){const im=assetImage('sfondo_'+(i+1));if(im?.complete&&im.naturalWidth)c.drawImage(im,0,0,108,135)}
+   else{c.save();c.scale(.1,.1);drawKuraBackground(c,i,true);c.restore()}
+   b.appendChild(sample);const label=document.createElement('small');label.textContent=p.name;b.appendChild(label);
+   b.onclick=()=>{snapshot();page().background=i;page().backgroundId=p.id;page().seasonHint=p.season;refreshGalleries();queueRender();scheduleSave()};root.appendChild(b);
+  })
  }
+ root.style.flexWrap='wrap';
 };
+function inferKuraSeason(p){
+ if(p.seasonHint&&p.seasonHint!=='auto')return p.seasonHint;
+ const text=[p.name,...Object.values(p.fields||{})].join(' ').toLowerCase();
+ if(/dicembre|gennaio|febbraio|neve|inverno|winter|snow/.test(text))return'winter';
+ if(/marzo|aprile|maggio|primavera|spring|fiori/.test(text))return'spring';
+ if(/giugno|luglio|agosto|estate|summer|mare|spiaggia/.test(text))return'summer';
+ if(/settembre|ottobre|novembre|autunno|autumn|vendemmia|foliage/.test(text))return'autumn';
+ return'basic';
+}
+function selectSeasonBackground(p,season='auto'){
+ const target=season==='auto'?inferKuraSeason(p):season;
+ const variants=BACKGROUND_PRESETS.map((preset,index)=>({...preset,index})).filter(x=>x.season===target);
+ const adjacent=pages.filter(other=>other!==p).slice(-3).map(other=>other.background);
+ const available=variants.filter(x=>!adjacent.includes(x.index));
+ const list=available.length?available:variants;const chosen=list[hashSeed(p.seed+p.id)%list.length]||BACKGROUND_PRESETS[0];
+ p.background=chosen.index??0;p.backgroundId=chosen.id;p.seasonHint=target;return chosen.id
+}
 function projectLabel(x){return x.name+' · '+new Date(x.updatedAt||Date.now()).toLocaleDateString('it-IT')}
 function showProjectOptions(){
  const sel=$('#kuraProjectSelect');if(!sel)return;sel.innerHTML='';
@@ -321,7 +356,7 @@ async function initManager(){
  managerReady=true;shownPage=null;refreshAll();showProjectOptions();await persistNow();
 }
 const originalNormalize=normalizePage;
-normalizePage=function(p){const out=originalNormalize(p);out.background=safeNumber(p.background,0,11,out.background);out.textStyles=p.textStyles&&typeof p.textStyles==='object'?deepClone(p.textStyles):{};out.freeTexts=Array.isArray(p.freeTexts)?deepClone(p.freeTexts):[];return ensurePage(out)};
+normalizePage=function(p){const out=originalNormalize(p);out.background=safeNumber(p.background,0,15,out.background);out.backgroundId=BACKGROUND_PRESETS.find(x=>x.id===p.backgroundId)?.id||BACKGROUND_PRESETS[out.background].id;out.seasonHint=p.seasonHint||BACKGROUND_PRESETS[out.background].season;out.textStyles=p.textStyles&&typeof p.textStyles==='object'?deepClone(p.textStyles):{};out.freeTexts=Array.isArray(p.freeTexts)?deepClone(p.freeTexts):[];return ensurePage(out)};
 const originalImportFast=importFast;
 importFast=function(obj){originalImportFast(obj);pages.forEach(ensurePage);shownPage=null;refreshAll();scheduleSave()};
 const originalExportProject=exportProject;
@@ -340,7 +375,7 @@ function safeStylePatch(style){const out={};if(!style||typeof style!=='object')r
 window.KURA_MCP=Object.freeze({
  apiVersion:'2.0',contract:'./mcp-contract.json',
  getProject:function(){return deepClone(exportProject())},
- inspect:function(){return{apiVersion:'2.0',pageIds:pages.map(x=>x.id),editableTextKeys:STANDARD,backgroundCount:12,backgroundNames:['Originale 1','Originale 2','Originale 3','Originale 4'].concat(PAPER.map(x=>x.name)),layoutIds:LAYOUTS.map(x=>x.id),actions:['setText','setBackground','addText','moveElement','setPageName','addPage']}},
+ inspect:function(){return{apiVersion:'2.0',pageIds:pages.map(x=>x.id),editableTextKeys:STANDARD,backgroundCount:16,backgroundPresets:BACKGROUND_PRESETS.map(x=>({id:x.id,name:x.name,season:x.season,tags:x.tags})),backgroundNames:BACKGROUND_PRESETS.map(x=>x.name),layoutIds:LAYOUTS.map(x=>x.id),actions:['setText','setBackground','addText','moveElement','setPageName','addPage']}},
  applyPatch:function(operations){
   if(!Array.isArray(operations)||operations.length>200)throw Error('Sono necessarie 1-200 operazioni');
   const before=JSON.stringify({pages,current});let count=0;
@@ -348,7 +383,9 @@ window.KURA_MCP=Object.freeze({
    if(op.op==='addPage'){const layout=LAYOUTS.findIndex(x=>x.id===op.layout);const p=ensurePage(makePage(layout<0?0:layout));if(typeof op.name==='string')p.name=op.name;pages.push(p);count++;continue}
    const p=assertPage(op);
    if(op.op==='setText'){const key=String(op.key||'');if(!STANDARD.includes(key)&&!freeItem(p,key))throw Error('Chiave testo non ammessa: '+key);if(typeof op.text==='string'){const f=freeItem(p,key);if(f)f.text=op.text;else p.fields[key]=op.text}if(op.style)p.textStyles[key]=Object.assign({},p.textStyles[key],safeStylePatch(op.style));count++;continue}
-   if(op.op==='setBackground'){p.background=safeNumber(op.background,0,11,0);count++;continue}
+   if(op.op==='setBackground'){p.background=safeNumber(op.background,0,15,0);p.backgroundId=BACKGROUND_PRESETS[p.background].id;p.seasonHint=BACKGROUND_PRESETS[p.background].season;count++;continue}
+   if(op.op==='setBackgroundId'){const ix=BACKGROUND_PRESETS.findIndex(x=>x.id===op.backgroundId);if(ix<0)throw Error('Sfondo non disponibile: '+op.backgroundId);p.background=ix;p.backgroundId=BACKGROUND_PRESETS[ix].id;p.seasonHint=BACKGROUND_PRESETS[ix].season;count++;continue}
+   if(op.op==='setSeason'){selectSeasonBackground(p,op.season||'auto');count++;continue}
    if(op.op==='setPageName'){p.name=String(op.name||'Pagina').slice(0,130);count++;continue}
    if(op.op==='addText'){const id=uuid();const f={id:id,text:String(op.text||'Nuovo testo'),x:safeNumber(op.x,-200,1080,160),y:safeNumber(op.y,-200,1350,560),w:safeNumber(op.w,50,1080,450),h:safeNumber(op.h,25,1350,90),rot:safeNumber(op.rot,-360,360,0),scale:1,opacity:1};p.freeTexts.push(f);p.textStyles['free:'+id]=safeStylePatch(op.style);count++;continue}
    if(op.op==='moveElement'){
@@ -368,7 +405,7 @@ window.KURA_MCP=Object.freeze({
  save:function(){return persistNow()},
  exportJSON:function(){return JSON.stringify(exportProject(),null,2)}
 });
-window.KURA_V2={version:V2_VERSION,drawKuraBackground:drawKuraBackground,paintEditable:paintEditable,paintFreeTexts:paintFreeTexts};
+window.KURA_V2={version:'2.1.0',drawKuraBackground:drawKuraBackground,paintEditable:paintEditable,paintFreeTexts:paintFreeTexts};
 addV2Controls();initOverlay();
 window.addEventListener('load',function(){initManager();checkHostedFont();});
 })();
