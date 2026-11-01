@@ -32,3 +32,9 @@
 .kura-project-panel .hint{margin:7px 0 0}
 .kura-font-alert{border-left:3px solid #c9853a;padding:7px 10px;margin-top:8px;font-size:11px;line-height:1.5;background:#fff7e8}
 @media(max-width:760px){.kura-selection-toolbar{max-width:700px;padding:8px;gap:5px}.kura-selection-toolbar button,.kura-selection-toolbar select,.kura-selection-toolbar input{min-height:36px;font-size:17px}.kura-project-row .btn{min-height:42px}}
+
+/* Seasonal background groups */
+#bgGallery{display:flex;flex-wrap:wrap;align-content:flex-start;overflow-x:hidden;gap:8px}
+#bgGallery .thumb{width:calc(50% - 4px);flex:0 0 calc(50% - 4px);padding:8px}
+#bgGallery .thumb canvas{width:100%;height:auto;aspect-ratio:4/5;max-width:105px;margin:auto}
+#bgGallery .thumb small{max-width:none;width:100%;font-size:10px;line-height:1.45}
