@@ -57,9 +57,11 @@ function textRect(p,key){
  }
  return null;
 }
-function textKeys(p){ensurePage(p);return STANDARD.concat(p.freeTexts.map(x=>'free:'+x.id))}
+function textKeys(p){ensurePage(p);const list=p.visuals.note.visible?STANDARD:STANDARD.filter(k=>!['label_base','base','label_duration','duration','label_highlight','highlight','label_tips','tips'].includes(k));return list.concat(p.freeTexts.map(x=>'free:'+x.id))}
 function paperRandom(seed){let n=hashSeed(seed||'paper');return function(){n^=n<<13;n^=n>>>17;n^=n<<5;return(n>>>0)/4294967296}}
+const paperCache=new Map();
 function drawKuraBackground(c,index,mini=false){
+ if(index>=4&&!mini){if(!paperCache.has(index)){const image=document.createElement('canvas');image.width=W;image.height=H;drawKuraBackground(image.getContext('2d'),index,true);paperCache.set(index,image)}c.drawImage(paperCache.get(index),0,0,W,H);return}
  if(index<4){const im=assetImage('sfondo_'+(index+1));if(im&&im.complete&&im.naturalWidth)c.drawImage(im,0,0,W,H);else{c.fillStyle='#f7f0e5';c.fillRect(0,0,W,H)}return}
  const a=PAPER[Math.max(0,Math.min(PAPER.length-1,index-4))],gr=c.createLinearGradient(a.direction%2?0:W,0,a.direction%2?W:0,H);
  gr.addColorStop(0,a.colors[0]);gr.addColorStop(1,a.colors[1]);c.fillStyle=gr;c.fillRect(0,0,W,H);
@@ -156,7 +158,7 @@ function updateToolbar(){
 }
 function makeToolbar(){
  toolbar=document.createElement('div');toolbar.className='kura-selection-toolbar hidden';toolbar.setAttribute('role','toolbar');toolbar.innerHTML='<span class="kura-bar-grip">⋮⋮</span><select data-font title="Font"><option>Montserrat</option><option>Feeling Passionate</option><option>Caveat</option></select><button type="button" data-minus title="Riduci dimensione">−</button><input data-size type="number" min="10" max="160" step="1" aria-label="Dimensione del testo"/><button type="button" data-plus title="Aumenta dimensione">＋</button><button type="button" data-bold title="Grassetto (anche sulla selezione)">B</button><span class="kura-control-label" data-rotation>0°</span><button type="button" data-reset title="Reimposta posizione">↺</button><button type="button" data-close title="Chiudi">×</button>';
- overlay.appendChild(toolbar);
+ document.querySelector('.stage-inner').appendChild(toolbar);
  for(const n of toolbar.querySelectorAll('button'))n.addEventListener('pointerdown',function(e){e.preventDefault()});
  toolbar.querySelector('[data-minus]').onclick=function(){const key=toolbar.dataset.key;changeStyle(key,{fontSize:safeNumber(styleFor(page(),key).fontSize-2,10,160,30)})};
  toolbar.querySelector('[data-plus]').onclick=function(){const key=toolbar.dataset.key;changeStyle(key,{fontSize:safeNumber(styleFor(page(),key).fontSize+2,10,160,30)})};
@@ -170,7 +172,10 @@ function showToolbar(key){if(!toolbar)makeToolbar();toolbar.dataset.key=key;tool
 function positionToolbar(){
  if(!toolbar||toolbar.classList.contains('hidden'))return;
  const p=page(),key=toolbar.dataset.key,r=textRect(p,key);if(!r)return;
- let x=Math.max(7,Math.min(W-570,r.x));let y=r.y-100;if(y<6)y=r.y+r.h+14;if(y>H-90)y=H-90;
+ const scale=stageScale(),stageWidth=canvas.getBoundingClientRect().width;
+ const barWidth=toolbar.offsetWidth||350,barHeight=toolbar.offsetHeight||45;
+ const x=Math.max(3,Math.min(stageWidth-barWidth-3,r.x*scale));
+ let y=r.y*scale-barHeight-10;if(y<4)y=(r.y+r.h)*scale+10;if(y>H*scale-barHeight)y=Math.max(4,H*scale-barHeight-4);
  toolbar.style.left=x+'px';toolbar.style.top=y+'px';
 }
 function showContextMenu(e,key){
@@ -197,6 +202,9 @@ function updateOverlays(){
   const o=offsetFor(p,key),st=styleFor(p,key),nd=nodeMap.get(key)||attachFrame(key);
   nd.frame.style.left=rect.x+'px';nd.frame.style.top=rect.y+'px';nd.frame.style.width=rect.w+'px';nd.frame.style.height=rect.h+'px';nd.frame.style.transform='rotate('+(o.rot||0)+'deg)';
   nd.frame.classList.toggle('is-selected',selected==='text:'+key);
+  const scale=width/W,inv=1/scale;
+  for(const button of nd.frame.querySelectorAll('.kura-manip-handle'))button.style.transform='scale('+inv+')';
+  for(const button of nd.frame.querySelectorAll('.kura-move-handle,.kura-rotate-handle'))button.style.top=(rect.y*scale<50?5:-41*inv)+'px';
   nd.edit.style.setProperty('--kura-ink',st.color);
   nd.edit.style.fontSize=(metrics.get(key)||st.fontSize)+'px';
   nd.edit.style.lineHeight=String(st.lineHeight);
