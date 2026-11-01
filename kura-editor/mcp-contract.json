@@ -1,6 +1,6 @@
 {
   "name": "KURA Carousel Editor",
-  "apiVersion": "2.0",
+  "apiVersion": "2.2",
   "browserNamespace": "window.KURA_MCP",
   "format": "KURA_EDITOR_V2",
   "units": {
@@ -8,7 +8,7 @@
     "width": 1080,
     "height": 1350,
     "rotation": "degrees",
-    "background": "0-based index 0..11",
+    "background": "0..15, prefer backgroundId",
     "opacity": "0..1",
     "scale": "ratio"
   },
@@ -114,6 +114,79 @@
         "layout",
         "name"
       ]
+    },
+    "setBackgroundId": {
+      "required": [
+        "op",
+        "pageId|pageIndex",
+        "backgroundId"
+      ],
+      "backgroundIds": [
+        "basic_1",
+        "basic_2",
+        "basic_3",
+        "basic_4",
+        "spring_1",
+        "spring_2",
+        "spring_3",
+        "summer_1",
+        "summer_2",
+        "summer_3",
+        "autumn_1",
+        "autumn_2",
+        "autumn_3",
+        "winter_1",
+        "winter_2",
+        "winter_3"
+      ]
+    },
+    "setSeason": {
+      "required": [
+        "op",
+        "pageId|pageIndex",
+        "season"
+      ],
+      "seasons": [
+        "basic",
+        "spring",
+        "summer",
+        "autumn",
+        "winter",
+        "auto"
+      ]
+    },
+    "addSticker": {
+      "required": [
+        "op",
+        "pageId|pageIndex",
+        "key"
+      ],
+      "optional": [
+        "x",
+        "y",
+        "w",
+        "rot",
+        "scale"
+      ],
+      "keys": [
+        "olive",
+        "berries",
+        "monstera",
+        "map",
+        "compass",
+        "stamp",
+        "tape",
+        "camera",
+        "blossom",
+        "lavender",
+        "citrus",
+        "shell",
+        "autumn_leaf",
+        "grapes",
+        "snowflake",
+        "pine",
+        "ticket"
+      ]
     }
   },
   "workflow": [
@@ -175,6 +248,109 @@
   "notes": [
     "Bold spans use **testo** markup and are stored in fields: no HTML injection into data.",
     "window.KURA_MCP is an in-browser automation interface, NOT a remote MCP server. External MCP clients need browser execution, file editing, or a server bridge.",
-    "The proprietary Feeling Passionate font is not bundled; to serve all users, provide a properly licensed web/app font at assets/FeelingPassionate.woff2."
+    "The proprietary Feeling Passionate font is not bundled; to serve all users, provide a properly licensed web/app font at assets/FeelingPassionate.woff2.",
+    "Illustrated background SVGs and 9 new stickers are first-party static assets under assets/.",
+    "Seasonal background ids are stable; prefer named backgroundId over numeric index."
+  ],
+  "backgroundPresets": [
+    {
+      "id": "basic_1",
+      "season": "basic",
+      "format": "original jpeg"
+    },
+    {
+      "id": "basic_2",
+      "season": "basic",
+      "format": "original jpeg"
+    },
+    {
+      "id": "basic_3",
+      "season": "basic",
+      "format": "original jpeg"
+    },
+    {
+      "id": "basic_4",
+      "season": "basic",
+      "format": "original jpeg"
+    },
+    {
+      "id": "spring_1",
+      "season": "spring",
+      "format": "illustrated svg"
+    },
+    {
+      "id": "spring_2",
+      "season": "spring",
+      "format": "illustrated svg"
+    },
+    {
+      "id": "spring_3",
+      "season": "spring",
+      "format": "illustrated svg"
+    },
+    {
+      "id": "summer_1",
+      "season": "summer",
+      "format": "illustrated svg"
+    },
+    {
+      "id": "summer_2",
+      "season": "summer",
+      "format": "illustrated svg"
+    },
+    {
+      "id": "summer_3",
+      "season": "summer",
+      "format": "illustrated svg"
+    },
+    {
+      "id": "autumn_1",
+      "season": "autumn",
+      "format": "illustrated svg"
+    },
+    {
+      "id": "autumn_2",
+      "season": "autumn",
+      "format": "illustrated svg"
+    },
+    {
+      "id": "autumn_3",
+      "season": "autumn",
+      "format": "illustrated svg"
+    },
+    {
+      "id": "winter_1",
+      "season": "winter",
+      "format": "illustrated svg"
+    },
+    {
+      "id": "winter_2",
+      "season": "winter",
+      "format": "illustrated svg"
+    },
+    {
+      "id": "winter_3",
+      "season": "winter",
+      "format": "illustrated svg"
+    }
+  ],
+  "stickers": [
+    "olive",
+    "berries",
+    "monstera",
+    "map",
+    "compass",
+    "stamp",
+    "tape",
+    "camera",
+    "blossom",
+    "lavender",
+    "citrus",
+    "shell",
+    "autumn_leaf",
+    "grapes",
+    "snowflake",
+    "pine",
+    "ticket"
   ]
 }
