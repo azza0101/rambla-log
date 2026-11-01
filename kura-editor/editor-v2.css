@@ -36,5 +36,13 @@
 /* Seasonal background groups */
 #bgGallery{display:flex;flex-wrap:wrap;align-content:flex-start;overflow-x:hidden;gap:8px}
 #bgGallery .thumb{width:calc(50% - 4px);flex:0 0 calc(50% - 4px);padding:8px}
-#bgGallery .thumb canvas{width:100%;height:auto;aspect-ratio:4/5;max-width:105px;margin:auto}
+#bgGallery .thumb canvas,#bgGallery .thumb img{width:100%;height:auto;aspect-ratio:4/5;max-width:105px;margin:auto}
 #bgGallery .thumb small{max-width:none;width:100%;font-size:10px;line-height:1.45}
+
+#bgGallery .thumb img{object-fit:cover;border:1px solid #e1dccf;border-radius:7px;display:block}
+#bgGallery .thumb{display:flex;flex-direction:column;align-items:center;justify-content:start;gap:6px;background:#fbfaf6;min-height:156px}
+#bgGallery .thumb.active{outline:2px solid #cc783f;outline-offset:1px}
+#bgGallery .thumb small{font-weight:750;color:#173d2e;min-height:28px;display:block}
+#stickerGrid{grid-template-columns:repeat(4,minmax(0,1fr))}
+#stickerGrid .sticker-btn{min-height:74px;overflow:hidden}
+#stickerGrid .sticker-btn img{width:100%;height:100%;object-fit:contain}
