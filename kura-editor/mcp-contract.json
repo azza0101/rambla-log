@@ -1,6 +1,6 @@
 {
   "name": "KURA Carousel Editor",
-  "apiVersion": "2.7.1",
+  "apiVersion": "2.7.2",
   "browserNamespace": "window.KURA_MCP",
   "format": "KURA_EDITOR_V2",
   "units": {
@@ -438,5 +438,13 @@
       "flipY"
     ],
     "note": "Text widths and heights may be absolute overrides in offsets. Images use independent scaleX/scaleY ratios."
+  },
+  "uiControls": {
+    "fontToolbar": "docked above canvas, never overlaps selection handles",
+    "compactTransformHandles": {
+      "pointerFinePx": 26,
+      "pointerCoarsePx": 30
+    },
+    "brushTitleAccent": "small dash preceding each heading, optically centered vertically at approx. 44% of 40px title glyph height"
   }
 }
