@@ -63,3 +63,9 @@ Il font Feeling Passionate di Din Studio è proprietario: per renderlo disponibi
 - Brush KURA Brush2 con spessore intermedio, evitando contorni eccessivi.
 - Tutti i livelli selezionabili hanno controlli locali: spostamento, rotazione, ridimensionamento orizzontale/verticale indipendente, flip X e Y. Caselle testo con dimensioni assolute; elementi grafici con scaleX e scaleY.
 - MCP applyPatch.moveElement gestisce scaleX, scaleY, flipX, flipY, w e h, oltre alle proprietà esistenti.
+
+## 2.7.2 — Usabilità selezione e titoletti
+- Barra di formattazione del testo spostata in un dock sopra la tela. Non può più coprire maniglie di spostamento/rotazione.
+- Maniglie compatte: 26 px mouse e 30 px touch, anche per sticker, note e illustrazioni; tela non taglia controlli fuori bordo.
+- Tratto arancio dei sottotitoli posizionato a sinistra e centrato sulla parte visibile del brush KURA Brush2. Segue anche l'eventuale rotazione del titolo.
+- Dati MCP v2.7.2 invariati nelle chiavi; possibile creare/modificare pagine mediante patch JSON, browser API o caricamento progetto.
