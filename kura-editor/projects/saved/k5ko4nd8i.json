@@ -1,0 +1,102 @@
+{
+  "format": "KURA_EDITOR_V2",
+  "width": 1080,
+  "height": 1350,
+  "version": 2,
+  "pages": [
+    {
+      "id": "k7zk711nv",
+      "name": "Kanazawa · Giappone",
+      "seed": "2407",
+      "layout": 0,
+      "background": 0,
+      "note": 0,
+      "fields": {
+        "eyebrow": "04 / GIAPPONE",
+        "head1": "Tradizioni d’inverno",
+        "body1": "A gennaio Kanazawa mostra un **volto tranquillo e autentico**. Il **giardino Kenrokuen**, con le corde yukitsuri che proteggono gli alberi dalla neve, è uno dei luoghi più suggestivi del paese. Nel quartiere di **Nagamachi** le antiche case dei samurai e le botteghe artigiane raccontano la storia della città, mentre le case da tè invitano a scoprire le tradizioni locali.",
+        "head2": "Clima e consigli",
+        "body2": "Gennaio è freddo e può portare **piogge e nevicate**. Servono **abiti impermeabili e scarpe adatte** per visitare giardini e quartieri storici all’aperto.",
+        "base": "Kanazawa",
+        "duration": "3–4 giorni",
+        "highlight": "Giardino Kenrokuen, Nagamachi, botteghe artigiane e cerimonia del tè",
+        "tips": "Possibili nevicate e piogge: porta abiti impermeabili e scarpe adatte.",
+        "label_base": "Base",
+        "label_duration": "Durata",
+        "label_highlight": "Da non perdere",
+        "label_tips": "Da sapere"
+      },
+      "visuals": {
+        "note": {
+          "x": 623,
+          "y": 105,
+          "w": 411,
+          "h": 543,
+          "rot": -1,
+          "scale": 1,
+          "opacity": 1,
+          "visible": true
+        },
+        "postcard": {
+          "x": 684,
+          "y": 690,
+          "w": 319,
+          "h": 242,
+          "rot": -5,
+          "scale": 1,
+          "opacity": 1,
+          "visible": true
+        },
+        "scene": {
+          "x": 0,
+          "y": 987,
+          "w": 1070,
+          "h": 580,
+          "rot": 0,
+          "scale": 1,
+          "opacity": 1,
+          "visible": true
+        }
+      },
+      "imageKeys": {
+        "scene": "giulia_kanazawa",
+        "postcard": "cartolina_kenrokuen"
+      },
+      "stickers": [
+        {
+          "id": "k182xcbf6",
+          "key": "sticker_olive",
+          "x": 885,
+          "y": 10,
+          "w": 190,
+          "h": 97,
+          "rot": 10,
+          "scale": 1,
+          "opacity": 0.93
+        },
+        {
+          "id": "k9xo4nyis",
+          "key": "sticker_stamp",
+          "x": 19,
+          "y": 1010,
+          "w": 123,
+          "h": 81,
+          "rot": -5,
+          "scale": 1,
+          "opacity": 0.95
+        }
+      ],
+      "offsets": {},
+      "bodyScale": 1,
+      "noteScale": 1,
+      "textStyles": {},
+      "freeTexts": []
+    }
+  ],
+  "customAssets": {},
+  "schemaVersion": 2,
+  "projectId": "k5ko4nd8i",
+  "projectName": "Il mio primo carosello",
+  "meta": {},
+  "githubSavedAt": "2026-11-02T15:38:06.371Z"
+}
