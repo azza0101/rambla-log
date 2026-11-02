@@ -24,7 +24,7 @@ rng = np.random.default_rng(1711)
 # Normalized coordinates on the original canonical composite image.
 # Ink is taken from THIS existing asset, never synthesized using a font/icon library.
 ROIS = {
-    "title": (.146, .073, .825, .239),
+    "title": (.075, .065, .975, .248),
     "tape": (.388, .000, .672, .102),
     "pin": (.108, .225, .276, .335),
     "calendar": (.103, .347, .274, .465),
@@ -68,8 +68,9 @@ def extract_ink(name):
     amount=np.clip(amount,0,1)*mask*srca
     # Exclude the incidental vegetation speck at the upper right of the master title.
     if name=="title":
+        # Capture the entire last O of VIAGGIO; do not crop the right-side lettering.
+        # The ink mask removes yellow paper and any non-green printed elements.
         h,w=amount.shape
-        amount[:int(h*.23), int(w*.84):]=0
     # Keep tonal/ink variation from original illustration, but no yellow stock behind it.
     rgba=np.zeros((a.shape[0],a.shape[1],4),np.uint8)
     rgba[:,:,:3]=np.asarray(foreground,dtype=np.uint8)
