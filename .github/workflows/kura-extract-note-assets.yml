@@ -19,7 +19,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install image dependencies
-        run: pip install pillow numpy
+        run: pip install pillow numpy cairosvg
       - name: Extract original KURA ink, printed icons and paper
         run: python kura-editor/tools/extract_postit_assets.py
       - name: Publish actual transparent PNG assets
