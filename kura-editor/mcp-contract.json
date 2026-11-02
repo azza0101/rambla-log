@@ -1,6 +1,6 @@
 {
   "name": "KURA Carousel Editor",
-  "apiVersion": "2.7.2",
+  "apiVersion": "2.8",
   "browserNamespace": "window.KURA_MCP",
   "format": "KURA_EDITOR_V2",
   "units": {
@@ -193,6 +193,12 @@
         "winter_pine_cones",
         "winter_holly_branch"
       ]
+    },
+    "loadTemplate": {
+      "call": "await window.KURA_MCP.loadTemplate('novembre-2026')",
+      "createsSeparateProject": true,
+      "preservesExistingProjects": true,
+      "reopeningRestoresLocallyEditedVersion": true
     }
   },
   "workflow": [
@@ -257,7 +263,8 @@
     "The proprietary Feeling Passionate font is not bundled; to serve all users, provide a properly licensed web/app font at assets/FeelingPassionate.woff2.",
     "Illustrated background SVGs and 9 new stickers are first-party static assets under assets/.",
     "Seasonal background ids are stable; prefer named backgroundId over numeric index.",
-    "KURA 2.5 stores 16 high-quality photographic papercut WebP stickers separately, 4 per season, not simplified SVG substitutes."
+    "KURA 2.5 stores 16 high-quality photographic papercut WebP stickers separately, 4 per season, not simplified SVG substitutes.",
+    "KURA November 2026 uses three independent papercut Giulia PNG layers and three landscapes in fixed asset registry. The template imports directly from GitHub Pages and remains editable, with autosave and PNG/ZIP export."
   ],
   "backgroundPresets": [
     {
@@ -446,5 +453,27 @@
       "pointerCoarsePx": 30
     },
     "brushTitleAccent": "small dash preceding each heading, optically centered vertically at approx. 44% of 40px title glyph height"
-  }
+  },
+  "templates": [
+    {
+      "id": "novembre-2026",
+      "projectId": "kura-nov26-travel-pages",
+      "pageCount": 3,
+      "projectFile": "./projects/KURA_Progetto_Novembre_2026.json",
+      "openUrl": "./?template=novembre-2026&v=2.8.0",
+      "destinations": [
+        "Vipacco",
+        "Maiorca",
+        "Parco Kruger"
+      ],
+      "visualAssets": [
+        "giulia_vipacco.png",
+        "giulia_maiorca.png",
+        "giulia_kruger.png",
+        "paesaggio_vipacco.webp",
+        "paesaggio_maiorca.webp",
+        "paesaggio_kruger.webp"
+      ]
+    }
+  ]
 }
