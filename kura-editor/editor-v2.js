@@ -273,7 +273,7 @@ refreshStickerGrid=function(){
   const title=document.createElement('div');title.className='kura-sticker-group';title.textContent=heading;title.style.gridColumn='1 / -1';title.style.fontSize='11px';title.style.fontWeight='850';title.style.marginTop='8px';title.style.color='#173d2e';root.appendChild(title);
   for(const[key,name]of items){
    const b=document.createElement('button');b.className='sticker-btn';b.type='button';b.title='Aggiungi '+name;b.dataset.stickerId=key;b.dataset.season=season;
-   const im=document.createElement('img');im.alt=name;im.loading='lazy';im.decoding='async';im.src=ASSETS['sticker_'+key];b.appendChild(im);b.onclick=()=>addSticker(key);root.appendChild(b);
+   const im=document.createElement('img');im.alt=name;im.loading='lazy';im.decoding='async';im.src=ASSETS['sticker_'+key];b.appendChild(im);const caption=document.createElement('small');caption.className='kura-sticker-name';caption.textContent=name;b.appendChild(caption);b.onclick=()=>addSticker(key);root.appendChild(b);
   }
  }
 };
