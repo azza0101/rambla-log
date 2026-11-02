@@ -43,13 +43,15 @@
  .stage-head{padding:0 3px}
 }
 @media (pointer:coarse){.btn,.tab{min-height:44px}}
+@font-face{font-family:'Kaushan Script';src:url('./assets/KaushanScript-Regular.ttf?v=3.0.0') format('truetype');font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:'Caveat Brush';src:url('./assets/CaveatBrush-Regular.ttf?v=3.0.0') format('truetype');font-style:normal;font-weight:400;font-display:swap}
 </style>
 <link rel="stylesheet" href="./editor-v2.css?v=2.8.0"/>
 </head>
 <body>
 <header class="topbar">
  <div class="brand"><span class="brand-icon">⛰</span><div><b>KURA VIAGGI</b><small>Atelier · Pagine editoriali 4:5</small></div></div>
- <div class="top-actions"><button id="topNew" class="btn ghost">＋ Pagina</button><button id="topSeed" class="btn ghost">↻ Seed</button><button id="topUpdate" class="btn ghost" title="Controlla se GitHub ha una nuova versione" aria-label="Aggiorna KURA Editor da GitHub">⟳ Aggiorna app</button><button id="topJson" class="btn ghost">💾 Progetto</button><button id="topExport" class="btn primary">↓ PNG</button><button id="topZip" class="btn ghost">ZIP tutte</button></div>
+ <div class="top-actions"><button id="topNew" class="btn ghost">＋ Pagina</button><button id="topSeed" class="btn ghost">↻ Seed</button><button id="topUpdate" class="btn ghost" title="Controlla se GitHub ha una nuova versione" aria-label="Aggiorna KURA Editor da GitHub">⟳ Aggiorna app</button><button id="topSaveProject" class="btn ghost" title="Salva nel browser e scarica una copia JSON">💾 Salva progetto</button><button id="topOpenProject" class="btn ghost" title="Apri un progetto JSON modificabile">📂 Apri progetto</button><input id="topOpenProjectFile" type="file" accept=".json,application/json" hidden/><button id="topJson" class="btn ghost" title="Gestione progetti">Progetti</button><button id="topExport" class="btn primary">↓ PNG</button><button id="topZip" class="btn ghost">ZIP tutte</button></div>
 </header>
 <div class="shell">
  <section class="panel editor-panel">
@@ -78,7 +80,7 @@
    <div class="dual"><button class="btn flat" id="seedApply">Applica seed</button><button class="btn flat" id="seedRandom">Seed casuale ↻</button></div>
    <p class="hint">Un seed cambia sfondo, post-it e piccoli dettagli. I contenuti rimangono invariati.</p>
    <div class="section-title">Sfondi carta</div><div class="thumbrow" id="bgGallery"></div>
-   <div class="section-title">Post-it</div><div class="thumbrow" id="noteGallery"></div>
+   <div class="section-title">Dimensioni e posizione dello sfondo</div><p class="hint">Ingrandisci o sposta la carta per lasciare libera la zona dei titoli.</p><div class="field"><label>Ingrandimento <strong id="bgZoomValue">100%</strong></label><input id="bgZoom" type="range" min="100" max="180" value="100" step="2"/></div><div class="field"><label>Spostamento orizzontale <strong id="bgShiftXValue">0</strong></label><input id="bgShiftX" type="range" min="-300" max="300" value="0" step="5"/></div><div class="field"><label>Spostamento verticale <strong id="bgShiftYValue">0</strong></label><input id="bgShiftY" type="range" min="-300" max="300" value="0" step="5"/></div><button id="bgReset" class="btn flat" type="button">↺ Ripristina sfondo</button><div class="section-title">Post-it</div><div class="thumbrow" id="noteGallery"></div>
    <div class="section-title">Spaziatura dei testi</div>
    <div class="field"><label>Dimensione corpo <strong id="bodyScaleLabel">100%</strong></label><input id="bodyScale" type="range" min="84" max="112" value="100" step="1"/></div>
    <div class="field"><label>Dimensione note <strong id="noteScaleLabel">100%</strong></label><input id="noteScale" type="range" min="85" max="110" value="100" step="1"/></div>
@@ -229,7 +231,7 @@ function getFields(p){return p.fields||DEFAULT_FIELDS}
 function noteDimension(note){return{w:note.w*(note.scale||1)*(note.scaleX||1),h:note.h*(note.scale||1)*(note.scaleY||1)}}
 function noteAutoLayout(note,p,c=ctx){
  const {w,h}=noteDimension(note),s=p.noteScale||1;
- const left=w*.405,right=w*.87,textW=right-left,FONT=18*s,LAB=19*s,LINE=1.17;
+ const left=w*.405,right=w*.87,textW=right-left,FONT=21*s,LAB=21*s,LINE=1.18;
  const heightFor=(key,fs=FONT)=>{
   const raw=String(p.fields?.[key]||'');
   const lines=measureLines(c,raw,Math.max(72,textW),fs,LINE,false);
@@ -239,8 +241,8 @@ function noteAutoLayout(note,p,c=ctx){
  const inserts=[
   Math.max(0,Math.ceil(headline+heightFor('base')+pad-.135*h+6)),
   Math.max(0,Math.ceil(headline+heightFor('duration')+pad-.12*h+6)),
-  Math.max(0,Math.ceil(headline+heightFor('highlight',16*s)+pad-.17*h+16)),
-  Math.max(0,Math.ceil(headline+heightFor('tips',16*s)+pad-.16*h+15))
+  Math.max(0,Math.ceil(headline+heightFor('highlight',19*s)+pad-.17*h+16)),
+  Math.max(0,Math.ceil(headline+heightFor('tips',19*s)+pad-.16*h+15))
  ];
  const totalExtra=inserts.reduce((a,b)=>a+b,0);
  const anchors=[
@@ -282,12 +284,13 @@ function noteBlocks(note,p){
  return['base','duration','highlight','tips'].map((key,i)=>({
   key,label:({base:'Base',duration:'Durata',highlight:'Da non perdere',tips:'Da sapere'})[key],
   value:f[key],x:note.x+L.left,w:L.textW,top:note.y+L.anchors[i],
-  labSize:19*s,valueSize:i<2?18*s:16*s,
+  labSize:21*s,valueSize:i<2?21*s:19*s,
   height:Math.max(22,i<3?L.anchors[i+1]-L.anchors[i]-36:L.totalH-L.anchors[i]-64)
  }));
 }
 function render(p=page(),dest=ctx,selectedDraw=true){if(!p)return;const c=dest;if(c!==ctx){/* export uses independent context */}hitboxes=[];fitIssues=[];c.save();c.clearRect(0,0,W,H);c.fillStyle='#f7efde';c.fillRect(0,0,W,H);
- window.KURA_V2.drawKuraBackground(c,p.background);
+ const bt=p.bgTransform||{};const bgZoom=Math.max(1,Math.min(1.8,Number(bt.zoom)||1));
+ c.save();c.translate((1-bgZoom)*W/2+(Number(bt.dx)||0),(1-bgZoom)*H/2+(Number(bt.dy)||0));c.scale(bgZoom,bgZoom);window.KURA_V2.drawKuraBackground(c,p.background);c.restore();
  const lay=LAYOUTS[p.layout];
  const scene=p.visuals.scene,postcard=p.visuals.postcard,note=p.visuals.note;
  if(scene.visible){const key=p.imageKeys?.scene||'giulia_kanazawa',w=scene.w*scene.scale*(scene.scaleX||1),h=scene.h*scene.scale*(scene.scaleY||1);drawImageFit(c,assetImage(key),scene.x,scene.y,w,h,scene.rot,scene.opacity??1,p.layout===1||p.layout===3,scene.flipX,scene.flipY);hitboxes.push({id:'scene',x:scene.x,y:scene.y,w,h})}
@@ -304,14 +307,14 @@ function render(p=page(),dest=ctx,selectedDraw=true){if(!p)return;const c=dest;i
  for(const [tbox,key] of [[h1,'head1'],[h2,'head2']]){
   // Dash sits to the LEFT of the brush title at the optical midline of the ink,
   // not at the bottom/baseline like an underline.
-  const brushFontSize=40,brushH=12;
+  const brushFontSize=39,brushH=11;
   const br={x:tbox.x+3,y:tbox.y+Math.round(brushFontSize*.44-brushH/2),w:56,h:brushH};
   const titleOffset=p.offsets?.[key]||{};
   const cx=tbox.x+70+(tbox.w-72)/2,cy=tbox.y+tbox.h/2;
   c.save();c.translate(cx,cy);c.rotate((titleOffset.rot||0)*Math.PI/180);c.translate(-cx,-cy);
   drawImageFit(c,assetImage('pennellata_2'),br.x,br.y,br.w,br.h);
   c.restore();
-  const heading={x:tbox.x+70,y:tbox.y,w:tbox.w-72,h:tbox.h};window.KURA_V2.paintEditable(c,p,key,p.fields[key],heading,{fontSize:40,script:true,bold:true,lineHeight:1.1,color:ORANGE});
+  const heading={x:tbox.x+70,y:tbox.y,w:tbox.w-72,h:tbox.h};window.KURA_V2.paintEditable(c,p,key,p.fields[key],heading,{fontSize:39,script:true,bold:false,lineHeight:1.12,color:ORANGE});
  }
  window.KURA_V2.paintEditable(c,p,'body1',p.fields.body1,b1,{fontSize:30*p.bodyScale,lineHeight:1.26,color:GREEN});
  window.KURA_V2.paintEditable(c,p,'body2',p.fields.body2,b2,{fontSize:30*p.bodyScale,lineHeight:1.26,color:GREEN});window.KURA_V2.paintFreeTexts(c,p);
