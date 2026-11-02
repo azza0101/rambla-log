@@ -291,10 +291,39 @@ refreshStickerGrid=function(){
   const title=document.createElement('div');title.className='kura-sticker-group';title.textContent=heading;title.style.gridColumn='1 / -1';title.style.fontSize='11px';title.style.fontWeight='850';title.style.marginTop='8px';title.style.color='#173d2e';root.appendChild(title);
   for(const[key,name]of items){
    const b=document.createElement('button');b.className='sticker-btn';b.type='button';b.title='Aggiungi '+name;b.dataset.stickerId=key;b.dataset.season=season;
-   const im=document.createElement('img');im.alt=name;im.loading='lazy';im.decoding='async';im.src=ASSETS['sticker_'+key];b.appendChild(im);const caption=document.createElement('small');caption.className='kura-sticker-name';caption.textContent=name;b.appendChild(caption);b.onclick=()=>addSticker(key);root.appendChild(b);
+   const im=document.createElement('img');im.alt=name;im.loading='lazy';im.decoding='async';im.src=ASSETS['sticker_'+key];b.appendChild(im);const caption=document.createElement('small');caption.className='kura-sticker-name';caption.textContent=name;b.appendChild(caption);
+   b.draggable=true;im.draggable=false;
+   b.addEventListener('dragstart',e=>{e.dataTransfer.effectAllowed='copy';e.dataTransfer.setData('application/x-kura-sticker',key);e.dataTransfer.setData('text/plain','kura-sticker:'+key)});
+   let touch=null,ghost=null,suppressClick=false;
+   b.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse')return;touch={x:e.clientX,y:e.clientY,moved:false};b.setPointerCapture?.(e.pointerId)});
+   b.addEventListener('pointermove',e=>{if(!touch)return;
+    if(Math.hypot(e.clientX-touch.x,e.clientY-touch.y)>12)touch.moved=true;
+    if(!touch.moved)return;
+    if(!ghost){ghost=document.createElement('img');ghost.src=im.src;ghost.className='kura-drag-ghost';document.body.appendChild(ghost)}
+    ghost.style.left=(e.clientX-52)+'px';ghost.style.top=(e.clientY-52)+'px';
+   });
+   b.addEventListener('pointerup',e=>{if(!touch)return;const moved=touch.moved;touch=null;ghost?.remove();ghost=null;
+    if(moved){suppressClick=true;const box=canvas.getBoundingClientRect();
+     if(e.clientX>=box.left-40&&e.clientX<=box.right+40&&e.clientY>=box.top-40&&e.clientY<=box.bottom+40)placeStickerAt(key,e.clientX,e.clientY);
+     else{addSticker(key);emitToast('Elemento inserito: spostalo sulla tavola')}
+     e.preventDefault();
+    }
+   });
+   b.addEventListener('pointercancel',()=>{touch=null;ghost?.remove();ghost=null});
+   b.onclick=()=>{if(suppressClick){suppressClick=false;return}addSticker(key)};
+   root.appendChild(b);
   }
  }
 };
+function placeStickerAt(key,clientX,clientY){
+ addSticker(key);
+ const el=elementById(selected);if(!el||!el.model)return;
+ const r=canvas.getBoundingClientRect(),pt={x:(clientX-r.left)/r.width*W,y:(clientY-r.top)/r.height*H};
+ const im=assetImage(el.model.key),w=el.model.w*(el.model.scale||1),h=el.model.h||w*(im?.naturalHeight||1)/(im?.naturalWidth||1);
+ el.model.x=pt.x-w/2;el.model.y=pt.y-h/2;refreshInspector();queueRender();scheduleSave();
+}
+canvas.addEventListener('dragover',e=>{if(e.dataTransfer?.types?.includes('application/x-kura-sticker')||e.dataTransfer?.types?.includes('text/plain')){e.preventDefault();e.dataTransfer.dropEffect='copy'}});
+canvas.addEventListener('drop',e=>{const key=e.dataTransfer?.getData('application/x-kura-sticker')||e.dataTransfer?.getData('text/plain')?.replace(/^kura-sticker:/,'');if(stickerDefs.some(x=>x[0]===key)){e.preventDefault();placeStickerAt(key,e.clientX,e.clientY)}});
 const originalRegenerateDecorations=regenerateDecorations;
 regenerateDecorations=function(addNew){
  originalRegenerateDecorations(addNew);if(!addNew)return;
