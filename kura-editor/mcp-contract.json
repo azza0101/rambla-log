@@ -1,6 +1,6 @@
 {
   "name": "KURA Carousel Editor",
-  "apiVersion": "2.2",
+  "apiVersion": "2.5",
   "browserNamespace": "window.KURA_MCP",
   "format": "KURA_EDITOR_V2",
   "units": {
@@ -35,8 +35,7 @@
   ],
   "fontFamilies": [
     "Montserrat",
-    "Feeling Passionate",
-    "Caveat"
+    "KURA Brush2"
   ],
   "patchOperations": {
     "setText": {
@@ -177,15 +176,22 @@
         "stamp",
         "tape",
         "camera",
-        "blossom",
-        "lavender",
-        "citrus",
-        "shell",
-        "autumn_leaf",
-        "grapes",
-        "snowflake",
-        "pine",
-        "ticket"
+        "spring_blossom_branch",
+        "spring_blossom_cluster",
+        "spring_tulips",
+        "spring_pink_petals",
+        "summer_lemon_branch",
+        "summer_orange_slices",
+        "summer_paper_shell",
+        "summer_swallow",
+        "autumn_maple_leaf",
+        "autumn_purple_grapes",
+        "autumn_olive_branch",
+        "autumn_wheat",
+        "winter_paper_snowflake",
+        "winter_snowy_pine",
+        "winter_pine_cones",
+        "winter_holly_branch"
       ]
     }
   },
@@ -250,7 +256,8 @@
     "window.KURA_MCP is an in-browser automation interface, NOT a remote MCP server. External MCP clients need browser execution, file editing, or a server bridge.",
     "The proprietary Feeling Passionate font is not bundled; to serve all users, provide a properly licensed web/app font at assets/FeelingPassionate.woff2.",
     "Illustrated background SVGs and 9 new stickers are first-party static assets under assets/.",
-    "Seasonal background ids are stable; prefer named backgroundId over numeric index."
+    "Seasonal background ids are stable; prefer named backgroundId over numeric index.",
+    "KURA 2.5 stores 16 high-quality photographic papercut WebP stickers separately, 4 per season, not simplified SVG substitutes."
   ],
   "backgroundPresets": [
     {
@@ -343,14 +350,30 @@
     "stamp",
     "tape",
     "camera",
-    "blossom",
-    "lavender",
-    "citrus",
-    "shell",
-    "autumn_leaf",
-    "grapes",
-    "snowflake",
-    "pine",
-    "ticket"
+    "spring_blossom_branch",
+    "spring_blossom_cluster",
+    "spring_tulips",
+    "spring_pink_petals",
+    "summer_lemon_branch",
+    "summer_orange_slices",
+    "summer_paper_shell",
+    "summer_swallow",
+    "autumn_maple_leaf",
+    "autumn_purple_grapes",
+    "autumn_olive_branch",
+    "autumn_wheat",
+    "winter_paper_snowflake",
+    "winter_snowy_pine",
+    "winter_pine_cones",
+    "winter_holly_branch"
+  ],
+  "fontAssets": [
+    {
+      "id": "KURA Brush2",
+      "url": "./assets/Kura_Brush2.woff2",
+      "source": "full font converted from user-provided TTF (not subset)",
+      "loadedForEveryUser": true,
+      "legacyAlias": "Feeling Passionate"
+    }
   ]
 }
