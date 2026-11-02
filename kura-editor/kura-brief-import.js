@@ -13,6 +13,7 @@
   '<label for="kuraBriefRaw" class="kura-brief-label">Brief completo</label>',
   '<textarea id="kuraBriefRaw" rows="9" placeholder="CAROSELLO KURA — NOVEMBRE 2026&#10;DESTINAZIONE 1 — SLOVENIA · VALLE DEL VIPACCO&#10;TITOLETTO 1: ...&#10;BODY1: ...&#10;TITOLETTO 2: ...&#10;BODY2: ...&#10;POST-IT:&#10;Base: ...&#10;Durata: ...&#10;Da non perdere: ...&#10;Da sapere: ..."></textarea>',
   '<label class="kura-brief-preserve"><input id="kuraBriefPreserve" type="checkbox" checked/><span><b>Copia la grafica del progetto corrente</b><small>Non modifica mai l’originale. Mantiene Giulia e il paesaggio soltanto nelle destinazioni corrispondenti.</small></span></label>',
+  '<label class="kura-brief-preserve"><input id="kuraBriefCurrent" type="checkbox"/><span><b>Applica al progetto corrente</b><small>Altrimenti crea un progetto nuovo. Puoi duplicare prima dal pannello Progetti.</small></span></label>',
   '<div class="kura-brief-actions"><button class="btn flat" id="kuraBriefAnalyze" type="button">Analizza testo</button><button class="btn primary" id="kuraBriefGenerate" type="button" disabled>＋ Genera nuovo progetto</button></div>',
   '<button class="kura-brief-example" id="kuraBriefLoadExample" type="button">Carica l’esempio di novembre (3 pagine)</button>',
   '<div id="kuraBriefPreview" class="kura-brief-preview" role="status" aria-live="polite">Nessuna API esterna. Analisi locale istantanea, senza generazione di nuove immagini.</div>'
@@ -24,7 +25,7 @@
   generate=section.querySelector('#kuraBriefGenerate'),
   analyze=section.querySelector('#kuraBriefAnalyze'),
   example=section.querySelector('#kuraBriefLoadExample'),
-  preserve=section.querySelector('#kuraBriefPreserve');
+  preserve=section.querySelector('#kuraBriefPreserve'),applyCurrent=section.querySelector('#kuraBriefCurrent');
  let lastParsed=null,lastText='';
  const message=(text,isError=false)=>{result.textContent=text;result.classList.toggle('has-error',isError)};
  function evaluate(){
@@ -60,8 +61,8 @@
   generate.disabled=true;
   const label=generate.textContent;generate.textContent='Creo il progetto…';
   try{
-   const report=await store.createFromBrief(lastParsed,{useCurrentGraphics:preserve.checked});
-   message('✓ Nuovo progetto creato: '+report.pages+' pagine · '+report.projectName+
+   const report=await store.createFromBrief(lastParsed,{useCurrentGraphics:preserve.checked,applyToCurrent:applyCurrent.checked});
+   message((applyCurrent.checked?'✓ Progetto corrente aggiornato: ':'✓ Nuovo progetto creato: ')+report.pages+' pagine · '+report.projectName+
      (report.warnings.length?'\n'+report.warnings.join('\n'):'')+
      '\nSalvato automaticamente nel browser: lo trovi in Progetti. Per pubblicarlo usa «☁ GitHub».');
   }catch(error){message('Errore generazione: '+error.message,true)}
