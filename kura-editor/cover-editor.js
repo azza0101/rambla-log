@@ -2,6 +2,7 @@
 (function(){
 'use strict';
 const CW=1080,CH=1350,LS='kura-cover-projects-v1';
+const BRUSH_FAMILY='KURA Brush2';
 const monthNames=['GENNAIO','FEBBRAIO','MARZO','APRILE','MAGGIO','GIUGNO','LUGLIO','AGOSTO','SETTEMBRE','OTTOBRE','NOVEMBRE','DICEMBRE'];
 const season=(m)=>m<=1||m===11?'winter':m<=4?'spring':m<=7?'summer':'autumn';
 const seasons={winter:{coat:'#b76b42',scarf:'#667c50'},spring:{coat:'#b88a66',scarf:'#8caa7c'},summer:{coat:'#ce8a55',scarf:'#e1b65c'},autumn:{coat:'#bc6948',scarf:'#526c44'}};
@@ -82,7 +83,7 @@ function coverRender(c=ctx,selection=true){
  drawMove(c,'month',g=>centerText(c,monthNames[doc.month],0,0,doc.type.monthSize,'#fff0df'));
  if(doc.assets.strap){drawMove(c,'strap',g=>{c.save();c.translate(-g.w/2,-g.h/2);fitImg(c,image(doc.assets.strap),g);c.restore()})}
  else if(c===ctx)missingAsset(c,doc.geometry.strap,'CARTIGLIO MASTER');
- drawMove(c,'year',g=>{c.save();c.textAlign='center';c.textBaseline='middle';c.fillStyle='#f6ecdc';c.font='700 '+doc.type.yearSize+'px Caveat,cursive';c.fillText(String(doc.year),0,-9);c.strokeStyle='#e9b445';c.lineWidth=7;c.beginPath();c.moveTo(-50,20);c.quadraticCurveTo(0,10,62,15);c.stroke();c.restore()});
+ drawMove(c,'year',g=>{c.save();c.textAlign='center';c.textBaseline='middle';c.fillStyle='#f6ecdc';c.font='400 '+doc.type.yearSize+'px "KURA Brush2",cursive';c.fillText(String(doc.year),0,-9);c.strokeStyle='#e9b445';c.lineWidth=7;c.beginPath();c.moveTo(-50,20);c.quadraticCurveTo(0,10,62,15);c.stroke();c.restore()});
  island(c,'island3',2);drawGiulia(c);
  if(selection&&!FIXED_KEYS.has(selected)){const g=doc.geometry[selected];if(g){c.save();c.strokeStyle='#e7b76d';c.lineWidth=2;c.setLineDash([12,6]);c.translate(g.x+g.w/2,g.y+g.h/2);c.rotate(g.angle*Math.PI/180);c.strokeRect(-g.w/2,-g.h/2,g.w,g.h);c.restore()}}
 }
@@ -142,4 +143,5 @@ function setup(){
 }
 window.KURA_COVER_MCP={schemaVersion:2,get:()=>clone(doc),validate:()=>{if(!doc)load();return{valid:validateCover().length===0,missing:validateCover()}},set:(patch)=>{if(!doc)load();for(const key of ['month','year','destinations','giuliaSide','seasonHint'])if(Object.prototype.hasOwnProperty.call(patch,key))doc[key]=clone(patch[key]);if(patch.geometry)for(const[k,g]of Object.entries(patch.geometry)){if(FIXED_KEYS.has(k))throw Error('Il livello master '+k+' è bloccato');if(doc.geometry[k]&&['island1','island2','island3','giulia'].includes(k))Object.assign(doc.geometry[k],g)};later();render();return clone(doc)},setImage:(key,dataURL,index)=>{if(key==='islands')doc.assets.islands[index]=dataURL;else doc.assets[key]=dataURL;later();render()},exportJSON:()=>JSON.stringify({format:'KURA_COVER_V1',cover:doc})};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
+document.fonts?.load('48px "KURA Brush2"').then(()=>{if(ctx)render()}).catch(()=>{});
 })();
