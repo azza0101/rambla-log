@@ -2,25 +2,25 @@
   "format": "KURA_EDITOR_V2",
   "width": 1080,
   "height": 1350,
-  "version": 2,
-  "schemaVersion": 2,
-  "projectId": "kura-nov26-travel-pages",
-  "projectName": "KURA · Novembre 2026 · Vipacco, Maiorca, Kruger",
+  "version": 3,
+  "schemaVersion": 3,
+  "projectId": "kura-nov26-travel-pages-v3",
+  "projectName": "KURA · Novembre 2026 · Fullwidth paper-cut v3",
   "pages": [
     {
       "id": "kura-nov26-01",
-      "name": "Slovenia · Valle del Vipacco",
-      "seed": "5401",
+      "name": "Slovenia · Vipacco",
+      "seed": "30010",
       "layout": 0,
-      "background": 10,
-      "backgroundId": "autumn_1",
+      "background": 0,
+      "backgroundId": "basic_1",
       "seasonHint": "autumn",
       "note": 0,
       "fields": {
         "eyebrow": "01 / SLOVENIA",
-        "head1": "IL TERRITORIO",
+        "head1": "Il territorio",
         "body1": "A pochi chilometri dal confine italiano esiste una valle fatta di **vigneti**, piccoli borghi di pietra, cantine familiari e tradizioni gastronomiche ancora molto vive.",
-        "head2": "IL VINO",
+        "head2": "Il vino e i borghi",
         "body2": "Novembre è un momento interessante per conoscere i **vini del territorio**, soprattutto le varietà locali e le produzioni artigianali. Tra una degustazione e l’altra puoi esplorare **Vipava**, passeggiare tra le vigne e scoprire una Slovenia diversa dalle mete più conosciute.",
         "base": "Vipava o Ajdovščina",
         "duration": "3–4 giorni",
@@ -29,10 +29,10 @@
       },
       "visuals": {
         "note": {
-          "x": 615,
-          "y": 90,
-          "w": 421,
-          "h": 535,
+          "x": 614,
+          "y": 115,
+          "w": 430,
+          "h": 538,
           "rot": -2,
           "scale": 1,
           "opacity": 1,
@@ -46,22 +46,23 @@
           "rot": 4,
           "scale": 1,
           "opacity": 1,
-          "visible": true
+          "visible": false
         },
         "scene": {
-          "x": 45,
-          "y": 1070,
-          "w": 366,
-          "h": 267,
-          "rot": -6,
+          "x": -24,
+          "y": 975,
+          "w": 1130,
+          "h": 376,
+          "rot": 0,
           "scale": 1,
           "opacity": 1,
-          "visible": true
+          "visible": true,
+          "flipX": false
         }
       },
       "imageKeys": {
-        "scene": "giulia_vipacco_nov26",
-        "postcard": "paesaggio_vipacco_nov26"
+        "scene": "giulia_vipacco_border_nov26",
+        "postcard": null
       },
       "stickers": [
         {
@@ -78,7 +79,7 @@
       ],
       "offsets": {
         "body2": {
-          "w": 492,
+          "w": 485,
           "h": 258
         },
         "head1": {
@@ -88,25 +89,46 @@
           "w": 425
         }
       },
-      "bodyScale": 0.81,
-      "noteScale": 0.88,
-      "textStyles": {},
-      "freeTexts": []
+      "bodyScale": 0.96,
+      "noteScale": 1.1,
+      "textStyles": {
+        "head1": {
+          "family": "Kaushan Script",
+          "fontSize": 39,
+          "bold": false,
+          "color": "#c87135",
+          "lineHeight": 1.15
+        },
+        "head2": {
+          "family": "Kaushan Script",
+          "fontSize": 39,
+          "bold": false,
+          "color": "#c87135",
+          "lineHeight": 1.15
+        }
+      },
+      "freeTexts": [],
+      "bgTransform": {
+        "zoom": 1.09,
+        "dx": 0,
+        "dy": -45
+      },
+      "noteTextAngle": 2
     },
     {
       "id": "kura-nov26-02",
-      "name": "Spagna · Maiorca, Serra de Tramuntana",
-      "seed": "5702",
+      "name": "Spagna · Maiorca",
+      "seed": "30132",
       "layout": 1,
-      "background": 0,
-      "backgroundId": "basic_1",
+      "background": 1,
+      "backgroundId": "basic_2",
       "seasonHint": "autumn",
       "note": 3,
       "fields": {
         "eyebrow": "02 / SPAGNA",
-        "head1": "L’ISOLA RURALE",
+        "head1": "L’isola rurale",
         "body1": "A novembre **Maiorca** si scopre lontano dalle spiagge: borghi di pietra come **Valldemossa**, Deià e Sóller, sentieri tra ulivi secolari e piccoli frantoi.",
-        "head2": "SENZA FRETTA",
+        "head2": "Senza fretta",
         "body2": "Le temperature spesso miti e i minori flussi di visitatori rendono questo periodo ideale per esplorare **l’anima rurale dell’isola**.",
         "base": "Valldemossa o Sóller",
         "duration": "3–4 giorni",
@@ -116,10 +138,10 @@
       "visuals": {
         "note": {
           "x": 28,
-          "y": 289,
-          "w": 425,
-          "h": 544,
-          "rot": 3,
+          "y": 315,
+          "w": 432,
+          "h": 550,
+          "rot": 1,
           "scale": 1,
           "opacity": 1,
           "visible": true
@@ -132,22 +154,23 @@
           "rot": -5,
           "scale": 1,
           "opacity": 1,
-          "visible": true
+          "visible": false
         },
         "scene": {
-          "x": 670,
-          "y": 1040,
-          "w": 340,
-          "h": 270,
-          "rot": 5,
+          "x": -24,
+          "y": 975,
+          "w": 1130,
+          "h": 376,
+          "rot": 0,
           "scale": 1,
           "opacity": 1,
-          "visible": true
+          "visible": true,
+          "flipX": false
         }
       },
       "imageKeys": {
-        "scene": "giulia_maiorca_nov26",
-        "postcard": "paesaggio_maiorca_nov26"
+        "scene": "giulia_maiorca_border_nov26",
+        "postcard": null
       },
       "stickers": [
         {
@@ -164,34 +187,60 @@
       ],
       "offsets": {
         "body1": {
-          "h": 410
+          "w": 438,
+          "h": 420
         },
         "head1": {
           "w": 420
         },
         "head2": {
           "w": 414
+        },
+        "body2": {
+          "w": 437,
+          "h": 236
         }
       },
-      "bodyScale": 0.84,
-      "noteScale": 0.9,
-      "textStyles": {},
-      "freeTexts": []
+      "bodyScale": 0.96,
+      "noteScale": 1.11,
+      "textStyles": {
+        "head1": {
+          "family": "Kaushan Script",
+          "fontSize": 39,
+          "bold": false,
+          "color": "#c87135",
+          "lineHeight": 1.15
+        },
+        "head2": {
+          "family": "Kaushan Script",
+          "fontSize": 39,
+          "bold": false,
+          "color": "#c87135",
+          "lineHeight": 1.15
+        }
+      },
+      "freeTexts": [],
+      "bgTransform": {
+        "zoom": 1.1,
+        "dx": -5,
+        "dy": -50
+      },
+      "noteTextAngle": 2.2
     },
     {
       "id": "kura-nov26-03",
-      "name": "Sudafrica · Parco Kruger",
-      "seed": "6003",
-      "layout": 2,
+      "name": "Sudafrica · Kruger",
+      "seed": "30254",
+      "layout": 3,
       "background": 3,
       "backgroundId": "basic_4",
       "seasonHint": "autumn",
       "note": 2,
       "fields": {
         "eyebrow": "03 / SUDAFRICA",
-        "head1": "LA SAVANA",
+        "head1": "La savana verde",
         "body1": "Novembre mostra un volto diverso del **Kruger**: arrivano le prime piogge, la savana comincia a rinverdire e tornano molti **uccelli migratori**.",
-        "head2": "GLI AVVISTAMENTI",
+        "head2": "Safari e birdwatching",
         "body2": "I grandi animali possono essere meno prevedibili rispetto alla stagione secca, ma il paesaggio si anima di nuovi colori e, per alcune specie, dei **primi cuccioli**.",
         "base": "Alloggi nel parco o nelle vicinanze",
         "duration": "4–5 giorni",
@@ -200,11 +249,11 @@
       },
       "visuals": {
         "note": {
-          "x": 604,
-          "y": 413,
-          "w": 411,
-          "h": 535,
-          "rot": 2,
+          "x": 56,
+          "y": 240,
+          "w": 430,
+          "h": 550,
+          "rot": -2,
           "scale": 1,
           "opacity": 1,
           "visible": true
@@ -217,22 +266,23 @@
           "rot": -6,
           "scale": 1,
           "opacity": 1,
-          "visible": true
+          "visible": false
         },
         "scene": {
-          "x": 68,
-          "y": 1030,
-          "w": 315,
-          "h": 320,
-          "rot": -3,
+          "x": -24,
+          "y": 975,
+          "w": 1130,
+          "h": 376,
+          "rot": 0,
           "scale": 1,
           "opacity": 1,
-          "visible": true
+          "visible": true,
+          "flipX": false
         }
       },
       "imageKeys": {
-        "scene": "giulia_kruger_nov26",
-        "postcard": "paesaggio_kruger_nov26"
+        "scene": "giulia_kruger_border_nov26",
+        "postcard": null
       },
       "stickers": [
         {
@@ -249,17 +299,45 @@
       ],
       "offsets": {
         "body1": {
-          "w": 477
+          "w": 456,
+          "h": 432
         },
         "body2": {
-          "w": 485,
-          "h": 232
+          "w": 454,
+          "h": 226
+        },
+        "head1": {
+          "w": 416
+        },
+        "head2": {
+          "w": 420
         }
       },
-      "bodyScale": 0.85,
-      "noteScale": 0.85,
-      "textStyles": {},
-      "freeTexts": []
+      "bodyScale": 0.96,
+      "noteScale": 1.1,
+      "textStyles": {
+        "head1": {
+          "family": "Kaushan Script",
+          "fontSize": 39,
+          "bold": false,
+          "color": "#c87135",
+          "lineHeight": 1.15
+        },
+        "head2": {
+          "family": "Kaushan Script",
+          "fontSize": 39,
+          "bold": false,
+          "color": "#c87135",
+          "lineHeight": 1.15
+        }
+      },
+      "freeTexts": [],
+      "bgTransform": {
+        "zoom": 1.14,
+        "dx": 10,
+        "dy": -45
+      },
+      "noteTextAngle": 2
     }
   ],
   "customAssets": {},
