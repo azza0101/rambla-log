@@ -1,7 +1,7 @@
 {
   "format": "KURA_COVER_V1",
   "api": "window.KURA_COVER_MCP",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "master": "GOLD MASTER NOVEMBRE 2026",
   "referenceWarning": "Immagini reference forniscono vincoli di composizione; non usarle come illustrazioni statiche di default.",
   "size": {
@@ -67,5 +67,17 @@
     "islands[1]",
     "islands[2]"
   ],
-  "editorPolicy": "Only islands and Giulia geometry can be moved; immutable layers locked. No drawn substitute for original art. Export disabled until required assets supplied."
+  "editorPolicy": "Only islands and Giulia geometry can be moved; immutable layers locked. No drawn substitute for original art. Export disabled until required assets supplied.",
+  "fonts": {
+    "brush": {
+      "family": "KURA Brush2",
+      "file": "./assets/Kura_Brush2.woff2",
+      "glyphs": "full",
+      "purpose": "handwritten year and brush accents"
+    },
+    "sans": {
+      "family": "Montserrat",
+      "purpose": "main titles"
+    }
+  }
 }
