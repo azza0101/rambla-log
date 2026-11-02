@@ -139,7 +139,8 @@
       "meta": {
         "imageBrief": "PNG trasparente unico a tutta larghezza, paesaggio e Giulia in un solo asset 2D papercut con bordo superiore frastagliato, senza testo né post-it. Vigneti senape e rame, borgo di pietra e cantina familiare. Giulia a SINISTRA, seduta mentre assaggia orange wine, con occhiali ottagonali. Non ritagliare da screenshot.",
         "layoutBrief": "testo a sinistra / post-it in alto a destra; vigneti e Giulia in fascia bassa, spazio negativo e PNG continuo sul bordo inferiore.",
-        "importedFromBrief": true
+        "importedFromBrief": true,
+        "referenceSubtitle": "Vigne, borghi e orange wine"
       }
     },
     {
@@ -274,7 +275,8 @@
       "meta": {
         "imageBrief": "PNG trasparente fullwidth, Giulia e panorama nello stesso asset. Valldemossa, case miele, muretti a secco, uliveti e Tramuntana. Giulia a DESTRA con giacca leggera che fotografa gli ulivi monumentali. Papercut 2D, no screenshot.",
         "layoutBrief": "testo a destra / post-it in alto a sinistra; scena inferiore con ulivi inclinati, spazio negativo.",
-        "importedFromBrief": true
+        "importedFromBrief": true,
+        "referenceSubtitle": "Valldemossa e Serra de Tramuntana"
       }
     },
     {
@@ -409,7 +411,8 @@
       "meta": {
         "imageBrief": "PNG trasparente 1080px+ fullwidth con savana verde, acacia, elefante lontano, impala, uccelli e Giulia a DESTRA che osserva con binocolo in sicurezza. Stile papercut piatto, nessuna scritta.",
         "layoutBrief": "testo a sinistra / post-it a destra leggermente sfalsato; savana ampia in basso.",
-        "importedFromBrief": true
+        "importedFromBrief": true,
+        "referenceSubtitle": "Quando la savana torna verde"
       }
     }
   ],
