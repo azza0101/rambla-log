@@ -134,7 +134,7 @@
 <script>
 'use strict';
 const KURA_BUILD='3.0.0';
-window.KURA_BUILD={version:'3.0.0',build:'20261102fa01'};
+window.KURA_BUILD={version:'3.0.0',build:'20261102fa02'};
 const ASSETS={"sticker_map":"./assets/sticker_map.png","sticker_berries":"./assets/sticker_berries.png","sticker_stamp":"./assets/sticker_stamp.png","postit_4":"./assets/postit_4.png","postit_1":"./assets/postit_1.png","pennellata_3":"./assets/pennellata_3.png","sticker_olive":"./assets/sticker_olive.png","sticker_monstera":"./assets/sticker_monstera.png","sticker_tape":"./assets/sticker_tape.png","pennellata_1":"./assets/pennellata_1.png","cartolina_kenrokuen":"./assets/cartolina_kenrokuen.png","sticker_compass":"./assets/sticker_compass.png","pennellata_2":"./assets/pennellata_2.png","sticker_camera":"./assets/sticker_camera.png","postit_3":"./assets/postit_3.png","giulia_kanazawa":"./assets/giulia_kanazawa.png","postit_2":"./assets/postit_2.png","sfondo_3":"./assets/sfondo_3.jpg","sfondo_4":"./assets/sfondo_4.jpg","sfondo_1":"./assets/sfondo_1.jpg","sfondo_2":"./assets/sfondo_2.jpg"};
 const W=1080,H=1350, GREEN='#153d2d',ORANGE='#cf7931',GREEN2='#17402f';
 const DEFAULT_FIELDS={
@@ -293,7 +293,7 @@ function render(p=page(),dest=ctx,selectedDraw=true){if(!p)return;const c=dest;i
  c.save();c.translate((1-bgZoom)*W/2+(Number(bt.dx)||0),(1-bgZoom)*H/2+(Number(bt.dy)||0));c.scale(bgZoom,bgZoom);window.KURA_V2.drawKuraBackground(c,p.background);c.restore();
  const lay=LAYOUTS[p.layout];
  const scene=p.visuals.scene,postcard=p.visuals.postcard,note=p.visuals.note;
- if(scene.visible){const key=p.imageKeys?.scene||'giulia_kanazawa',w=scene.w*scene.scale*(scene.scaleX||1),h=scene.h*scene.scale*(scene.scaleY||1);drawImageFit(c,assetImage(key),scene.x,scene.y,w,h,scene.rot,scene.opacity??1,p.layout===1||p.layout===3,scene.flipX,scene.flipY);hitboxes.push({id:'scene',x:scene.x,y:scene.y,w,h})}
+ if(scene.visible){const key=p.imageKeys?.scene||'giulia_kanazawa',w=scene.w*scene.scale*(scene.scaleX||1),h=scene.h*scene.scale*(scene.scaleY||1);drawImageFit(c,assetImage(key),scene.x,scene.y,w,h,scene.rot,scene.opacity??1,(p.layout===1||p.layout===3)&&!String(key).includes('_border_nov26'),scene.flipX,scene.flipY);hitboxes.push({id:'scene',x:scene.x,y:scene.y,w,h})}
  if(postcard.visible){const key=p.imageKeys?.postcard||'cartolina_kenrokuen',w=postcard.w*postcard.scale*(postcard.scaleX||1),h=postcard.h*postcard.scale*(postcard.scaleY||1);drawImageFit(c,assetImage(key),postcard.x,postcard.y,w,h,postcard.rot,postcard.opacity??1,false,postcard.flipX,postcard.flipY);hitboxes.push({id:'postcard',x:postcard.x,y:postcard.y,w,h})}
  if(note.visible){const L=drawAdaptiveNote(c,assetImage('postit_'+(p.note+1)),note,p);hitboxes.push({id:'note',x:note.x,y:note.y,w:L.w,h:L.totalH})}
  for(const s of p.stickers){const im=assetImage(s.key);let w=s.w*s.scale*(s.scaleX||1),h=(s.h||s.w*(im?.naturalHeight||1)/(im?.naturalWidth||1))*s.scale*(s.scaleY||1);drawImageFit(c,im,s.x,s.y,w,h,s.rot,s.opacity??1,false,s.flipX,s.flipY);hitboxes.push({id:'sticker:'+s.id,x:s.x,y:s.y,w,h})}
