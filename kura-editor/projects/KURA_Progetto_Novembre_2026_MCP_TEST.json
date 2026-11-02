@@ -1,0 +1,437 @@
+{
+  "format": "KURA_EDITOR_V2",
+  "width": 1080,
+  "height": 1350,
+  "version": 8,
+  "schemaVersion": 8,
+  "projectId": "kura-nov26-mcp-v3-test-20261102",
+  "projectName": "KURA · Novembre 2026 · TEST motore locale V3",
+  "pages": [
+    {
+      "id": "kura-mcp3-test-01",
+      "name": "SLOVENIA · VALLE DEL VIPACCO",
+      "seed": "30010",
+      "layout": 0,
+      "background": 0,
+      "backgroundId": "basic_1",
+      "seasonHint": "autumn",
+      "note": 0,
+      "fields": {
+        "eyebrow": "01 / SLOVENIA",
+        "head1": "Un calice tira l'altro",
+        "body1": "In **Valle del Vipacco** vai per un calice e rischi di fermarti a chiacchierare ore col vignaiolo. Tra borghi di pietra e piccole cantine trovi vini insoliti come **Zelen e Pinela** e un sacco di **orange wine**.",
+        "head2": "La dritta di novembre",
+        "body2": "A novembre è tutto più tranquillo: vigne, degustazioni e pranzi senza fretta. Occhio solo alla **bora**: quando si alza, si fa sentire!",
+        "base": "Vipava o Ajdovščina",
+        "duration": "3–4 giorni",
+        "highlight": "Zelen, Pinela e orange wine",
+        "tips": "prenota le cantine e occhio alla bora!",
+        "label_highlight": "Da non perdere"
+      },
+      "visuals": {
+        "note": {
+          "x": 629,
+          "y": 120,
+          "w": 400,
+          "h": 516,
+          "rot": -2,
+          "scale": 1,
+          "opacity": 1,
+          "visible": true
+        },
+        "postcard": {
+          "x": 700,
+          "y": 937,
+          "w": 320,
+          "h": 180,
+          "rot": 4,
+          "scale": 1,
+          "opacity": 1,
+          "visible": false
+        },
+        "scene": {
+          "x": -24,
+          "y": 1152,
+          "w": 1130,
+          "h": 376,
+          "rot": 0,
+          "scale": 1,
+          "opacity": 1,
+          "visible": true,
+          "flipX": false
+        }
+      },
+      "imageKeys": {
+        "scene": "giulia_vipacco_border_nov26",
+        "postcard": null
+      },
+      "stickers": [
+        {
+          "id": "v-decor-grape",
+          "key": "sticker_autumn_purple_grapes",
+          "x": 914,
+          "y": 1122,
+          "w": 115,
+          "h": 0,
+          "rot": 11,
+          "scale": 1,
+          "opacity": 0.85
+        }
+      ],
+      "offsets": {
+        "body2": {
+          "w": 930,
+          "h": 250,
+          "dx": -12,
+          "dy": 90
+        },
+        "head1": {
+          "w": 523,
+          "rot": -2.6
+        },
+        "head2": {
+          "w": 539,
+          "dy": 91,
+          "rot": -2.5
+        },
+        "body1": {
+          "dx": -12,
+          "dy": -13,
+          "w": 548,
+          "h": 565
+        }
+      },
+      "bodyScale": 1,
+      "noteScale": 1.02,
+      "textStyles": {
+        "head1": {
+          "family": "Caveat Brush",
+          "fontSize": 51,
+          "bold": false,
+          "color": "#c87135",
+          "lineHeight": 1.1
+        },
+        "head2": {
+          "family": "Caveat Brush",
+          "fontSize": 51,
+          "bold": false,
+          "color": "#c87135",
+          "lineHeight": 1.1
+        },
+        "body1": {
+          "family": "Montserrat",
+          "fontSize": 31,
+          "lineHeight": 1.2
+        },
+        "body2": {
+          "family": "Montserrat",
+          "fontSize": 31,
+          "lineHeight": 1.2
+        }
+      },
+      "freeTexts": [],
+      "bgTransform": {
+        "zoom": 1.09,
+        "dx": 0,
+        "dy": -45
+      },
+      "noteTextAngle": 0,
+      "meta": {
+        "imageBrief": "PNG trasparente unico a tutta larghezza, paesaggio e Giulia in un solo asset 2D papercut con bordo superiore frastagliato, senza testo né post-it. Vigneti senape e rame, borgo di pietra e cantina familiare. Giulia a SINISTRA, seduta mentre assaggia orange wine, con occhiali ottagonali. Non ritagliare da screenshot.",
+        "layoutBrief": "testo a sinistra / post-it in alto a destra; vigneti e Giulia in fascia bassa, spazio negativo e PNG continuo sul bordo inferiore.",
+        "importedFromBrief": true
+      }
+    },
+    {
+      "id": "kura-mcp3-test-02",
+      "name": "MAIORCA, SPAGNA",
+      "seed": "30132",
+      "layout": 1,
+      "background": 1,
+      "backgroundId": "basic_2",
+      "seasonHint": "autumn",
+      "note": 0,
+      "fields": {
+        "eyebrow": "02 / SPAGNA",
+        "head1": "Maiorca senza spiagge",
+        "body1": "Maiorca a novembre? Lascia perdere le spiagge. Tra **Valldemossa e Deià** trovi paesini di pietra, montagne e **ulivi secolari** che sembrano sculture. Un'isola che non ti aspetti.",
+        "head2": "Olive, borghi e sentieri",
+        "body2": "È tempo di raccolta: fermati in un frantoio per l'**olio nuovo**, poi cammina nella **Serra de Tramuntana**. Senza la folla estiva è tutta un'altra storia.",
+        "base": "Valldemossa o Sóller",
+        "duration": "3–4 giorni",
+        "highlight": "borghi, trekking e olio nuovo",
+        "tips": "porta una giacca antipioggia!",
+        "label_highlight": "Da non perdere"
+      },
+      "visuals": {
+        "note": {
+          "x": 38,
+          "y": 240,
+          "w": 403,
+          "h": 520,
+          "rot": 1,
+          "scale": 1,
+          "opacity": 1,
+          "visible": true
+        },
+        "postcard": {
+          "x": 78,
+          "y": 58,
+          "w": 366,
+          "h": 200,
+          "rot": -5,
+          "scale": 1,
+          "opacity": 1,
+          "visible": false
+        },
+        "scene": {
+          "x": -24,
+          "y": 1168,
+          "w": 1130,
+          "h": 376,
+          "rot": 0,
+          "scale": 1,
+          "opacity": 1,
+          "visible": true,
+          "flipX": false
+        }
+      },
+      "imageKeys": {
+        "scene": "giulia_maiorca_border_nov26",
+        "postcard": null
+      },
+      "stickers": [
+        {
+          "id": "m-decor-olive",
+          "key": "sticker_autumn_olive_branch",
+          "x": 80,
+          "y": 1100,
+          "w": 122,
+          "h": 0,
+          "rot": -15,
+          "scale": 1,
+          "opacity": 0.92
+        }
+      ],
+      "offsets": {
+        "body1": {
+          "w": 502,
+          "h": 520,
+          "dx": -27,
+          "dy": -27
+        },
+        "head1": {
+          "w": 520,
+          "rot": -2.4
+        },
+        "head2": {
+          "w": 504,
+          "dy": 58,
+          "rot": -2.5
+        },
+        "body2": {
+          "w": 966,
+          "h": 257,
+          "dx": -480,
+          "dy": 100
+        }
+      },
+      "bodyScale": 1,
+      "noteScale": 1.02,
+      "textStyles": {
+        "head1": {
+          "family": "Caveat Brush",
+          "fontSize": 51,
+          "bold": false,
+          "color": "#c87135",
+          "lineHeight": 1.1
+        },
+        "head2": {
+          "family": "Caveat Brush",
+          "fontSize": 46,
+          "bold": false,
+          "color": "#c87135",
+          "lineHeight": 1.1
+        },
+        "body1": {
+          "family": "Montserrat",
+          "fontSize": 31,
+          "lineHeight": 1.2
+        },
+        "body2": {
+          "family": "Montserrat",
+          "fontSize": 31,
+          "lineHeight": 1.2
+        }
+      },
+      "freeTexts": [],
+      "bgTransform": {
+        "zoom": 1.1,
+        "dx": -5,
+        "dy": -50
+      },
+      "noteTextAngle": 0,
+      "meta": {
+        "imageBrief": "PNG trasparente fullwidth, Giulia e panorama nello stesso asset. Valldemossa, case miele, muretti a secco, uliveti e Tramuntana. Giulia a DESTRA con giacca leggera che fotografa gli ulivi monumentali. Papercut 2D, no screenshot.",
+        "layoutBrief": "testo a destra / post-it in alto a sinistra; scena inferiore con ulivi inclinati, spazio negativo.",
+        "importedFromBrief": true
+      }
+    },
+    {
+      "id": "kura-mcp3-test-03",
+      "name": "PARCO KRUGER, SUDAFRICA",
+      "seed": "30254",
+      "layout": 3,
+      "background": 3,
+      "backgroundId": "basic_4",
+      "seasonHint": "autumn",
+      "note": 0,
+      "fields": {
+        "eyebrow": "03 / SUDAFRICA",
+        "head1": "La savana cambia faccia",
+        "body1": "A novembre il **Kruger cambia faccia**: le prime piogge colorano la savana di verde, tornano gli **uccelli migratori** e gli **impala** iniziano a partorire. Altro che solita distesa gialla!",
+        "head2": "Tutti svegli all'alba",
+        "body2": "Parti per un **safari all'alba** tra nuovi richiami e, con un po' di fortuna, cuccioli ai primi passi. Qui la natura sembra svegliarsi tutta insieme. E vuoi mettere esserci?",
+        "base": "campi nel parco o nei dintorni",
+        "duration": "4–5 giorni",
+        "highlight": "safari all'alba e birdwatching",
+        "tips": "caldo, piogge e tanta vegetazione",
+        "label_highlight": "Da non perdere"
+      },
+      "visuals": {
+        "note": {
+          "x": 44,
+          "y": 210,
+          "w": 408,
+          "h": 530,
+          "rot": -2,
+          "scale": 1,
+          "opacity": 1,
+          "visible": true
+        },
+        "postcard": {
+          "x": 655,
+          "y": 75,
+          "w": 362,
+          "h": 209,
+          "rot": -6,
+          "scale": 1,
+          "opacity": 1,
+          "visible": false
+        },
+        "scene": {
+          "x": -24,
+          "y": 1206,
+          "w": 1130,
+          "h": 376,
+          "rot": 0,
+          "scale": 1,
+          "opacity": 1,
+          "visible": true,
+          "flipX": false
+        }
+      },
+      "imageKeys": {
+        "scene": "giulia_kruger_border_nov26",
+        "postcard": null
+      },
+      "stickers": [
+        {
+          "id": "k-decor-swallow",
+          "key": "sticker_summer_swallow",
+          "x": 903,
+          "y": 1110,
+          "w": 95,
+          "h": 0,
+          "rot": 11,
+          "scale": 1,
+          "opacity": 0.83
+        }
+      ],
+      "offsets": {
+        "body1": {
+          "w": 513,
+          "h": 534,
+          "dx": -19,
+          "dy": -14
+        },
+        "body2": {
+          "w": 969,
+          "h": 287,
+          "dx": -481,
+          "dy": 111
+        },
+        "head1": {
+          "w": 517,
+          "rot": -2.5
+        },
+        "head2": {
+          "w": 522,
+          "dy": 103,
+          "rot": -2.5
+        }
+      },
+      "bodyScale": 1,
+      "noteScale": 1.02,
+      "textStyles": {
+        "head1": {
+          "family": "Caveat Brush",
+          "fontSize": 47,
+          "bold": false,
+          "color": "#c87135",
+          "lineHeight": 1.1
+        },
+        "head2": {
+          "family": "Caveat Brush",
+          "fontSize": 51,
+          "bold": false,
+          "color": "#c87135",
+          "lineHeight": 1.1
+        },
+        "body1": {
+          "family": "Montserrat",
+          "fontSize": 31,
+          "lineHeight": 1.2
+        },
+        "body2": {
+          "family": "Montserrat",
+          "fontSize": 31,
+          "lineHeight": 1.2
+        }
+      },
+      "freeTexts": [],
+      "bgTransform": {
+        "zoom": 1.14,
+        "dx": 10,
+        "dy": -45
+      },
+      "noteTextAngle": 0,
+      "meta": {
+        "imageBrief": "PNG trasparente 1080px+ fullwidth con savana verde, acacia, elefante lontano, impala, uccelli e Giulia a DESTRA che osserva con binocolo in sicurezza. Stile papercut piatto, nessuna scritta.",
+        "layoutBrief": "testo a sinistra / post-it a destra leggermente sfalsato; savana ampia in basso.",
+        "importedFromBrief": true
+      }
+    }
+  ],
+  "customAssets": {},
+  "assetManifest": {
+    "giulia_vipacco_nov26": "assets/novembre2026/giulia_vipacco.png",
+    "giulia_maiorca_nov26": "assets/novembre2026/giulia_maiorca.png",
+    "giulia_kruger_nov26": "assets/novembre2026/giulia_kruger.png",
+    "paesaggio_vipacco_nov26": "assets/novembre2026/paesaggio_vipacco.webp",
+    "paesaggio_maiorca_nov26": "assets/novembre2026/paesaggio_maiorca.webp",
+    "paesaggio_kruger_nov26": "assets/novembre2026/paesaggio_kruger.webp"
+  },
+  "source": "Testi forniti dall’utente; Giulia e paesaggi generati in collage papercut KURA e ritagliati in asset indipendenti.",
+  "meta": {
+    "title": "CAROSELLO KURA — NOVEMBRE 2026",
+    "type": "PAGINE INFORMATIVE (3)",
+    "style": "master KURA approvato",
+    "textEdition": "V3 — corpi alleggeriti ~40%; POST-IT invariati; due titoletti per meta",
+    "sourceVersion": "MCP v3.3.0",
+    "canonicalPreset": "Ogni destinazione genera UNA SOLA pagina 1080×1350 verticale 4:5, mai una griglia. Nessun logo nelle pagine informative. Montserrat per entrambi i corpi di testo (body1 e body2 con dimensione identica, target 31 px e caselle sufficientemente ampie); Caveat Brush per i due titoletti, in minuscolo/sentence case, colore arancio KURA. Conservare i marcatori **grassetto** editabili. Sfondo avorio materico e varianti stagionali papercut, con spazio negativo generoso e layout alternati. Post-it canonico originale, ricostruito solo dagli asset assets/postit-canon/; non rigenerare icone. Giulia canonica: ricci, nasino, occhiali ottagonali, occhi neri senza bianco. Unico PNG trasparente full-width, 2D papercut, con paesaggio integrato. Riutilizzare la grafica già approvata del progetto precedente. Creare un projectId univoco; non sovrascrivere altri progetti. Il sito statico non genera nuove immagini.",
+    "sourceProjectId": "kura-nov26-travel-pages-v7",
+    "parserVersion": "1.0.0",
+    "demo": true
+  }
+}
