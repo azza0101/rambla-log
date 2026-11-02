@@ -2,7 +2,7 @@
    Expects the v1 editor's globals in index.html. No external runtime or API keys. */
 'use strict';
 (function(){
-const V2_VERSION='3.6.0';
+const V2_VERSION='3.7.0';
 const NOTE_LABELS={label_base:'Base',label_duration:'Durata',label_highlight:'Da non perdere',label_tips:'Da sapere'};
 const STANDARD=['eyebrow','head1','body1','head2','body2','label_base','base','label_duration','duration','label_highlight','highlight','label_tips','tips'];
 const PAPER=[{"id":"basic_1","name":"Basic 1 · Avorio","season":"basic","colors":["#f7f0e4","#f2e8d9"],"fibers":"#b4a692","direction":0,"tags":["basic","basic 1 · avorio"]},{"id":"basic_2","name":"Basic 2 · Salvia","season":"basic","colors":["#e9eee4","#f5f3e9"],"fibers":"#a0a995","direction":1,"tags":["basic","basic 2 · salvia"]},{"id":"basic_3","name":"Basic 3 · Sabbia","season":"basic","colors":["#f3e7dc","#f9f2e9"],"fibers":"#bc9b89","direction":2,"tags":["basic","basic 3 · sabbia"]},{"id":"basic_4","name":"Basic 4 · Perla","season":"basic","colors":["#f1f1eb","#e6ece5"],"fibers":"#aeb7ae","direction":3,"tags":["basic","basic 4 · perla"]},{"id":"spring_1","name":"Primavera 1 · Boccioli","season":"spring","colors":["#f5efe4","#dce7d7"],"fibers":"#98b689","direction":0,"tags":["spring","primavera 1 · boccioli"]},{"id":"spring_2","name":"Primavera 2 · Botanica","season":"spring","colors":["#edf2e3","#d5e2c7"],"fibers":"#9bb88d","direction":1,"tags":["spring","primavera 2 · botanica"]},{"id":"spring_3","name":"Primavera 3 · Luce","season":"spring","colors":["#f8f2df","#e9eedb"],"fibers":"#aabf9e","direction":2,"tags":["spring","primavera 3 · luce"]},{"id":"summer_1","name":"Estate 1 · Mediterranea","season":"summer","colors":["#f9efd9","#dfe9eb"],"fibers":"#91b0b4","direction":3,"tags":["summer","estate 1 · mediterranea"]},{"id":"summer_2","name":"Estate 2 · Sabbia","season":"summer","colors":["#f4ead6","#efd7b4"],"fibers":"#cfaa78","direction":0,"tags":["summer","estate 2 · sabbia"]},{"id":"summer_3","name":"Estate 3 · Agrumi","season":"summer","colors":["#fff1d9","#f2d59c"],"fibers":"#d29c5d","direction":1,"tags":["summer","estate 3 · agrumi"]},{"id":"autumn_1","name":"Autunno 1 · Terracotta","season":"autumn","colors":["#f3e3d7","#d8b59c"],"fibers":"#bd835d","direction":2,"tags":["autumn","autunno 1 · terracotta"]},{"id":"autumn_2","name":"Autunno 2 · Olivato","season":"autumn","colors":["#ece7d5","#c4c59e"],"fibers":"#8d9b68","direction":3,"tags":["autumn","autunno 2 · olivato"]},{"id":"autumn_3","name":"Autunno 3 · Vendemmia","season":"autumn","colors":["#f2e8dc","#c8a88b"],"fibers":"#9a7c66","direction":0,"tags":["autumn","autunno 3 · vendemmia"]},{"id":"winter_1","name":"Inverno 1 · Nebbia","season":"winter","colors":["#eff0ee","#d9dedd"],"fibers":"#9eafac","direction":1,"tags":["winter","inverno 1 · nebbia"]},{"id":"winter_2","name":"Inverno 2 · Bosco","season":"winter","colors":["#e7ece8","#cbd7cf"],"fibers":"#849e90","direction":2,"tags":["winter","inverno 2 · bosco"]},{"id":"winter_3","name":"Inverno 3 · Ghiaccio","season":"winter","colors":["#f1f3f2","#dde5ea"],"fibers":"#a9bfcc","direction":3,"tags":["winter","inverno 3 · ghiaccio"]}];
@@ -23,7 +23,7 @@ for(const[k,url]of Object.entries(KURA_NOV26_ASSETS))ASSETS[k]=url;
 const KURA_SEASONS=[['basic','Basic'],['spring','Primavera'],['summer','Estate'],['autumn','Autunno'],['winter','Inverno']];
 
 let overlay=null, toolbar=null, ctxMenu=null, nodeMap=new Map(), activeKey=null, shownPage=null;
-let pIndex=[], currentProjectId=null, managerReady=false, savingNow=false, saveAgain=false;
+let pIndex=[], currentProjectId=null, currentProjectMeta={}, managerReady=false, savingNow=false, saveAgain=false;
 let fontReadyFromHost=false;
 const metrics=new Map();
 function safeNumber(n,lo,hi,def){n=Number(n);return Number.isFinite(n)?Math.max(lo,Math.min(hi,n)):def}
@@ -543,14 +543,14 @@ async function switchProject(id){
  clearTimeout(saveTimer);await persistNow();
  let pkg=await dbGet('kura:v2:project:'+id);
  if(!pkg?.pages?.length){emitToast('Progetto non disponibile nel browser');return}
- currentProjectId=id;
+ currentProjectId=id;currentProjectMeta=deepClone(pkg.meta||{});
  pages=pkg.pages.map(normalizePage).map(ensurePage);current=0;selected=null;activeKey=null;history=[];future=[];updateHistory();
  for(const [k,v]of Object.entries(pkg.customAssets||{}))if(k.startsWith('custom_')&&typeof v==='string'&&v.startsWith('data:image/')){ASSETS[k]=v;imageCache.delete(k);assetImage(k)}
  shownPage=null;refreshAll();showProjectOptions();await dbPut('kura:v2:active',id);emitToast('Progetto aperto');
 }
 async function newProject(){
  clearTimeout(saveTimer);await persistNow();const id=uuid();
- pIndex.push({id:id,name:'Nuovo carosello',updatedAt:Date.now()});currentProjectId=id;pages=[ensurePage(makePage(0))];current=0;selected=null;activeKey=null;shownPage=null;history=[];future=[];updateHistory();
+ pIndex.push({id:id,name:'Nuovo carosello',updatedAt:Date.now()});currentProjectId=id;currentProjectMeta={};pages=[ensurePage(makePage(0))];current=0;selected=null;activeKey=null;shownPage=null;history=[];future=[];updateHistory();
  page().background=4+(hashSeed(id)%8);refreshAll();showProjectOptions();await persistNow();emitToast('Nuovo progetto creato')
 }
 function projectPanel(){
@@ -575,7 +575,7 @@ async function loadPublishedKuraTemplate(name='novembre-2026'){
  for(const p of pkg.pages)if(!p.fields||!KURA_NOV26_ASSETS[p.imageKeys?.scene]||(p.imageKeys?.postcard&&!KURA_NOV26_ASSETS[p.imageKeys.postcard]))throw Error('Illustrazione KURA non valida');
  await persistNow();
  pIndex.push({id:projectId,name:pkg.projectName||'KURA Novembre 2026',updatedAt:Date.now()});
- currentProjectId=projectId;pages=pkg.pages.map(normalizePage).map(ensurePage);
+ currentProjectId=projectId;currentProjectMeta=deepClone(pkg.meta||{});pages=pkg.pages.map(normalizePage).map(ensurePage);
  current=0;selected=null;activeKey=null;shownPage=null;history=[];future=[];updateHistory();
  for(const[k,url]of Object.entries(KURA_NOV26_ASSETS)){ASSETS[k]=url;imageCache.delete(k);assetImage(k)}
  refreshAll();showProjectOptions();await persistNow();emitToast('Tre tavole Novembre 2026 importate ✓');
@@ -593,10 +593,10 @@ async function initManager(){
  if(Array.isArray(index)&&index.length){
   pIndex=index;currentProjectId=index.some(x=>x.id===active)?active:index[0].id;
   const pkg=await dbGet('kura:v2:project:'+currentProjectId);
-  if(pkg?.pages?.length){pages=pkg.pages.map(normalizePage).map(ensurePage);current=0;for(const[k,v]of Object.entries(pkg.customAssets||{}))if(k.startsWith('custom_')&&typeof v==='string'&&v.startsWith('data:image/')){ASSETS[k]=v;imageCache.delete(k);assetImage(k)}}
+  if(pkg?.pages?.length){currentProjectMeta=deepClone(pkg.meta||{});pages=pkg.pages.map(normalizePage).map(ensurePage);current=0;for(const[k,v]of Object.entries(pkg.customAssets||{}))if(k.startsWith('custom_')&&typeof v==='string'&&v.startsWith('data:image/')){ASSETS[k]=v;imageCache.delete(k);assetImage(k)}}
  }else{
   let legacy=await dbGet('project');if(!legacy?.pages?.length){try{legacy=JSON.parse(localStorage.getItem('kura:v2:recovery'))}catch(_){}}
-  if(legacy?.pages?.length){pages=legacy.pages.map(normalizePage).map(ensurePage);for(const[k,v]of Object.entries(legacy.customAssets||{}))ASSETS[k]=v}
+  if(legacy?.pages?.length){currentProjectMeta=deepClone(legacy.meta||{});pages=legacy.pages.map(normalizePage).map(ensurePage);for(const[k,v]of Object.entries(legacy.customAssets||{}))ASSETS[k]=v}
   const id=uuid();pIndex=[{id:id,name:legacy?.projectName||'Il mio primo carosello',updatedAt:Date.now()}];currentProjectId=id
  }
  managerReady=true;shownPage=null;refreshAll();showProjectOptions();await persistNow();await autoOpenKuraTemplate();if(window.KURA_GITHUB?.openFromQuery)await window.KURA_GITHUB.openFromQuery();
@@ -606,7 +606,7 @@ normalizePage=function(p){const out=originalNormalize(p);out.background=safeNumb
 const originalImportFast=importFast;
 importFast=function(obj){originalImportFast(obj);pages.forEach(ensurePage);shownPage=null;refreshAll();scheduleSave()};
 const originalExportProject=exportProject;
-exportProject=function(){const o=originalExportProject();o.format='KURA_EDITOR_V2';o.version=2;o.schemaVersion=2;o.projectId=currentProjectId;o.projectName=pIndex.find(x=>x.id===currentProjectId)?.name||'Carosello KURA';return o};
+exportProject=function(){const o=originalExportProject();o.format='KURA_EDITOR_V2';o.version=2;o.schemaVersion=2;o.projectId=currentProjectId;o.projectName=pIndex.find(x=>x.id===currentProjectId)?.name||'Carosello KURA';o.meta=deepClone(currentProjectMeta||{});return o};
 const originalUndo=undo,originalRedo=redo;
 undo=function(){originalUndo();shownPage=null;queueRender()};
 redo=function(){originalRedo();shownPage=null;queueRender()};
@@ -631,7 +631,7 @@ async function importSavedKuraProject(file){
  if(!Array.isArray(data.pages)||!data.pages.length)throw Error('Seleziona un progetto JSON KURA valido, con almeno una pagina');
  await persistNow();
  const id=uuid(),label=String(data.projectName||file.name.replace(/\.json$/i,'')||'Progetto importato').slice(0,100);
- pIndex.push({id,name:label,updatedAt:Date.now()});currentProjectId=id;
+ pIndex.push({id,name:label,updatedAt:Date.now()});currentProjectId=id;currentProjectMeta=deepClone(data.meta||{});
  pages=data.pages.map(normalizePage).map(ensurePage);
  for(const[key,val]of Object.entries(data.customAssets||{}))if(key.startsWith('custom_')&&typeof val==='string'&&val.startsWith('data:image/')){ASSETS[key]=val;imageCache.delete(key);assetImage(key)}
  current=0;selected=null;activeKey=null;shownPage=null;history=[];future=[];updateHistory();
@@ -689,8 +689,51 @@ window.KURA_MCP=Object.freeze({
  save:function(){return persistNow()},
  exportJSON:function(){return JSON.stringify(exportProject(),null,2)}
 });
+// Offline brief generation: clones artwork/layout; never overwrites the source project.
+function kuraNormalizeWord(value){return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('it-IT').replace(/[^a-z0-9]+/g,' ').trim()}
+function kuraPageMatchesVisual(source,dest){
+ const name=kuraNormalizeWord(source.name||''),country=kuraNormalizeWord(dest.country),place=kuraNormalizeWord(dest.place);
+ if(!country||!name.includes(country))return false;
+ return place.split(' ').filter(w=>w.length>=5&&!['valle','parco','della','delle','degli','isola','citta'].includes(w)).some(w=>name.includes(w))
+}
+async function createKuraProjectFromBrief(spec,options={}){
+ if(!managerReady)throw Error('L’editor non è ancora pronto');
+ if(!spec||spec.ok!==true||!Array.isArray(spec.pages)||!spec.pages.length)throw Error('Analizza un brief valido');
+ if(spec.pages.length>50)throw Error('Massimo 50 pagine');
+ const useGraphics=options.useCurrentGraphics!==false,sourceProjectId=currentProjectId;
+ const originals=pages.map(p=>deepClone(p));if(useGraphics&&!originals.length)throw Error('Progetto di riferimento vuoto');
+ await persistNow();
+ const warnings=[];
+ const generated=spec.pages.map((item,i)=>{
+  const original=useGraphics?deepClone(originals[i%originals.length]):makePage(i%LAYOUTS.length);
+  const p=ensurePage(normalizePage(original));
+  p.id=uuid();p.name=item.name;
+  Object.assign(p.fields,{
+   eyebrow:String(i+1).padStart(2,'0')+' / '+String(item.country||'DESTINAZIONE').toLocaleUpperCase('it-IT'),
+   head1:item.fields.head1,body1:item.fields.body1,head2:item.fields.head2,body2:item.fields.body2,
+   base:item.fields.base,duration:item.fields.duration,highlight:item.fields.highlight,
+   tips:item.fields.tips,label_highlight:item.fields.label_highlight||'Da non perdere'
+  });
+  p.meta={...(p.meta||{}),referenceSubtitle:item.meta?.referenceSubtitle||'',
+   imageBrief:item.meta?.immagine||'',layoutBrief:item.meta?.layout||'',
+   backgroundBrief:item.meta?.sfondo||'',importedFromBrief:true};
+  if(!useGraphics||!kuraPageMatchesVisual(original,item)){
+   p.visuals.scene.visible=false;p.visuals.postcard.visible=false;
+   if(useGraphics)warnings.push('Pagina '+(i+1)+': scena precedente nascosta perché la destinazione è diversa. Le istruzioni IMMAGINE sono salvate.');
+  }
+  return p;
+ });
+ const id='kura-brief-'+Date.now().toString(36)+'-'+uuid().slice(1);
+ const label=String(spec.meta?.title||'Carosello KURA').slice(0,84)+' · importato';
+ pIndex.push({id,name:label,updatedAt:Date.now()});currentProjectId=id;
+ currentProjectMeta={...deepClone(spec.meta||{}),sourceProjectId,importedAt:new Date().toISOString(),parserVersion:'1.0.0'};
+ pages=generated;current=0;selected=null;activeKey=null;shownPage=null;history=[];future=[];updateHistory();
+ refreshAll();showProjectOptions();await persistNow();emitToast('Nuovo progetto: '+pages.length+' pagine create ✓');
+ return{ok:true,projectId:id,projectName:label,pages:pages.length,warnings,sourceProjectId,pageIds:pages.map(p=>p.id)}
+}
 // Local-project bridge for optional GitHub cloud save. Never exposes auth credentials.
 window.KURA_PROJECTS=Object.freeze({
+ createFromBrief:createKuraProjectFromBrief,
  current(){return{id:currentProjectId,name:pIndex.find(v=>v.id===currentProjectId)?.name||'Carosello KURA'}},
  async saveLocal(){await persistNow();return exportProject()},
  async saveAs(name){
@@ -715,7 +758,7 @@ window.KURA_PROJECTS=Object.freeze({
   if(pIndex.some(x=>x.id===id)){await switchProject(id);return{source:'local',id}}
   await persistNow();
   const label=String(data.projectName||'Progetto GitHub').slice(0,100);
-  pIndex.push({id,name:label,updatedAt:Date.now()});currentProjectId=id;
+  pIndex.push({id,name:label,updatedAt:Date.now()});currentProjectId=id;currentProjectMeta=deepClone(data.meta||{});
   pages=data.pages.map(normalizePage).map(ensurePage);
   for(const[k,v]of Object.entries(data.customAssets||{})){
    if(k.startsWith('custom_')&&typeof v==='string'&&v.startsWith('data:image/')){
