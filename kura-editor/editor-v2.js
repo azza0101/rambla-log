@@ -565,10 +565,14 @@ function projectPanel(){
  $('#kuraProjectExport').onclick=function(){download(jsonFile(),'KURA_PROGETTO_'+fileSafe(pIndex.find(x=>x.id===currentProjectId)?.name||'carosello')+'.json')};
 }
 async function loadPublishedKuraTemplate(name='novembre-2026'){
- if(name!=='novembre-2026')throw Error('Template non disponibile: '+name);
- const projectId='kura-nov26-travel-pages-v7';
+ const templates={
+  'novembre-2026':{id:'kura-nov26-travel-pages-v7',file:'KURA_Progetto_Novembre_2026.json'},
+  'novembre-2026-mcp-test':{id:'kura-nov26-mcp-v3-test-20261102',file:'KURA_Progetto_Novembre_2026_MCP_TEST.json'}
+ };
+ const template=templates[name];if(!template)throw Error('Template non disponibile: '+name);
+ const projectId=template.id;
  if(pIndex.some(x=>x.id===projectId)){await switchProject(projectId);return{ok:true,mode:'existing',projectId,pages:pages.length}}
- const res=await fetch('./projects/KURA_Progetto_Novembre_2026.json?v=3.0.0',{cache:'no-store'});
+ const res=await fetch('./projects/'+template.file+'?v=3.7.0',{cache:'no-store'});
  if(!res.ok)throw Error('Errore caricamento progetto '+res.status);
  const pkg=await res.json();
  if(!Array.isArray(pkg.pages)||pkg.pages.length!==3)throw Error('Progetto non valido');
