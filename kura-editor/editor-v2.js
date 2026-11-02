@@ -551,7 +551,7 @@ async function loadPublishedKuraTemplate(name='novembre-2026'){
  if(!res.ok)throw Error('Errore caricamento progetto '+res.status);
  const pkg=await res.json();
  if(!Array.isArray(pkg.pages)||pkg.pages.length!==3)throw Error('Progetto non valido');
- for(const p of pkg.pages)if(!p.fields||!KURA_NOV26_ASSETS[p.imageKeys?.scene]||!KURA_NOV26_ASSETS[p.imageKeys?.postcard])throw Error('Illustrazione KURA non valida');
+ for(const p of pkg.pages)if(!p.fields||!KURA_NOV26_ASSETS[p.imageKeys?.scene]||(p.imageKeys?.postcard&&!KURA_NOV26_ASSETS[p.imageKeys.postcard]))throw Error('Illustrazione KURA non valida');
  await persistNow();
  pIndex.push({id:projectId,name:pkg.projectName||'KURA Novembre 2026',updatedAt:Date.now()});
  currentProjectId=projectId;pages=pkg.pages.map(normalizePage).map(ensurePage);
