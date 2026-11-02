@@ -113,7 +113,7 @@
         "dx": 0,
         "dy": -45
       },
-      "noteTextAngle": 2
+      "noteTextAngle": 4.3
     },
     {
       "id": "kura-nov26-02",
@@ -225,7 +225,7 @@
         "dx": -5,
         "dy": -50
       },
-      "noteTextAngle": 2.2
+      "noteTextAngle": 4
     },
     {
       "id": "kura-nov26-03",
@@ -337,7 +337,7 @@
         "dx": 10,
         "dy": -45
       },
-      "noteTextAngle": 2
+      "noteTextAngle": 4.6
     }
   ],
   "customAssets": {},
