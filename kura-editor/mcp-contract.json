@@ -1,6 +1,6 @@
 {
   "name": "KURA Carousel Editor",
-  "apiVersion": "2.7",
+  "apiVersion": "2.7.1",
   "browserNamespace": "window.KURA_MCP",
   "format": "KURA_EDITOR_V2",
   "units": {
@@ -405,8 +405,9 @@
     "heading": {
       "family": "KURA Brush2",
       "fontSize": 40,
-      "bold": true,
-      "strokeWidth": 0.6
+      "bold": false,
+      "strokeWidth": 0.85,
+      "description": "weight intermediate between normal light and synthetic bold"
     },
     "underline": "orange stroke centered vertically beside heading"
   },
