@@ -1,4 +1,4 @@
-# KURA — Brief rapido per generare pagine editoriali (MCP v3.2.2)
+# KURA — Brief rapido per generare pagine editoriali (MCP v3.3.0)
 Questo file descrive un unico input ripetibile che ChatGPT trasforma in pagine KURA 4:5 totalmente modificabili. **Non è necessario compilare alcun modulo**: è sufficiente incollare i contenuti in prosa come al solito.
 
 ## Modalità consigliata: minimo indispensabile
@@ -47,8 +47,8 @@ Usa un blocco **[IMMAGINE: ...]** solo se vuoi imporre azione, posizione o eleme
 2. L'illustrazione inferiore è un **PNG trasparente full-width**, preferibilmente 1080 px o più. Il personaggio e il paesaggio appartengono allo stesso asset. Non ritagliare Giulia dalle bozze con testi o sfondi.
 3. Layout, background, note e gerarchie differenziati tra pagine; però logo assente nelle pagine informative.
 4. Titoletti brush in **minuscolo/sentence case** e maiuscolo solo quando esplicitamente richiesto. Font di riferimento **Caveat Brush** (font open-source Google Fonts, self-hosted); Kaushan Script resta alternativa selezionabile.
-5. Esiste un solo post-it canonico per tutte le pagine: carta (ridimensionabile con 9-slice), scotch, titolo INFO DI VIAGGIO e quattro icone sono sette immagini PNG trasparenti generate separatamente dall'editor; solo la carta cambia dimensione. Le scritte e le icone non si deformano.
-6. Entrambi i paragrafi descrittivi hanno sempre lo stesso font Montserrat e la stessa dimensione per pagina, calcolata per rientrare negli spazi con conservazione del grassetto. Ogni testo, post-it, sticker, immagine e sfondo resta modificabile da editor/MCP. Salvataggio in IndexedDB, **Salva progetto** / **Apri progetto**, esportazione JSON/PNG.
+5. Esiste un solo post-it KURA canonico, basato sull'originale `assets/postit_1.png`: gli otto asset PNG reali (carta materica, ombra, scotch, titolo brush e quattro icone originali) sono in `assets/postit-canon/`. Solo la carta viene ridimensionata con 9-slice; il resto mantiene proporzioni fisse.
+6. `body1` e `body2` usano lo stesso font Montserrat e sempre la stessa dimensione calcolata per pagina; il progetto Novembre 2026 v6 imposta target 31px e aumenta le caselle testo per evitare font troppo piccoli. I grassetti `**...**` rimangono editabili.
 7. Pubblicazione con un commit GitHub che include i PNG e il JSON canonico; non creare un secondo HTML indipendente.
 8. Un nuovo carosello riceve un projectId univoco, senza sostituire progetti preesistenti. Link diretto `?template=<slug>`.
 
@@ -65,3 +65,6 @@ Nel browser `window.KURA_MCP.inspect()`, `window.KURA_MCP.applyPatch([...])`, `w
 
 ## Asset PNG del post-it unico
 Dentro il browser, `window.KURA_NOTE_PNGS.names` restituisce `paper`, `tape`, `title`, `pin`, `calendar`, `star`, `info`. `window.KURA_NOTE_PNGS.getPNG('title')` (o qualsiasi altro nome) restituisce un PNG trasparente in formato data URL. Il titolo usa Caveat Brush e viene ricostruito dopo il caricamento dei font. La composizione finale, inclusi tutti i layer, viene esportata nel PNG della tavola.
+
+## Copia immediata della pagina PNG
+Il pulsante **⧉ Copia PNG** nella barra superiore copia direttamente l'attuale pagina 1080×1350 negli appunti (Clipboard API), senza download. Funziona in contesto HTTPS con autorizzazione agli appunti (es. Chrome o Edge). Se il browser non lo supporta, l'app non salva un file di nascosto ma mostra un messaggio. **↓ PNG** resta disponibile per il download e **ZIP tutte** per l'intero carosello.
