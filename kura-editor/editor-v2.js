@@ -696,7 +696,7 @@ window.KURA_MCP=Object.freeze({
 // Offline brief generation: clones artwork/layout; never overwrites the source project.
 function kuraNormalizeWord(value){return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('it-IT').replace(/[^a-z0-9]+/g,' ').trim()}
 function kuraPageMatchesVisual(source,dest){
- const name=kuraNormalizeWord(source.name||''),country=kuraNormalizeWord(dest.country),place=kuraNormalizeWord(dest.place);
+ const name=kuraNormalizeWord([source.name,source.fields?.eyebrow,source.imageKeys?.scene].join(' ')),country=kuraNormalizeWord(dest.country),place=kuraNormalizeWord(dest.place);
  if(!country||!name.includes(country))return false;
  return place.split(' ').filter(w=>w.length>=5&&!['valle','parco','della','delle','degli','isola','citta'].includes(w)).some(w=>name.includes(w))
 }
