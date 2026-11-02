@@ -59,6 +59,22 @@
   <div class="tabs"><button class="tab active" data-tab="texts">Testi</button><button class="tab" data-tab="layouts">Varianti</button><button class="tab" data-tab="elements">Elementi</button><button class="tab" data-tab="pages">Pagine</button></div>
   <div class="tabpane active" id="tab-texts">
    <p class="hint">Cambia le parole qui: ogni campo è un livello modificabile. Usa <b>**due asterischi**</b> per evidenziare i passaggi in grassetto.</p>
+   <div class="kura-bulk-font-panel softbox">
+    <div class="section-title">Dimensione testi in blocco</div>
+    <label class="kura-bulk-all"><input type="checkbox" id="bulkAllPages"/><span><strong>Applica a tutte le pagine</strong><small id="bulkScopeHint">Modifica solo la pagina corrente</small></span></label>
+    <div class="kura-bulk-font-row">
+     <label for="bodyScale">Testo normale <strong id="bodyScaleLabel">100%</strong></label>
+     <div class="kura-bulk-slider"><button type="button" id="bodyScaleMinus" class="btn flat small" aria-label="Riduci tutto il testo normale">−</button><input id="bodyScale" type="range" min="70" max="160" value="100" step="1" aria-label="Dimensione testo normale"/><button type="button" id="bodyScalePlus" class="btn flat small" aria-label="Ingrandisci tutto il testo normale">＋</button></div>
+     <small class="hint">I due paragrafi mantengono lo stesso font e i grassetti.</small>
+    </div>
+    <div class="kura-bulk-font-row">
+     <label for="noteScale">Testo post-it <strong id="noteScaleLabel">100%</strong></label>
+     <div class="kura-bulk-slider"><button type="button" id="noteScaleMinus" class="btn flat small" aria-label="Riduci tutto il testo post-it">−</button><input id="noteScale" type="range" min="70" max="160" value="100" step="1" aria-label="Dimensione testo post-it"/><button type="button" id="noteScalePlus" class="btn flat small" aria-label="Ingrandisci tutto il testo post-it">＋</button></div>
+     <small class="hint">Modifica etichette e descrizioni; carta, scotch, icone e titolo restano invariati.</small>
+    </div>
+    <div class="kura-bulk-reset"><button type="button" class="btn flat small" id="bulkFontReset">↺ Ripristina 100%</button></div>
+    <p id="bulkFitHint" class="hint" role="status">Se un testo non entra, puoi ampliare la sua casella senza cambiare il layout delle altre pagine.</p>
+   </div>
    <div class="section-title">Introduzione</div>
    <div class="field" data-field="eyebrow"><label for="f-eyebrow">Numero / Paese</label><input id="f-eyebrow" data-text="eyebrow" placeholder="04 / GIAPPONE"/></div>
    <div class="field" data-field="head1"><label for="f-head1">Minititolo 1 · KURA Brush2</label><input id="f-head1" data-text="head1" placeholder="Tradizioni d’inverno"/></div>
@@ -81,9 +97,9 @@
    <p class="hint">Un seed cambia sfondo, post-it e piccoli dettagli. I contenuti rimangono invariati.</p>
    <div class="section-title">Sfondi carta</div><div class="thumbrow" id="bgGallery"></div>
    <div class="section-title">Dimensioni e posizione dello sfondo</div><p class="hint">Ingrandisci o sposta la carta per lasciare libera la zona dei titoli.</p><div class="field"><label>Ingrandimento <strong id="bgZoomValue">100%</strong></label><input id="bgZoom" type="range" min="100" max="180" value="100" step="2"/></div><div class="field"><label>Spostamento orizzontale <strong id="bgShiftXValue">0</strong></label><input id="bgShiftX" type="range" min="-300" max="300" value="0" step="5"/></div><div class="field"><label>Spostamento verticale <strong id="bgShiftYValue">0</strong></label><input id="bgShiftY" type="range" min="-300" max="300" value="0" step="5"/></div><button id="bgReset" class="btn flat" type="button">↺ Ripristina sfondo</button><div class="section-title">Post-it</div><div class="thumbrow" id="noteGallery"></div>
-   <div class="section-title">Spaziatura dei testi</div>
-   <div class="field"><label>Dimensione corpo <strong id="bodyScaleLabel">100%</strong></label><input id="bodyScale" type="range" min="84" max="112" value="100" step="1"/></div>
-   <div class="field"><label>Dimensione note <strong id="noteScaleLabel">100%</strong></label><input id="noteScale" type="range" min="85" max="110" value="100" step="1"/></div>
+   <div class="section-title">Dimensioni dei testi</div>
+   <p class="hint">I controlli per ingrandire in blocco i paragrafi e i testi del post-it si trovano nella scheda <b>Testi</b>.</p>
+   <button type="button" class="btn flat small" id="jumpBulkTypography">Apri controlli testo</button>
   </div>
   <div class="tabpane" id="tab-elements">
    <div class="section-title">Illustrazione della destinazione</div>
@@ -186,7 +202,7 @@ function applyLayout(i){if(!page())return;snapshot();const p=page();const old=LA
 function applySeed(seed,random=false){snapshot();const p=page();p.seed=String(seed||Math.floor(Math.random()*100000));const rand=rng(p.seed);p.background=Math.floor(rand()*16);p.note=0;p.visuals.note.rot=Math.round(rand()*6-3);p.visuals.postcard.rot=Math.round(rand()*12-6);p.visuals.note.x=LAYOUTS[p.layout].note[0]+Math.round((rand()-.5)*22);p.visuals.note.y=LAYOUTS[p.layout].note[1]+Math.round((rand()-.5)*14);regenerateDecorations(true);refreshAll();emitToast('Seed '+p.seed+' applicato')}
 function regenerateDecorations(addNew){const p=page(),r=rng(p.seed+'decor');if(!p.stickers.length||addNew){p.stickers=[];for(let j=0;j<2;j++){let names=['olive','berries','monstera','map','stamp','compass'];let n=names[Math.floor(r()*names.length)];let zone=j===0?{x:0,y:0}:{x:750,y:1000};let x=zone.x+Math.round(r()*140),y=zone.y+Math.round(r()*140);p.stickers.push({id:uuid(),key:'sticker_'+n,x,y,w:100+Math.round(r()*100),h:0,rot:Math.round((r()-.5)*26),scale:1,opacity:.8+Math.round(r()*15)/100})}}}
 function setTab(s){$$('.tab').forEach(n=>n.classList.toggle('active',n.dataset.tab===s));$$('.tabpane').forEach(n=>n.classList.toggle('active',n.id==='tab-'+s))}
-function updateTextControls(){for(const el of $$('[data-text]')){const k=el.dataset.text;if(document.activeElement!==el)el.value=page().fields[k]??''} $('#seedField').value=page().seed;$('#bodyScale').value=Math.round(page().bodyScale*100);$('#bodyScaleLabel').textContent=$('#bodyScale').value+'%';$('#noteScale').value=Math.round(page().noteScale*100);$('#noteScaleLabel').textContent=$('#noteScale').value+'%';$('#stageName').textContent=formatName(page());$('#stageMeta').textContent=' · pagina '+(current+1)+' di '+pages.length+' · 1080 × 1350'}
+function updateTextControls(){for(const el of $$('[data-text]')){const k=el.dataset.text;if(document.activeElement!==el)el.value=page().fields[k]??''} $('#seedField').value=page().seed;$('#bodyScale').value=Math.round(page().bodyScale*100);$('#bodyScaleLabel').textContent=$('#bodyScale').value+'%';$('#noteScale').value=Math.round(page().noteScale*100);$('#noteScaleLabel').textContent=$('#noteScale').value+'%';$('#stageName').textContent=formatName(page());$('#stageMeta').textContent=' · pagina '+(current+1)+' di '+pages.length+' · 1080 × 1350';if(typeof updateBulkScope==='function')updateBulkScope()}
 function refreshGalleries(){
  const bg=$('#bgGallery');bg.innerHTML='';
  for(let i=0;i<4;i++){const btn=document.createElement('button');btn.className='thumb '+(page().background===i?'active':'');btn.innerHTML='<img src="'+ASSETS['sfondo_'+(i+1)]+'" alt="Sfondo '+(i+1)+'"/><small>Variante '+(i+1)+'</small>';btn.onclick=()=>{snapshot();page().background=i;refreshGalleries();queueRender()};bg.appendChild(btn)}
@@ -408,8 +424,35 @@ for(const el of $$('[data-text]')){el.addEventListener('focus',()=>{selected='te
 $$('.tab').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
 $('#topNew').onclick=()=>addPage((page().layout+1)%4);$('#addPage').onclick=()=>addPage((page().layout+1)%4);$('#duplicatePage').onclick=duplicate;
 $('#seedApply').onclick=()=>applySeed($('#seedField').value);$('#seedRandom').onclick=()=>applySeed(Math.floor(Math.random()*999999));$('#topSeed').onclick=()=>applySeed(Math.floor(Math.random()*999999));
-$('#bodyScale').oninput=e=>{page().bodyScale=+e.target.value/100;$('#bodyScaleLabel').textContent=e.target.value+'%';queueRender();scheduleSave()};
-$('#noteScale').oninput=e=>{page().noteScale=+e.target.value/100;$('#noteScaleLabel').textContent=e.target.value+'%';queueRender();scheduleSave()};
+// Shared type scales: one page by default, all pages only after explicit opt-in.
+function fontScaleTargets(){return $('#bulkAllPages')?.checked?pages:[page()]}
+function updateBulkScope(){
+ const all=!!$('#bulkAllPages')?.checked;
+ const hint=$('#bulkScopeHint');if(hint)hint.textContent=all?'Tutte le '+pages.length+' pagine del carosello':'Solo la pagina corrente';
+ const values=all?pages:[page()];
+ const different=values.length>1&&(['bodyScale','noteScale'].some(key=>values.some(p=>Math.round((p[key]||1)*100)!==Math.round((values[0][key]||1)*100))));
+ const status=$('#bulkFitHint');
+ if(status)status.textContent=different?'Le pagine hanno dimensioni diverse: muovi uno slider per uniformarle.':'Se il testo diventa troppo lungo, aumenta lo spazio della casella o diminuisci la percentuale.';
+}
+function applyBulkTypeScale(key,pct){
+ const value=Math.max(70,Math.min(160,Math.round(Number(pct)||100)));
+ const targets=fontScaleTargets();
+ for(const p of targets)p[key]=value/100;
+ $('#'+key).value=String(value);
+ $('#'+key+'Label').textContent=value+'%';
+ updateBulkScope();queueRender();scheduleSave();
+}
+for(const key of ['bodyScale','noteScale']){
+ const slider=$('#'+key);
+ slider.addEventListener('pointerdown',()=>snapshot());
+ slider.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End','PageUp','PageDown'].includes(e.key))snapshot()});
+ slider.oninput=e=>applyBulkTypeScale(key,e.target.value);
+ $('#'+key+'Minus').onclick=()=>{snapshot();applyBulkTypeScale(key,+slider.value-5)};
+ $('#'+key+'Plus').onclick=()=>{snapshot();applyBulkTypeScale(key,+slider.value+5)};
+}
+$('#bulkAllPages').onchange=()=>updateBulkScope();
+$('#bulkFontReset').onclick=()=>{snapshot();for(const p of fontScaleTargets()){p.bodyScale=1;p.noteScale=1}updateTextControls();updateBulkScope();queueRender();scheduleSave()};
+$('#jumpBulkTypography').onclick=()=>{setTab('texts');$('#bulkAllPages').scrollIntoView({behavior:'smooth',block:'center'})};
 $('#useDemoScene').onclick=()=>{snapshot();page().imageKeys.scene='giulia_kanazawa';page().visuals.scene.visible=true;queueRender();emitToast('Giulia dimostrativa inserita')};$('#hideScene').onclick=()=>{snapshot();page().visuals.scene.visible=false;queueRender()};
 async function fileDataURL(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})}
 async function setUpload(file,type){if(!file)return;if(!file.type.startsWith('image/')){emitToast('Carica un PNG o JPG');return}const data=await fileDataURL(file);const id='custom_'+uuid();ASSETS[id]=data;imageCache.delete(id);snapshot();page().imageKeys[type]=id;page().visuals[type].visible=true;queueRender();scheduleSave();emitToast('Immagine inserita come livello indipendente')}
