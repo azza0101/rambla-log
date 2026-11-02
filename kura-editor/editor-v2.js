@@ -218,7 +218,15 @@ function updateToolbar(){
 }
 function makeToolbar(){
  toolbar=document.createElement('div');toolbar.className='kura-selection-toolbar hidden';toolbar.setAttribute('role','toolbar');toolbar.innerHTML='<span class="kura-bar-grip">⋮⋮</span><select data-font title="Font"><option>Montserrat</option><option>KURA Brush2</option><option>Caveat</option></select><button type="button" data-minus title="Riduci dimensione">−</button><input data-size type="number" min="10" max="160" step="1" aria-label="Dimensione del testo"/><button type="button" data-plus title="Aumenta dimensione">＋</button><button type="button" data-bold title="Grassetto (anche sulla selezione)">B</button><span class="kura-control-label" data-rotation>0°</span><button type="button" data-reset title="Reimposta posizione">↺</button><button type="button" data-close title="Chiudi">×</button>';
- document.querySelector('.stage-inner').appendChild(toolbar);
+ const stage=document.querySelector('.stage-inner');
+ const canvasWrap=stage?.closest('.canvas-wrap');
+ let dock=document.getElementById('kuraTextToolbarDock');
+ if(!dock && canvasWrap){
+  dock=document.createElement('div');dock.id='kuraTextToolbarDock';dock.className='kura-toolbar-dock';
+  const stageBg=canvasWrap.querySelector('.stage-bg');
+  canvasWrap.insertBefore(dock,stageBg||null);
+ }
+ (dock||canvasWrap||stage).appendChild(toolbar);
  for(const n of toolbar.querySelectorAll('button'))n.addEventListener('pointerdown',function(e){e.preventDefault()});
  toolbar.querySelector('[data-minus]').onclick=function(){const key=toolbar.dataset.key;changeStyle(key,{fontSize:safeNumber(styleFor(page(),key).fontSize-2,10,160,30)})};
  toolbar.querySelector('[data-plus]').onclick=function(){const key=toolbar.dataset.key;changeStyle(key,{fontSize:safeNumber(styleFor(page(),key).fontSize+2,10,160,30)})};
@@ -230,13 +238,12 @@ function makeToolbar(){
 }
 function showToolbar(key){if(!toolbar)makeToolbar();toolbar.dataset.key=key;toolbar.classList.remove('hidden');updateToolbar();positionToolbar()}
 function positionToolbar(){
- if(!toolbar||toolbar.classList.contains('hidden'))return;
- const p=page(),key=toolbar.dataset.key,r=textRect(p,key);if(!r)return;
- const scale=stageScale(),stageWidth=canvas.getBoundingClientRect().width;
- const barWidth=toolbar.offsetWidth||350,barHeight=toolbar.offsetHeight||45;
- const x=Math.max(3,Math.min(stageWidth-barWidth-3,r.x*scale));
- let y=r.y*scale-barHeight-10;if(y<4)y=(r.y+r.h)*scale+10;if(y>H*scale-barHeight)y=Math.max(4,H*scale-barHeight-4);
- toolbar.style.left=x+'px';toolbar.style.top=y+'px';
+ // Text formatting lives in a dedicated dock above the stage, never on top
+ // of the move, rotate or resize handles. Works on narrow iPhone layouts too.
+ if(!toolbar)return;
+ const dock=document.getElementById('kuraTextToolbarDock');
+ if(dock)dock.classList.toggle('active',!toolbar.classList.contains('hidden'));
+ toolbar.style.left='';toolbar.style.top='';toolbar.style.position='relative';
 }
 function showContextMenu(e,key){
  hideContext();const menu=document.createElement('div');menu.className='kura-context-menu';menu.innerHTML='<button data-act="bold">B  Grassetto selezione</button><button data-act="plus">A+  Aumenta font</button><button data-act="minus">A−  Riduci font</button><button data-act="reset">↺  Azzera rotazione</button>';
@@ -269,7 +276,10 @@ function updateOverlays(){
   nd.frame.classList.toggle('is-selected',selected==='text:'+key);
   const scale=width/W,inv=1/scale;
   for(const button of nd.frame.querySelectorAll('.kura-manip-handle'))button.style.transform='scale('+inv+')';
-  for(const button of nd.frame.querySelectorAll('.kura-move-handle,.kura-rotate-handle'))button.style.top=(rect.y*scale<50?5:-41*inv)+'px';
+  for(const button of nd.frame.querySelectorAll('.kura-move-handle,.kura-rotate-handle,.kura-fliph-handle,.kura-flipv-handle'))button.style.top=(posY*scale<38?5:-34*inv)+'px';
+  const flips=nd.frame.querySelectorAll('.kura-fliph-handle,.kura-flipv-handle');
+  if(flips[0])flips[0].style.left='calc(50% - '+(33*inv)+'px)';
+  if(flips[1])flips[1].style.left='calc(50% + '+(7*inv)+'px)';
   nd.edit.style.setProperty('--kura-ink',st.color);
   nd.edit.style.fontSize=(metrics.get(key)||st.fontSize)+'px';
   nd.edit.style.lineHeight=String(st.lineHeight);
@@ -316,6 +326,10 @@ function updateVisualSelection(){
  for(const item of visualBox.querySelectorAll('.kura-visual-handle')){
   item.style.transform='scale('+inv+')';
   item.style.setProperty('--handle-scale',inv);
+  const a=item.dataset.action;
+  if(['move','rotate','flipX','flipY'].includes(a))item.style.top=(geo.y*size<38?5:-34*inv)+'px';
+  if(a==='flipX')item.style.left='calc(50% - '+(33*inv)+'px)';
+  if(a==='flipY')item.style.left='calc(50% + '+(7*inv)+'px)';
  }
 }
 function startVisualGesture(e,action){
