@@ -49,3 +49,10 @@ Il font Feeling Passionate di Din Studio è proprietario: per renderlo disponibi
 - I nuovi sticker mantengono texture di carta, ombre tra i livelli, ritagli e trasparenza e non vengono ridisegnati da canvas.
 - Il font completo caricato dall’utente, convertito integralmente in WOFF2, è servito come `assets/Kura_Brush2.woff2` a tutti gli utenti; i minititoli e l’anno della copertina usano KURA Brush2. Non è una versione subset.
 - Compatibilità MCP `KURA_MCP` v2.5: ID immutabili per ognuna delle 24 decorazioni.
+
+## 2.6.0 — Sfondi papercut reali e post-it dinamico
+- 12 sfondi stagionali SVG autosufficienti, ognuno con JPG di carta strappata originale e WebP papercut editoriali già generati, incorporati senza dipendenze esterne. Il centro resta libero.
+- Brush KURA Brush2 titoli più piccoli e con spessore extra in Canvas, linee pennellate centrate verticalmente.
+- Post-it responsive: due sezioni inferiori si allungano secondo il numero di righe, mantenendo il titolo e le icone originali. Tutti i testi ruotano con lo stesso pivot del post-it, anche durante editing in sovrimpressione.
+- Libreria decorazioni drag & drop desktop, trascinamento touch tramite ghost trasparente, e click per inserimento.
+- Autosalvataggio e schema MCP compatibili con i progetti pregressi.
