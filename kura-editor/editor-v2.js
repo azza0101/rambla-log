@@ -282,11 +282,98 @@ function updateOverlays(){
  if(selected&&selected.startsWith('text:')&&valid.has(selected.slice(5))){showToolbar(selected.slice(5))}
  else if(toolbar)toolbar.classList.add('hidden');
  positionToolbar();
+ updateVisualSelection();
 }
 function initOverlay(){
  const stage=document.querySelector('.stage-inner');if(!stage)return;
  overlay=document.createElement('div');overlay.className='kura-overlays';overlay.id='kuraTextOverlays';stage.appendChild(overlay);makeToolbar();
  new ResizeObserver(function(){updateOverlays()}).observe(canvas);
+}
+// Non-text selection handles use the same model coordinates as PNG export and MCP.
+let visualOverlay=null,visualBox=null;
+function visualGeometry(id){
+ const e=elementById(id);if(!e||e.type==='text')return null;
+ const m=e.model;let w,h;
+ if(e.type==='note'){const n=noteAutoLayout(m,page());w=n.w;h=n.totalH}
+ else if(e.type==='sticker'){
+  const im=assetImage(m.key);
+  w=m.w*(m.scale||1)*(m.scaleX||1);
+  h=(m.h||m.w*(im?.naturalHeight||1)/(im?.naturalWidth||1))*(m.scale||1)*(m.scaleY||1);
+ }else{w=m.w*(m.scale||1)*(m.scaleX||1);h=m.h*(m.scale||1)*(m.scaleY||1)}
+ return{x:m.x,y:m.y,w:Math.max(10,w),h:Math.max(10,h),rot:m.rot||0,e};
+}
+function updateVisualSelection(){
+ if(!visualOverlay||!visualBox)return;
+ const size=canvas.getBoundingClientRect().width/W;
+ visualOverlay.style.transform='scale('+size+')';
+ const geo=selected&&!selected.startsWith('text:')?visualGeometry(selected):null;
+ visualBox.style.display=geo?'block':'none';if(!geo)return;
+ visualBox.dataset.id=selected;
+ visualBox.style.left=geo.x+'px';visualBox.style.top=geo.y+'px';
+ visualBox.style.width=geo.w+'px';visualBox.style.height=geo.h+'px';
+ visualBox.style.transform='rotate('+geo.rot+'deg)';
+ const inv=1/Math.max(.1,size);
+ for(const item of visualBox.querySelectorAll('.kura-visual-handle')){
+  item.style.transform='scale('+inv+')';
+  item.style.setProperty('--handle-scale',inv);
+ }
+}
+function startVisualGesture(e,action){
+ e.preventDefault();e.stopPropagation();
+ const id=visualBox?.dataset.id,geo=visualGeometry(id);if(!geo)return;
+ const m=geo.e.model,start=xyFromPointer(e),orig=deepClone(m),pre=JSON.stringify({pages,current});
+ const center={x:geo.x+geo.w/2,y:geo.y+geo.h/2};
+ const h=e.currentTarget;h.setPointerCapture(e.pointerId);
+ function moving(ev){
+  const at=xyFromPointer(ev),dx=at.x-start.x,dy=at.y-start.y;
+  const a=(orig.rot||0)*Math.PI/180,localX=dx*Math.cos(a)+dy*Math.sin(a),localY=-dx*Math.sin(a)+dy*Math.cos(a);
+  if(action==='move'){m.x=orig.x+dx;m.y=orig.y+dy}
+  else if(action==='rotate'){
+   const theta=Math.atan2(at.y-center.y,at.x-center.x)-Math.atan2(start.y-center.y,start.x-center.x);
+   m.rot=Math.round((orig.rot||0)+theta*180/Math.PI);
+  }else{
+   if(action==='width'||action==='resize'){
+    const nextW=Math.max(35,geo.w+localX);
+    const baseW=Math.max(12,orig.w*(orig.scale||1));
+    m.scaleX=Math.min(4,Math.max(.25,nextW/baseW));
+   }
+   if(action==='height'||action==='resize'){
+    const nextH=Math.max(32,geo.h+localY);
+    const baseH=Math.max(12,orig.h*(orig.scale||1));
+    if(geo.e.type==='note'){
+     const originalNoteBaseH=baseH*(orig.scaleY||1);
+     const desiredH=originalNoteBaseH+localY;
+     m.scaleY=Math.min(4,Math.max(.25,desiredH/baseH));
+    }else m.scaleY=Math.min(4,Math.max(.25,nextH/baseH))
+   }
+  }
+  queueRender();refreshInspector();
+ }
+ function end(){
+  h.removeEventListener('pointermove',moving);h.removeEventListener('pointerup',end);h.removeEventListener('pointercancel',end);
+  if(JSON.stringify(m)!==JSON.stringify(orig)){history.push(pre);if(history.length>45)history.shift();future=[];updateHistory();scheduleSave()}
+ }
+ h.addEventListener('pointermove',moving);h.addEventListener('pointerup',end);h.addEventListener('pointercancel',end);
+}
+function initVisualTransform(){
+ const root=document.querySelector('.stage-inner');if(!root||visualOverlay)return;
+ visualOverlay=document.createElement('div');visualOverlay.className='kura-visual-overlay';
+ visualBox=document.createElement('div');visualBox.className='kura-visual-box';
+ const buttons=[['move','⠿','Sposta elemento'],['rotate','↻','Ruota elemento'],
+ ['width','↔','Allarga in orizzontale'],['height','↕','Allarga in verticale'],
+ ['resize','⤡','Dimensioni libere X/Y'],['flipX','⇋','Ribalta orizzontalmente'],
+ ['flipY','⇅','Ribalta verticalmente']];
+ for(const [action,label,tip] of buttons){
+  const b=document.createElement('button');b.type='button';
+  b.className='kura-visual-handle kura-visual-'+action;b.dataset.action=action;
+  b.textContent=label;b.title=tip;b.setAttribute('aria-label',tip);
+  if(action==='flipX'||action==='flipY'){
+   b.onclick=ev=>{ev.preventDefault();ev.stopPropagation();const g=visualGeometry(visualBox.dataset.id);if(!g)return;snapshot();g.e.model[action]=!g.e.model[action];queueRender();scheduleSave();refreshInspector()}
+  }else b.addEventListener('pointerdown',ev=>startVisualGesture(ev,action));
+  visualBox.appendChild(b)
+ }
+ visualOverlay.appendChild(visualBox);root.appendChild(visualOverlay);
+ updateVisualSelection();
 }
 function resetSelection(){activeKey=null;selected=null;shownPage=null;queueRender()}
 function addFreeText(){
@@ -497,7 +584,7 @@ window.KURA_MCP=Object.freeze({
      else if(['scene','postcard','note'].includes(id))model=p.visuals[id];
      else if(id.startsWith('sticker:'))model=p.stickers.find(x=>x.id===id.slice(8));
      if(!model)throw Error('Elemento non trovato: '+id);
-     for(const k of ['x','y','dx','dy','rot','scale','opacity','w','h'])if(op[k]!==undefined){if(k==='scale')model[k]=safeNumber(op[k],.2,3,1);else if(k==='opacity')model[k]=safeNumber(op[k],0,1,1);else model[k]=safeNumber(op[k],-2000,3000,0)}
+     for(const k of ['x','y','dx','dy','rot','scale','scaleX','scaleY','opacity','w','h','flipX','flipY'])if(op[k]!==undefined){if(k==='flipX'||k==='flipY')model[k]=Boolean(op[k]);else if(k==='scale'||k==='scaleX'||k==='scaleY')model[k]=safeNumber(op[k],.2,3,1);else if(k==='opacity')model[k]=safeNumber(op[k],0,1,1);else model[k]=safeNumber(op[k],-2000,3000,0)}
      count++;continue
    }
    throw Error('Operazione non supportata: '+op.op)
@@ -509,7 +596,7 @@ window.KURA_MCP=Object.freeze({
  exportJSON:function(){return JSON.stringify(exportProject(),null,2)}
 });
 window.KURA_V2={version:'2.6.0',drawKuraBackground:drawKuraBackground,paintEditable:paintEditable,paintFreeTexts:paintFreeTexts};
-addV2Controls();initOverlay();
+addV2Controls();initOverlay();initVisualTransform();
 (function(){
  const top=document.querySelector('.top-actions');
  if(top&&!document.getElementById('kuraCoverLaunch')){
