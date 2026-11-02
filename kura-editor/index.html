@@ -221,16 +221,49 @@ function drawText(c,raw,rect,opt={}){let fs=opt.fontSize||30, color=opt.color||G
  do{lines=measureLines(c,raw,rect.w,fs,lh,script,99,opt.family||null);overflow=lines.length*fs*lh>max;if(overflow&&fs>(opt.minFont||original*.79))fs-=.6;else break}while(fs>9);
  if(overflow&&opt.track)fitIssues.push((opt.label||'Testo')+' troppo lungo');
  c.save();c.fillStyle=color;c.textBaseline='top';let y=rect.y;
- for(const line of lines){let x=rect.x;for(const run of line){c.font=textFont(fs,run.bold||bold,script,opt.family||null);c.fillText(run.text,x,y);x+=c.measureText(run.text).width}y+=fs*lh;if(y>rect.y+max+fs*.35)break}
+ for(const line of lines){let x=rect.x;for(const run of line){c.font=textFont(fs,run.bold||bold,script,opt.family||null);if(opt.strokeWidth){c.lineWidth=opt.strokeWidth;c.strokeStyle=color;c.lineJoin='round';c.strokeText(run.text,x,y)}c.fillText(run.text,x,y);x+=c.measureText(run.text).width}y+=fs*lh;if(y>rect.y+max+fs*.35)break}
  c.restore();return{fontSize:fs,overflow,lines:lines.length}
 }
 function getFields(p){return p.fields||DEFAULT_FIELDS}
-function noteBlocks(note,p){const f=getFields(p),s=p.noteScale||1;const x=note.x,y=note.y,w=note.w*(note.scale||1),h=note.h*(note.scale||1);const left=x+w*.365,right=x+w*.94;
+function noteAutoLayout(note,p,c=ctx){
+ const scale=note.scale||1,w=note.w*scale,h=note.h*scale;
+ const valW=w*(.94-.365),bodyScale=p.noteScale||1;
+ const estimate=(key,fontSz,normalHeight,lh)=>{
+  const raw=String(p.fields?.[key]||'');
+  const lines=measureLines(c,raw,valW,fontSz,lh,false).length;
+  const needed=Math.ceil(Math.max(1,lines)*fontSz*lh+9);
+  return Math.min(260,Math.max(0,needed-normalHeight));
+ };
+ const highlightExtra=estimate('highlight',16*bodyScale,h*.16,1.18);
+ const tipsExtra=estimate('tips',16*bodyScale,h*.14,1.18);
+ return{w,h,highlightExtra,tipsExtra,totalH:h+highlightExtra+tipsExtra};
+}
+function drawAdaptiveNote(c,im,note,p){
+ const L=noteAutoLayout(note,p,c),x=note.x,y=note.y,w=L.w,h=L.h,realH=L.totalH;
+ if(!im?.complete||!im.naturalWidth)return L;
+ c.save();c.translate(x+w/2,y+realH/2);c.rotate((note.rot||0)*Math.PI/180);c.globalAlpha=note.opacity??1;
+ const ix=-w/2,iy=-realH/2,sh=im.naturalHeight,sw=im.naturalWidth;
+ const sections=[
+  [0,.73,.73*h],
+  [.73,.745,.015*h+L.highlightExtra],
+  [.745,.88,.135*h],
+  [.88,.90,.02*h+L.tipsExtra],
+  [.90,1,.10*h]
+ ];
+ let cursor=iy;
+ for(const[sy,ey,targetH]of sections){
+  if(targetH<=0)continue;
+  c.drawImage(im,0,Math.round(sh*sy),sw,Math.max(1,Math.round(sh*(ey-sy))),ix,cursor,w,targetH);
+  cursor+=targetH;
+ }
+ c.restore();return L;
+}
+function noteBlocks(note,p){const f=getFields(p),s=p.noteScale||1;const L=noteAutoLayout(note,p),x=note.x,y=note.y,w=L.w,h=L.h;const left=x+w*.365,right=x+w*.94;
  return [
   {key:'base',label:'Base',value:f.base,top:y+h*.34,labSize:20*s,valueSize:19*s,height:h*.075},
   {key:'duration',label:'Durata',value:f.duration,top:y+h*.455,labSize:20*s,valueSize:19*s,height:h*.075},
-  {key:'highlight',label:'Da non perdere',value:f.highlight,top:y+h*.57,labSize:20*s,valueSize:16*s,height:h*.16},
-  {key:'tips',label:'Da sapere',value:f.tips,top:y+h*.765,labSize:20*s,valueSize:16*s,height:h*.14}
+  {key:'highlight',label:'Da non perdere',value:f.highlight,top:y+h*.57,labSize:20*s,valueSize:16*s,height:h*.16+L.highlightExtra},
+  {key:'tips',label:'Da sapere',value:f.tips,top:y+h*.765+L.highlightExtra,labSize:20*s,valueSize:16*s,height:h*.14+L.tipsExtra}
  ].map(z=>({...z,x:left,w:right-left}));
 }
 function render(p=page(),dest=ctx,selectedDraw=true){if(!p)return;const c=dest;if(c!==ctx){/* export uses independent context */}hitboxes=[];fitIssues=[];c.save();c.clearRect(0,0,W,H);c.fillStyle='#f7efde';c.fillRect(0,0,W,H);
@@ -239,7 +272,7 @@ function render(p=page(),dest=ctx,selectedDraw=true){if(!p)return;const c=dest;i
  const scene=p.visuals.scene,postcard=p.visuals.postcard,note=p.visuals.note;
  if(scene.visible){const key=p.imageKeys?.scene||'giulia_kanazawa';drawImageFit(c,assetImage(key),scene.x,scene.y,scene.w*scene.scale,scene.h*scene.scale,scene.rot,scene.opacity??1,p.layout===1||p.layout===3);hitboxes.push({id:'scene',x:scene.x,y:scene.y,w:scene.w*scene.scale,h:scene.h*scene.scale})}
  if(postcard.visible){const key=p.imageKeys?.postcard||'cartolina_kenrokuen';drawImageFit(c,assetImage(key),postcard.x,postcard.y,postcard.w*postcard.scale,postcard.h*postcard.scale,postcard.rot,postcard.opacity??1);hitboxes.push({id:'postcard',x:postcard.x,y:postcard.y,w:postcard.w*postcard.scale,h:postcard.h*postcard.scale})}
- if(note.visible){drawImageFit(c,assetImage('postit_'+(p.note+1)),note.x,note.y,note.w*note.scale,note.h*note.scale,note.rot,note.opacity??1);hitboxes.push({id:'note',x:note.x,y:note.y,w:note.w*note.scale,h:note.h*note.scale})}
+ if(note.visible){const L=drawAdaptiveNote(c,assetImage('postit_'+(p.note+1)),note,p);hitboxes.push({id:'note',x:note.x,y:note.y,w:L.w,h:L.totalH})}
  for(const s of p.stickers){const im=assetImage(s.key);let w=s.w*s.scale,h=s.h||s.w*(im?.naturalHeight||1)/(im?.naturalWidth||1);h*=s.scale;drawImageFit(c,im,s.x,s.y,w,h,s.rot,s.opacity??1);hitboxes.push({id:'sticker:'+s.id,x:s.x,y:s.y,w,h})}
  // Editable note text. The note image owns only paper, heading and icons; labels & values are drawn live.
  if(note.visible){for(const item of noteBlocks(note,p)){const k='label_'+item.key,lab={x:item.x,y:item.top,w:item.w,h:27};window.KURA_V2.paintEditable(c,p,k,p.fields[k]??item.label,lab,{fontSize:item.labSize,bold:true,lineHeight:1.12});const val={x:item.x,y:item.top+27,w:item.w,h:item.height};window.KURA_V2.paintEditable(c,p,item.key,item.value,val,{fontSize:item.valueSize,lineHeight:1.18})}}
@@ -249,8 +282,8 @@ function render(p=page(),dest=ctx,selectedDraw=true){if(!p)return;const c=dest;i
  // hand-painted orange accents are independent PNG overlays; headings editable via true font.
  const brushHead={x:eyebrow.x+3,y:eyebrow.y+43,w:190,h:18};drawImageFit(c,assetImage('pennellata_1'),brushHead.x,brushHead.y,brushHead.w,brushHead.h);
  for(const [tbox,key] of [[h1,'head1'],[h2,'head2']]){
-  const br={x:tbox.x-1,y:tbox.y+40,w:64,h:13};drawImageFit(c,assetImage('pennellata_2'),br.x,br.y,br.w,br.h);
-  const heading={x:tbox.x+70,y:tbox.y,w:tbox.w-72,h:tbox.h};window.KURA_V2.paintEditable(c,p,key,p.fields[key],heading,{fontSize:47,script:true,lineHeight:1.1,color:ORANGE});
+  const br={x:tbox.x-1,y:tbox.y+(tbox.h-13)/2,w:64,h:13};drawImageFit(c,assetImage('pennellata_2'),br.x,br.y,br.w,br.h);
+  const heading={x:tbox.x+70,y:tbox.y,w:tbox.w-72,h:tbox.h};window.KURA_V2.paintEditable(c,p,key,p.fields[key],heading,{fontSize:40,script:true,bold:true,lineHeight:1.1,color:ORANGE});
  }
  window.KURA_V2.paintEditable(c,p,'body1',p.fields.body1,b1,{fontSize:30*p.bodyScale,lineHeight:1.26,color:GREEN});
  window.KURA_V2.paintEditable(c,p,'body2',p.fields.body2,b2,{fontSize:30*p.bodyScale,lineHeight:1.26,color:GREEN});window.KURA_V2.paintFreeTexts(c,p);
