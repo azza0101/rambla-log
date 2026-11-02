@@ -1,6 +1,6 @@
 {
   "name": "KURA Carousel Editor",
-  "apiVersion": "3.0.0",
+  "apiVersion": "3.1.0",
   "browserNamespace": "window.KURA_MCP",
   "format": "KURA_EDITOR_V2",
   "units": {
@@ -267,7 +267,7 @@
     "Illustrated background SVGs and 9 new stickers are first-party static assets under assets/.",
     "Seasonal background ids are stable; prefer named backgroundId over numeric index.",
     "KURA 2.5 stores 16 high-quality photographic papercut WebP stickers separately, 4 per season, not simplified SVG substitutes.",
-    "KURA November 2026 uses three independent papercut Giulia PNG layers and three landscapes in fixed asset registry. The template imports directly from GitHub Pages and remains editable, with autosave and PNG/ZIP export."
+    "KURA November 2026 v4 uses three independent papercut Giulia PNG layers and three landscapes in fixed asset registry. The template imports directly from GitHub Pages and remains editable, with autosave and PNG/ZIP export."
   ],
   "backgroundPresets": [
     {
