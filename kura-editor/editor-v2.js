@@ -13,6 +13,7 @@ for(const old of LEGACY_STICKERS)ASSETS['sticker_'+old]='./assets/sticker_'+old+
 for(const p of BACKGROUND_PRESETS){if(p.season!=='basic')ASSETS['sfondo_'+p.id]='./assets/sfondo_'+p.id+'_paper_v3.svg?v=2.6.0'}
 for(const [key,label] of NEW_STICKERS){ASSETS['sticker_'+key]='./assets/'+key+'.webp?v=2.5.0';if(!stickerDefs.some(x=>x[0]===key))stickerDefs.push([key,label])}
 
+const KURA_BACKGROUND_COMPOSITIONS={"spring_1":{"base":1,"art":[["spring_blossom_branch",-55,-85,395,400,-8],["spring_pink_petals",840,1080,270,275,14]]},"spring_2":{"base":2,"art":[["spring_blossom_cluster",795,-48,320,330,14],["spring_tulips",-38,1090,278,280,-12]]},"spring_3":{"base":3,"art":[["spring_blossom_branch",-65,-45,370,390,17],["spring_tulips",858,1080,260,270,10]]},"summer_1":{"base":1,"art":[["summer_lemon_branch",806,-62,343,355,13],["summer_swallow",-40,1092,312,280,-10]]},"summer_2":{"base":2,"art":[["summer_orange_slices",-74,-28,325,305,-18],["summer_paper_shell",824,1088,294,292,12]]},"summer_3":{"base":3,"art":[["summer_lemon_branch",-50,-60,352,352,-12],["summer_orange_slices",820,1070,308,312,16]]},"autumn_1":{"base":4,"art":[["autumn_maple_leaf",-55,-70,335,350,-10],["autumn_purple_grapes",827,1075,290,305,8]]},"autumn_2":{"base":2,"art":[["autumn_olive_branch",796,-60,365,365,12],["autumn_wheat",-60,1100,320,310,-15]]},"autumn_3":{"base":3,"art":[["autumn_purple_grapes",-70,-90,340,355,-18],["autumn_maple_leaf",800,1065,315,335,16]]},"winter_1":{"base":4,"art":[["winter_snowy_pine",-65,-45,405,400,-12],["winter_paper_snowflake",838,1085,260,270,11]]},"winter_2":{"base":1,"art":[["winter_holly_branch",830,-85,315,350,16],["winter_pine_cones",-62,1075,345,352,-12]]},"winter_3":{"base":3,"art":[["winter_paper_snowflake",831,-25,250,250,15],["winter_snowy_pine",-65,1093,343,355,-14]]}};
 const KURA_SEASONS=[['basic','Basic'],['spring','Primavera'],['summer','Estate'],['autumn','Autunno'],['winter','Inverno']];
 
 let overlay=null, toolbar=null, ctxMenu=null, nodeMap=new Map(), activeKey=null, shownPage=null;
@@ -72,30 +73,21 @@ function drawSeasonMark(c,id,kind){
  if(kind==='winter'){stroke('rgba(155,181,185,.37)',2);for(let i=0;i<7;i++){const x=875+r()*135,y=112+r()*135;c.beginPath();c.moveTo(x-10,y);c.lineTo(x+10,y);c.moveTo(x,y-10);c.lineTo(x,y+10);c.moveTo(x-7,y-7);c.lineTo(x+7,y+7);c.moveTo(x-7,y+7);c.lineTo(x+7,y-7);c.stroke()}}
  c.restore();
 }
-function drawKuraBackground(c,index,mini=false){
- if(index>=4){const asset=assetImage('sfondo_'+BACKGROUND_PRESETS[index].id);if(asset?.complete&&asset.naturalWidth){c.drawImage(asset,0,0,W,H);return}}
- if(index>=4&&!mini){if(!paperCache.has(index)){const image=document.createElement('canvas');image.width=W;image.height=H;drawKuraBackground(image.getContext('2d'),index,true);paperCache.set(index,image)}c.drawImage(paperCache.get(index),0,0,W,H);return}
- if(index<4){const im=assetImage('sfondo_'+(index+1));if(im&&im.complete&&im.naturalWidth)c.drawImage(im,0,0,W,H);else{c.fillStyle='#f7f0e5';c.fillRect(0,0,W,H)}return}
- const art=assetImage('sfondo_'+BACKGROUND_PRESETS[index].id);if(art?.complete&&art.naturalWidth){c.drawImage(art,0,0,W,H);return}
- const a=PAPER[index],gr=c.createLinearGradient(a.direction%2?0:W,0,a.direction%2?W:0,H);
- gr.addColorStop(0,a.colors[0]);gr.addColorStop(1,a.colors[1]);c.fillStyle=gr;c.fillRect(0,0,W,H);
- const rand=paperRandom('kura-bg-v3-'+a.id);
- c.save();c.globalAlpha=.06;c.fillStyle=a.fibers;
- for(let i=0;i<(mini?1400:700);i++){const x=rand()*W,y=rand()*H;c.fillRect(x,y,1+rand()*9,rand()<.9?1:2)}
- c.restore();
- // Pre-rendered torn-paper layer. Kept in the background bitmap, not in editable foreground.
- c.save();c.shadowColor='rgba(74,66,55,.13)';c.shadowBlur=12;c.shadowOffsetY=7;
- c.fillStyle='rgba(255,253,246,.26)';c.beginPath();c.moveTo(0,0);
- for(let x=0;x<=W;x+=18)c.lineTo(x,76+(rand()-.5)*19);
- c.lineTo(W,0);c.closePath();c.fill();c.restore();
- c.save();c.fillStyle='rgba(255,255,255,.18)';c.beginPath();c.moveTo(0,H);
- for(let x=0;x<=W;x+=20)c.lineTo(x,H-82+(rand()-.5)*17);
- c.lineTo(W,H);c.closePath();c.fill();c.restore();
- drawSeasonMark(c,a.id,a.season);
+function drawComposedPaper(c,index){
+ const preset=BACKGROUND_PRESETS[index],com=KURA_BACKGROUND_COMPOSITIONS[preset?.id];if(!com)return false;
+ const base=assetImage('sfondo_'+com.base);
+ if(!base?.complete||!base.naturalWidth){c.fillStyle='#f8f0e5';c.fillRect(0,0,W,H);return true}
+ c.drawImage(base,0,0,W,H);
+ for(const[k,x,y,w,h,rot]of com.art){const im=assetImage('sticker_'+k);if(!im?.complete||!im.naturalWidth)continue;drawImageFit(c,im,x,y,w,h,rot,1)}
+ return true;
 }
-const KURA_NOTE_KEYS=new Set(['label_base','label_duration','label_highlight','label_tips','base','duration','highlight','tips']);
-function noteVisualCenter(p){const n=p.visuals.note,L=noteAutoLayout(n,p);return{x:n.x+L.w/2,y:n.y+L.totalH/2,rotation:n.rot||0}}
-function rotateAroundPoint(x,y,cx,cy,deg){const a=deg*Math.PI/180,dx=x-cx,dy=y-cy;return{x:cx+dx*Math.cos(a)-dy*Math.sin(a),y:cy+dx*Math.sin(a)+dy*Math.cos(a)}}
+function drawKuraBackground(c,index,mini=false){
+ if(index<4){const im=assetImage('sfondo_'+(index+1));if(im?.complete&&im.naturalWidth)c.drawImage(im,0,0,W,H);else{c.fillStyle='#f7f0e5';c.fillRect(0,0,W,H)}return}
+ if(drawComposedPaper(c,index))return;
+ const fallback=assetImage('sfondo_'+BACKGROUND_PRESETS[index].id);
+ if(fallback?.complete&&fallback.naturalWidth){c.drawImage(fallback,0,0,W,H);return}
+ c.fillStyle='#f7f0e5';c.fillRect(0,0,W,H);
+}
 function paintEditable(c,p,key,raw,unusedRect,opt){
  ensurePage(p);const r=textRect(p,key);if(!r)return;
  const st=styleFor(p,key),o=offsetFor(p,key),isNoteText=KURA_NOTE_KEYS.has(key);
@@ -341,7 +333,7 @@ refreshGalleries=function(){
   BACKGROUND_PRESETS.forEach((p,i)=>{
    if(p.season!==season)return;
    const b=document.createElement('button');b.className='thumb '+(page().background===i?'active':'');b.title=p.name;b.dataset.backgroundId=p.id;
-   const sample=document.createElement('img');sample.className='kura-bg-procedural';sample.alt=p.name;sample.loading='lazy';sample.src=i<4?ASSETS['sfondo_'+(i+1)]:ASSETS['sfondo_'+p.id];b.appendChild(sample);const label=document.createElement('small');label.textContent=p.name;b.appendChild(label);
+   const sample=document.createElement('img');sample.className='kura-bg-procedural';sample.alt=p.name;sample.loading='lazy';sample.src=i<4?ASSETS['sfondo_'+(i+1)]:ASSETS['sfondo_'+p.id];sample.onerror=()=>{const preview=document.createElement('canvas');preview.width=108;preview.height=135;preview.className='kura-bg-procedural';const cc=preview.getContext('2d');cc.save();cc.scale(.1,.1);drawKuraBackground(cc,i,true);cc.restore();sample.replaceWith(preview)};b.appendChild(sample);const label=document.createElement('small');label.textContent=p.name;b.appendChild(label);
    b.onclick=()=>{snapshot();page().background=i;page().backgroundId=p.id;page().seasonHint=p.season;refreshGalleries();queueRender();scheduleSave()};root.appendChild(b);
   })
  }
