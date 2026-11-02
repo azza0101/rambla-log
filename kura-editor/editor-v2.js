@@ -2,7 +2,7 @@
    Expects the v1 editor's globals in index.html. No external runtime or API keys. */
 'use strict';
 (function(){
-const V2_VERSION='2.8.0';
+const V2_VERSION='3.0.0';
 const NOTE_LABELS={label_base:'Base',label_duration:'Durata',label_highlight:'Da non perdere',label_tips:'Da sapere'};
 const STANDARD=['eyebrow','head1','body1','head2','body2','label_base','base','label_duration','duration','label_highlight','highlight','label_tips','tips'];
 const PAPER=[{"id":"basic_1","name":"Basic 1 · Avorio","season":"basic","colors":["#f7f0e4","#f2e8d9"],"fibers":"#b4a692","direction":0,"tags":["basic","basic 1 · avorio"]},{"id":"basic_2","name":"Basic 2 · Salvia","season":"basic","colors":["#e9eee4","#f5f3e9"],"fibers":"#a0a995","direction":1,"tags":["basic","basic 2 · salvia"]},{"id":"basic_3","name":"Basic 3 · Sabbia","season":"basic","colors":["#f3e7dc","#f9f2e9"],"fibers":"#bc9b89","direction":2,"tags":["basic","basic 3 · sabbia"]},{"id":"basic_4","name":"Basic 4 · Perla","season":"basic","colors":["#f1f1eb","#e6ece5"],"fibers":"#aeb7ae","direction":3,"tags":["basic","basic 4 · perla"]},{"id":"spring_1","name":"Primavera 1 · Boccioli","season":"spring","colors":["#f5efe4","#dce7d7"],"fibers":"#98b689","direction":0,"tags":["spring","primavera 1 · boccioli"]},{"id":"spring_2","name":"Primavera 2 · Botanica","season":"spring","colors":["#edf2e3","#d5e2c7"],"fibers":"#9bb88d","direction":1,"tags":["spring","primavera 2 · botanica"]},{"id":"spring_3","name":"Primavera 3 · Luce","season":"spring","colors":["#f8f2df","#e9eedb"],"fibers":"#aabf9e","direction":2,"tags":["spring","primavera 3 · luce"]},{"id":"summer_1","name":"Estate 1 · Mediterranea","season":"summer","colors":["#f9efd9","#dfe9eb"],"fibers":"#91b0b4","direction":3,"tags":["summer","estate 1 · mediterranea"]},{"id":"summer_2","name":"Estate 2 · Sabbia","season":"summer","colors":["#f4ead6","#efd7b4"],"fibers":"#cfaa78","direction":0,"tags":["summer","estate 2 · sabbia"]},{"id":"summer_3","name":"Estate 3 · Agrumi","season":"summer","colors":["#fff1d9","#f2d59c"],"fibers":"#d29c5d","direction":1,"tags":["summer","estate 3 · agrumi"]},{"id":"autumn_1","name":"Autunno 1 · Terracotta","season":"autumn","colors":["#f3e3d7","#d8b59c"],"fibers":"#bd835d","direction":2,"tags":["autumn","autunno 1 · terracotta"]},{"id":"autumn_2","name":"Autunno 2 · Olivato","season":"autumn","colors":["#ece7d5","#c4c59e"],"fibers":"#8d9b68","direction":3,"tags":["autumn","autunno 2 · olivato"]},{"id":"autumn_3","name":"Autunno 3 · Vendemmia","season":"autumn","colors":["#f2e8dc","#c8a88b"],"fibers":"#9a7c66","direction":0,"tags":["autumn","autunno 3 · vendemmia"]},{"id":"winter_1","name":"Inverno 1 · Nebbia","season":"winter","colors":["#eff0ee","#d9dedd"],"fibers":"#9eafac","direction":1,"tags":["winter","inverno 1 · nebbia"]},{"id":"winter_2","name":"Inverno 2 · Bosco","season":"winter","colors":["#e7ece8","#cbd7cf"],"fibers":"#849e90","direction":2,"tags":["winter","inverno 2 · bosco"]},{"id":"winter_3","name":"Inverno 3 · Ghiaccio","season":"winter","colors":["#f1f3f2","#dde5ea"],"fibers":"#a9bfcc","direction":3,"tags":["winter","inverno 3 · ghiaccio"]}];
@@ -15,7 +15,10 @@ for(const [key,label] of NEW_STICKERS){ASSETS['sticker_'+key]='./assets/'+key+'.
 for(const [old,replacement]of Object.entries(LEGACY_TO_REAL))ASSETS['sticker_'+old]=replacement==='original_stamp'?ASSETS.sticker_stamp:ASSETS['sticker_'+replacement];
 
 const KURA_BACKGROUND_COMPOSITIONS={"spring_1":{"base":1,"art":[["spring_blossom_branch",-55,-85,395,400,-8],["spring_pink_petals",840,1080,270,275,14]]},"spring_2":{"base":2,"art":[["spring_blossom_cluster",795,-48,320,330,14],["spring_tulips",-38,1090,278,280,-12]]},"spring_3":{"base":3,"art":[["spring_blossom_branch",-65,-45,370,390,17],["spring_tulips",858,1080,260,270,10]]},"summer_1":{"base":1,"art":[["summer_lemon_branch",806,-62,343,355,13],["summer_swallow",-40,1092,312,280,-10]]},"summer_2":{"base":2,"art":[["summer_orange_slices",-74,-28,325,305,-18],["summer_paper_shell",824,1088,294,292,12]]},"summer_3":{"base":3,"art":[["summer_lemon_branch",-50,-60,352,352,-12],["summer_orange_slices",820,1070,308,312,16]]},"autumn_1":{"base":4,"art":[["autumn_maple_leaf",-55,-70,335,350,-10],["autumn_purple_grapes",827,1075,290,305,8]]},"autumn_2":{"base":2,"art":[["autumn_olive_branch",796,-60,365,365,12],["autumn_wheat",-60,1100,320,310,-15]]},"autumn_3":{"base":3,"art":[["autumn_purple_grapes",-70,-90,340,355,-18],["autumn_maple_leaf",800,1065,315,335,16]]},"winter_1":{"base":4,"art":[["winter_snowy_pine",-65,-45,405,400,-12],["winter_paper_snowflake",838,1085,260,270,11]]},"winter_2":{"base":1,"art":[["winter_holly_branch",830,-85,315,350,16],["winter_pine_cones",-62,1075,345,352,-12]]},"winter_3":{"base":3,"art":[["winter_paper_snowflake",831,-25,250,250,15],["winter_snowy_pine",-65,1093,343,355,-14]]}};
-const KURA_NOV26_ASSETS={giulia_vipacco_nov26:'./assets/novembre2026/giulia_vipacco.png',giulia_maiorca_nov26:'./assets/novembre2026/giulia_maiorca.png',giulia_kruger_nov26:'./assets/novembre2026/giulia_kruger.png',paesaggio_vipacco_nov26:'./assets/novembre2026/paesaggio_vipacco.webp',paesaggio_maiorca_nov26:'./assets/novembre2026/paesaggio_maiorca.webp',paesaggio_kruger_nov26:'./assets/novembre2026/paesaggio_kruger.webp'};
+const KURA_NOV26_ASSETS={giulia_vipacco_nov26:'./assets/novembre2026/giulia_vipacco.png',giulia_maiorca_nov26:'./assets/novembre2026/giulia_maiorca.png',giulia_kruger_nov26:'./assets/novembre2026/giulia_kruger.png',paesaggio_vipacco_nov26:'./assets/novembre2026/paesaggio_vipacco.webp',paesaggio_maiorca_nov26:'./assets/novembre2026/paesaggio_maiorca.webp',paesaggio_kruger_nov26:'./assets/novembre2026/paesaggio_kruger.webp',
+ giulia_vipacco_border_nov26:'./assets/novembre2026/giulia_vipacco_border.png',
+ giulia_maiorca_border_nov26:'./assets/novembre2026/giulia_maiorca_border.png',
+ giulia_kruger_border_nov26:'./assets/novembre2026/giulia_kruger_border.png'};
 for(const[k,url]of Object.entries(KURA_NOV26_ASSETS))ASSETS[k]=url;
 const KURA_SEASONS=[['basic','Basic'],['spring','Primavera'],['summer','Estate'],['autumn','Autunno'],['winter','Inverno']];
 
@@ -31,7 +34,7 @@ function offsetFor(p,key){const f=freeItem(p,key);return f||p.offsets[key]||{}}
 function defaultStyle(p,key){
  const s=p.noteScale||1,b=p.bodyScale||1;
  if(key==='eyebrow')return{fontSize:32,family:'Montserrat',bold:true,color:GREEN,lineHeight:1.12};
- if(key==='head1'||key==='head2')return{fontSize:40,family:'KURA Brush2',bold:false,color:ORANGE,lineHeight:1.10};
+ if(key==='head1'||key==='head2')return{fontSize:40,family:'Kaushan Script',bold:false,color:ORANGE,lineHeight:1.10};
  if(key==='body1'||key==='body2')return{fontSize:30*b,family:'Montserrat',bold:false,color:GREEN,lineHeight:1.26};
  if(key.startsWith('label_'))return{fontSize:20*s,family:'Montserrat',bold:true,color:GREEN,lineHeight:1.12};
  if(['base','duration'].includes(key))return{fontSize:19*s,family:'Montserrat',bold:false,color:GREEN,lineHeight:1.18};
@@ -40,9 +43,9 @@ function defaultStyle(p,key){
 }
 function styleFor(p,key){
  const st=p.textStyles&&p.textStyles[key]||{},df=defaultStyle(p,key);
- return{fontSize:safeNumber(st.fontSize,10,160,df.fontSize),family:(st.family==='Feeling Passionate'?'KURA Brush2':(['Montserrat','KURA Brush2','Caveat'].includes(st.family)?st.family:df.family)),bold:typeof st.bold==='boolean'?st.bold:df.bold,color:/^#[0-9a-fA-F]{6}$/.test(st.color||'')?st.color:df.color,lineHeight:safeNumber(st.lineHeight,.8,2.5,df.lineHeight)};
+ return{fontSize:safeNumber(st.fontSize,10,160,df.fontSize),family:(['Feeling Passionate','KURA Brush2'].includes(st.family)?'Kaushan Script':(['Montserrat','Kaushan Script','Caveat Brush','Caveat'].includes(st.family)?st.family:df.family)),bold:typeof st.bold==='boolean'?st.bold:df.bold,color:/^#[0-9a-fA-F]{6}$/.test(st.color||'')?st.color:df.color,lineHeight:safeNumber(st.lineHeight,.8,2.5,df.lineHeight)};
 }
-function effectiveFamily(st){return st.family==='KURA Brush2'&&!faceLoaded?'Caveat':st.family}
+function effectiveFamily(st){return st.family==='Kaushan Script'&&!document.fonts.check('39px "Kaushan Script"')?'Caveat Brush':st.family}
 function textRect(p,key){
  ensurePage(p);const f=freeItem(p,key);
  if(f)return{x:safeNumber(f.x,-1000,2100,150),y:safeNumber(f.y,-1000,2000,200),
@@ -96,7 +99,7 @@ function drawKuraBackground(c,index,mini=false){
  c.fillStyle='#f7f0e5';c.fillRect(0,0,W,H);
 }
 const KURA_NOTE_KEYS=new Set(['label_base','label_duration','label_highlight','label_tips','base','duration','highlight','tips']);
-function noteVisualCenter(p){const n=p.visuals.note,L=noteAutoLayout(n,p);return{x:n.x+L.w/2,y:n.y+L.totalH/2,rotation:n.rot||0}}
+function noteVisualCenter(p){const n=p.visuals.note,L=noteAutoLayout(n,p);const printCorrection=Number.isFinite(p.noteTextAngle)?p.noteTextAngle:([1.4,-1.2,1.8,2.1][p.note]||0);return{x:n.x+L.w/2,y:n.y+L.totalH/2,rotation:(n.rot||0)+printCorrection}}
 function rotateAroundPoint(x,y,cx,cy,deg){const a=deg*Math.PI/180,dx=x-cx,dy=y-cy;return{x:cx+dx*Math.cos(a)-dy*Math.sin(a),y:cy+dx*Math.sin(a)+dy*Math.cos(a)}}
 function paintEditable(c,p,key,raw,unusedRect,opt){
  ensurePage(p);const r=textRect(p,key);if(!r)return;
@@ -114,7 +117,7 @@ function paintEditable(c,p,key,raw,unusedRect,opt){
  const res=drawText(c,raw,{x:-r.w/2,y:-r.h/2,w:r.w,h:r.h},{
   fontSize:st.fontSize,minFont:p.textStyles[key]?.fontSize?st.fontSize:st.fontSize*.80,
   script:false,family:effectiveFamily(st),bold:st.bold,color:st.color,lineHeight:st.lineHeight,
-  strokeWidth:st.family==='KURA Brush2'?.85:0,track:true,label:key
+  strokeWidth:st.family==='Kaushan Script'?.20:0,track:true,label:key
  });
  c.restore();if(c===ctx && p===page())metrics.set(key,res.fontSize);
  hitboxes.push({id:'text:'+key,x:hitCenter.x-r.w/2,y:hitCenter.y-r.h/2,w:r.w,h:r.h});
@@ -219,7 +222,7 @@ function updateToolbar(){
  toolbar.querySelector('[data-bold]').classList.toggle('is-on',st.bold);
 }
 function makeToolbar(){
- toolbar=document.createElement('div');toolbar.className='kura-selection-toolbar hidden';toolbar.setAttribute('role','toolbar');toolbar.innerHTML='<span class="kura-bar-grip">⋮⋮</span><select data-font title="Font"><option>Montserrat</option><option>KURA Brush2</option><option>Caveat</option></select><button type="button" data-minus title="Riduci dimensione">−</button><input data-size type="number" min="10" max="160" step="1" aria-label="Dimensione del testo"/><button type="button" data-plus title="Aumenta dimensione">＋</button><button type="button" data-bold title="Grassetto (anche sulla selezione)">B</button><span class="kura-control-label" data-rotation>0°</span><button type="button" data-reset title="Reimposta posizione">↺</button><button type="button" data-close title="Chiudi">×</button>';
+ toolbar=document.createElement('div');toolbar.className='kura-selection-toolbar hidden';toolbar.setAttribute('role','toolbar');toolbar.innerHTML='<span class="kura-bar-grip">⋮⋮</span><select data-font title="Font"><option>Montserrat</option><option>Kaushan Script</option><option>Caveat Brush</option><option>Caveat</option></select><button type="button" data-minus title="Riduci dimensione">−</button><input data-size type="number" min="10" max="160" step="1" aria-label="Dimensione del testo"/><button type="button" data-plus title="Aumenta dimensione">＋</button><button type="button" data-bold title="Grassetto (anche sulla selezione)">B</button><span class="kura-control-label" data-rotation>0°</span><button type="button" data-reset title="Reimposta posizione">↺</button><button type="button" data-close title="Chiudi">×</button>';
  const stage=document.querySelector('.stage-inner');
  const canvasWrap=stage?.closest('.canvas-wrap');
  let dock=document.getElementById('kuraTextToolbarDock');
@@ -286,7 +289,7 @@ function updateOverlays(){
   nd.edit.style.fontSize=(metrics.get(key)||st.fontSize)+'px';
   nd.edit.style.lineHeight=String(st.lineHeight);
   nd.edit.style.fontFamily='"'+effectiveFamily(st)+'",sans-serif';
-  nd.edit.style.fontWeight=st.bold?'800':'500';nd.edit.style.webkitTextStroke=st.family==='KURA Brush2'?'0.50px currentColor':'0';
+  nd.edit.style.fontWeight=st.bold?'800':'500';nd.edit.style.webkitTextStroke=st.family==='Kaushan Script'?'0.18px currentColor':'0';
   nd.edit.style.opacity=String(safeNumber(o.opacity,0,1,1));
   if(activeKey!==key){const raw=rawFor(p,key);if(nd.edit.dataset.lastRaw!==raw){nd.edit.innerHTML=markdownHTML(raw);nd.edit.dataset.lastRaw=raw}}
   nd.edit.classList.toggle('editing',activeKey===key);
@@ -542,9 +545,9 @@ function projectPanel(){
 }
 async function loadPublishedKuraTemplate(name='novembre-2026'){
  if(name!=='novembre-2026')throw Error('Template non disponibile: '+name);
- const projectId='kura-nov26-travel-pages';
+ const projectId='kura-nov26-travel-pages-v3';
  if(pIndex.some(x=>x.id===projectId)){await switchProject(projectId);return{ok:true,mode:'existing',projectId,pages:pages.length}}
- const res=await fetch('./projects/KURA_Progetto_Novembre_2026.json?v=2.8.0',{cache:'no-store'});
+ const res=await fetch('./projects/KURA_Progetto_Novembre_2026.json?v=3.0.0',{cache:'no-store'});
  if(!res.ok)throw Error('Errore caricamento progetto '+res.status);
  const pkg=await res.json();
  if(!Array.isArray(pkg.pages)||pkg.pages.length!==3)throw Error('Progetto non valido');
@@ -591,14 +594,14 @@ function addV2Controls(){
  const textTab=$('#tab-texts');if(textTab){const b=document.createElement('button');b.className='btn flat';b.style.width='100%';b.textContent='＋ Aggiungi casella di testo';b.onclick=addFreeText;textTab.insertBefore(b,textTab.firstElementChild.nextElementSibling)}
  const fontBox=$('#fontStatus');if(fontBox){const info=document.createElement('div');info.className='kura-font-alert';info.innerHTML='Il font Feeling Passionate viene distribuito a tutti solo se è installato sul sito con licenza web/app e file autorizzato. Altrimenti il titolo usa temporaneamente Caveat, senza cambiare il nome del font nel progetto.';fontBox.after(info)}
 }
-async function checkHostedFont(){try{const r=await fetch('./assets/Kura_Brush2.woff2?v=2.5.0',{cache:'force-cache'});if(r.ok){fontReadyFromHost=await installFont(await r.arrayBuffer(),true);if(fontReadyFromHost){const box=$('#fontStatus');box.innerHTML='<b>KURA Brush2 <span class="pill ok">Integrato ✓</span></b><p>Font completo caricato automaticamente dal sito e usato anche nell’esportazione PNG.</p>'}}}catch(_){}}
+async function checkHostedFont(){try{await Promise.all([document.fonts.load('39px "Kaushan Script"'),document.fonts.load('39px "Caveat Brush"')]);const box=$('#fontStatus');if(box)box.innerHTML='<b>Kaushan Script <span class="pill ok">Integrato ✓</span></b><p>Google Fonts OFL, salvato nel sito. Caveat Brush disponibile come alternativa. Il font è utilizzato anche nei PNG.</p>';queueRender()}catch(err){console.warn('KURA font',err)}}
 function assertPage(op){const p=op.pageId?pages.find(x=>x.id===op.pageId):pages[Number.isInteger(op.pageIndex)?op.pageIndex:current];if(!p)throw Error('Pagina non trovata');return ensurePage(p)}
-function safeStylePatch(style){const out={};if(!style||typeof style!=='object')return out;if(style.fontSize!==undefined)out.fontSize=safeNumber(style.fontSize,10,160,30);if(['Montserrat','KURA Brush2','Feeling Passionate','Caveat'].includes(style.family))out.family=style.family==='Feeling Passionate'?'KURA Brush2':style.family;if(typeof style.bold==='boolean')out.bold=style.bold;if(/^#[0-9a-fA-F]{6}$/.test(style.color||''))out.color=style.color;if(style.lineHeight!==undefined)out.lineHeight=safeNumber(style.lineHeight,.8,2.5,1.2);return out}
+function safeStylePatch(style){const out={};if(!style||typeof style!=='object')return out;if(style.fontSize!==undefined)out.fontSize=safeNumber(style.fontSize,10,160,30);if(['Montserrat','Kaushan Script','Caveat Brush','KURA Brush2','Feeling Passionate','Caveat'].includes(style.family))out.family=['Feeling Passionate','KURA Brush2'].includes(style.family)?'Kaushan Script':style.family;if(typeof style.bold==='boolean')out.bold=style.bold;if(/^#[0-9a-fA-F]{6}$/.test(style.color||''))out.color=style.color;if(style.lineHeight!==undefined)out.lineHeight=safeNumber(style.lineHeight,.8,2.5,1.2);return out}
 window.KURA_MCP=Object.freeze({
- apiVersion:'2.8',contract:'./mcp-contract.json',
+ apiVersion:'3.0',contract:'./mcp-contract.json',
  getProject:function(){return deepClone(exportProject())},
  loadTemplate:async function(name){return loadPublishedKuraTemplate(name)},
- inspect:function(){return{apiVersion:'2.8',pageIds:pages.map(x=>x.id),editableTextKeys:STANDARD,backgroundCount:16,backgroundPresets:BACKGROUND_PRESETS.map(x=>({id:x.id,name:x.name,season:x.season,tags:x.tags})),backgroundNames:BACKGROUND_PRESETS.map(x=>x.name),layoutIds:LAYOUTS.map(x=>x.id),decorations:stickerDefs.map(x=>({id:x[0],name:x[1]})),actions:['loadTemplate','setText','setBackground','setBackgroundId','setSeason','addSticker','addText','moveElement','setPageName','addPage']}},
+ inspect:function(){return{apiVersion:'3.0',pageIds:pages.map(x=>x.id),editableTextKeys:STANDARD,backgroundCount:16,backgroundPresets:BACKGROUND_PRESETS.map(x=>({id:x.id,name:x.name,season:x.season,tags:x.tags})),backgroundNames:BACKGROUND_PRESETS.map(x=>x.name),layoutIds:LAYOUTS.map(x=>x.id),decorations:stickerDefs.map(x=>({id:x[0],name:x[1]})),actions:['loadTemplate','setText','setBackground','setBackgroundId','setSeason','addSticker','addText','moveElement','setPageName','addPage']}},
  applyPatch:function(operations){
   if(!Array.isArray(operations)||operations.length>200)throw Error('Sono necessarie 1-200 operazioni');
   const before=JSON.stringify({pages,current});let count=0;
@@ -633,7 +636,7 @@ window.KURA_MCP=Object.freeze({
  save:function(){return persistNow()},
  exportJSON:function(){return JSON.stringify(exportProject(),null,2)}
 });
-window.KURA_V2={version:'2.8.0',drawKuraBackground:drawKuraBackground,paintEditable:paintEditable,paintFreeTexts:paintFreeTexts};
+window.KURA_V2={version:'3.0.0',drawKuraBackground:drawKuraBackground,paintEditable:paintEditable,paintFreeTexts:paintFreeTexts};
 addV2Controls();initOverlay();initVisualTransform();
 (function(){
  const top=document.querySelector('.top-actions');
