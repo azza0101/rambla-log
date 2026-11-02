@@ -89,6 +89,54 @@ def extract_ink(name):
 for name in ROIS:
     extract_ink(name)
 
+# The four originally sliced icon PNGs could contain disconnected fragments.
+# Rebuild those four icons from corrected complete vector contours, then rasterise
+# into actual transparent KURA ink PNGs with fine printed-grain variation.
+# SVG acts exclusively as a mask; the final raster has authentic ink-like texture.
+import io
+import cairosvg
+
+def rebuild_complete_icon(name):
+    svg_path = DEST / f"fixed_{name}.svg"
+    if not svg_path.is_file():
+        raise FileNotFoundError(f"Missing approved full icon shape: {svg_path}")
+    size = 144
+    svg_bytes = svg_path.read_bytes()
+    large = Image.open(io.BytesIO(
+        cairosvg.svg2png(bytestring=svg_bytes, output_width=size*3, output_height=size*3)
+    )).convert("RGBA")
+    high_alpha = large.getchannel("A")
+    # Soft subpixel antialiasing makes these look printed rather than aliased.
+    high_alpha = high_alpha.resize((size,size),Image.Resampling.LANCZOS)
+    alpha = np.asarray(high_alpha).astype(np.float32) / 255.
+    yy, xx = np.mgrid[0:size,0:size]
+    grain = rng.normal(0,1,(size,size)).astype(np.float32)
+    cloud = np.asarray(Image.fromarray(
+        np.uint8(np.clip(rng.normal(127,29,(size,size)),0,255)),
+        "L").filter(ImageFilter.GaussianBlur(2.5))).astype(np.float32)-127
+    # Uneven pressure, edge bleed and tiny subtle paper pores inside printed ink.
+    pressure = np.clip(.92 + grain*.026 + cloud*.0018 + .04*np.sin(xx*.10+yy*.06),.78,1)
+    ink = np.asarray(COLORS[name],np.float32)
+    rgba = np.zeros((size,size,4),np.uint8)
+    for c in range(3):
+        rgba[:,:,c] = np.uint8(np.clip(ink[c]+grain*1.6+cloud*.035,0,255))
+    rgba[:,:,3] = np.uint8(np.clip(alpha*pressure*255,0,255))
+    full = Image.fromarray(rgba,"RGBA")
+    bbox = full.getchannel("A").getbbox()
+    if not bbox:
+        raise RuntimeError(f"Empty icon: {name}")
+    full = full.crop(bbox)
+    WOUT,HOUT=112,112
+    ratio=min((WOUT-10)/full.width,(HOUT-10)/full.height)
+    resized=full.resize((max(1,round(full.width*ratio)),max(1,round(full.height*ratio))),Image.Resampling.LANCZOS)
+    target=Image.new("RGBA",(WOUT,HOUT))
+    target.alpha_composite(resized,((WOUT-resized.width)//2,(HOUT-resized.height)//2))
+    target.save(DEST/f"postit_{name}.png",optimize=True)
+    assert target.getchannel("A").getbbox(), f"Failed to render {name}"
+
+for icon_name in ("pin","calendar","star","info"):
+    rebuild_complete_icon(icon_name)
+
 # Clean paper base: real warm palette sampled above, with fibre, uneven edge
 # and controlled tonal gradients. The nine-slice editor preserves its texture.
 W,H=450,690
