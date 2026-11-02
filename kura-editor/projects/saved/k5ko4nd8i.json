@@ -90,7 +90,9 @@
       "bodyScale": 1,
       "noteScale": 1,
       "textStyles": {},
-      "freeTexts": []
+      "freeTexts": [],
+      "backgroundId": "basic_1",
+      "seasonHint": "basic"
     }
   ],
   "customAssets": {},
@@ -98,5 +100,5 @@
   "projectId": "k5ko4nd8i",
   "projectName": "Il mio primo carosello",
   "meta": {},
-  "githubSavedAt": "2026-11-02T15:38:06.371Z"
+  "githubSavedAt": "2026-11-02T15:43:25.573Z"
 }
