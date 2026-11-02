@@ -87,8 +87,8 @@
         }
       ],
       "offsets": {},
-      "bodyScale": 1,
-      "noteScale": 1,
+      "bodyScale": 1.45,
+      "noteScale": 1.25,
       "textStyles": {},
       "freeTexts": [],
       "backgroundId": "basic_1",
@@ -100,5 +100,5 @@
   "projectId": "k5ko4nd8i",
   "projectName": "Il mio primo carosello",
   "meta": {},
-  "githubSavedAt": "2026-11-02T15:43:25.573Z"
+  "githubSavedAt": "2026-11-02T15:43:51.655Z"
 }
