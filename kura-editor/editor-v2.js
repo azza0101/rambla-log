@@ -322,8 +322,8 @@ function placeStickerAt(key,clientX,clientY){
  const im=assetImage(el.model.key),w=el.model.w*(el.model.scale||1),h=el.model.h||w*(im?.naturalHeight||1)/(im?.naturalWidth||1);
  el.model.x=pt.x-w/2;el.model.y=pt.y-h/2;refreshInspector();queueRender();scheduleSave();
 }
-canvas.addEventListener('dragover',e=>{if(e.dataTransfer?.types?.includes('application/x-kura-sticker')||e.dataTransfer?.types?.includes('text/plain')){e.preventDefault();e.dataTransfer.dropEffect='copy'}});
-canvas.addEventListener('drop',e=>{const key=e.dataTransfer?.getData('application/x-kura-sticker')||e.dataTransfer?.getData('text/plain')?.replace(/^kura-sticker:/,'');if(stickerDefs.some(x=>x[0]===key)){e.preventDefault();placeStickerAt(key,e.clientX,e.clientY)}});
+document.querySelector('.stage-inner').addEventListener('dragover',e=>{if(e.dataTransfer?.types?.includes('application/x-kura-sticker')||e.dataTransfer?.types?.includes('text/plain')){e.preventDefault();e.dataTransfer.dropEffect='copy'}});
+document.querySelector('.stage-inner').addEventListener('drop',e=>{const key=e.dataTransfer?.getData('application/x-kura-sticker')||e.dataTransfer?.getData('text/plain')?.replace(/^kura-sticker:/,'');if(stickerDefs.some(x=>x[0]===key)){e.preventDefault();placeStickerAt(key,e.clientX,e.clientY)}});
 const originalRegenerateDecorations=regenerateDecorations;
 regenerateDecorations=function(addNew){
  originalRegenerateDecorations(addNew);if(!addNew)return;
