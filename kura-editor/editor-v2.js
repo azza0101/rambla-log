@@ -89,6 +89,9 @@ function drawKuraBackground(c,index,mini=false){
  if(fallback?.complete&&fallback.naturalWidth){c.drawImage(fallback,0,0,W,H);return}
  c.fillStyle='#f7f0e5';c.fillRect(0,0,W,H);
 }
+const KURA_NOTE_KEYS=new Set(['label_base','label_duration','label_highlight','label_tips','base','duration','highlight','tips']);
+function noteVisualCenter(p){const n=p.visuals.note,L=noteAutoLayout(n,p);return{x:n.x+L.w/2,y:n.y+L.totalH/2,rotation:n.rot||0}}
+function rotateAroundPoint(x,y,cx,cy,deg){const a=deg*Math.PI/180,dx=x-cx,dy=y-cy;return{x:cx+dx*Math.cos(a)-dy*Math.sin(a),y:cy+dx*Math.sin(a)+dy*Math.cos(a)}}
 function paintEditable(c,p,key,raw,unusedRect,opt){
  ensurePage(p);const r=textRect(p,key);if(!r)return;
  const st=styleFor(p,key),o=offsetFor(p,key),isNoteText=KURA_NOTE_KEYS.has(key);
