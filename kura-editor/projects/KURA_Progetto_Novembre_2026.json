@@ -2,14 +2,14 @@
   "format": "KURA_EDITOR_V2",
   "width": 1080,
   "height": 1350,
-  "version": 6,
-  "schemaVersion": 6,
-  "projectId": "kura-nov26-travel-pages-v6",
-  "projectName": "KURA · Novembre 2026 · Editoriale definitivo",
+  "version": 7,
+  "schemaVersion": 7,
+  "projectId": "kura-nov26-travel-pages-v7",
+  "projectName": "KURA · Novembre 2026 · Testi editoriali aggiornati v7",
   "pages": [
     {
       "id": "kura-nov26-01",
-      "name": "Slovenia · Vipacco",
+      "name": "Slovenia · Valle del Vipacco | Vigne, borghi e orange wine",
       "seed": "30010",
       "layout": 0,
       "background": 0,
@@ -18,10 +18,10 @@
       "note": 0,
       "fields": {
         "eyebrow": "01 / SLOVENIA",
-        "head1": "Vigne, borghi",
-        "body1": "Se ti piacciono quei posti dove vai per bere un bicchiere di vino e finisci a chiacchierare per ore con chi l'ha prodotto, segnati la **Valle del Vipacco**.\n\nSiamo praticamente attaccati all'Italia, ma tra borghi di pietra e piccole cantine sembra di essere molto più lontani.",
-        "head2": "e orange wine",
-        "body2": "Qui trovi vini che difficilmente assaggerai altrove, come **Zelen** e **Pinela**, e un sacco di **orange wine**.\n\nA novembre poi è tutto più tranquillo: un giro tra le vigne, una degustazione e magari un bel pranzo con i prodotti locali. Unico avvertimento: non sottovalutare la **bora**. Quando si alza, si fa sentire!",
+        "head1": "Un calice tira l'altro",
+        "body1": "Se ti piacciono quei posti dove vai per bere un bicchiere di vino e finisci a chiacchierare per ore con chi l'ha prodotto, segnati la **Valle del Vipacco**.\n\nSiamo praticamente attaccati all'Italia, ma tra borghi di pietra e piccole **cantine** sembra di essere molto più lontani. Qui trovi vini che difficilmente assaggerai altrove, come **Zelen e Pinela**, e un sacco di **orange wine**.",
+        "head2": "La dritta di novembre",
+        "body2": "A novembre poi è tutto più tranquillo: un giro tra le vigne, una degustazione e magari un bel pranzo con i prodotti locali. Unico avvertimento: non sottovalutare la bora. Quando si alza, si fa sentire!",
         "base": "Vipava o Ajdovščina",
         "duration": "3–4 giorni",
         "highlight": "Zelen, Pinela e orange wine",
@@ -30,10 +30,10 @@
       },
       "visuals": {
         "note": {
-          "x": 614,
-          "y": 115,
-          "w": 430,
-          "h": 538,
+          "x": 629,
+          "y": 120,
+          "w": 400,
+          "h": 516,
           "rot": -2,
           "scale": 1,
           "opacity": 1,
@@ -51,7 +51,7 @@
         },
         "scene": {
           "x": -24,
-          "y": 1120,
+          "y": 1152,
           "w": 1130,
           "h": 376,
           "rot": 0,
@@ -80,40 +80,40 @@
       ],
       "offsets": {
         "body2": {
-          "w": 515,
-          "h": 430,
-          "dx": -14,
-          "dy": -90
+          "w": 930,
+          "h": 250,
+          "dx": -12,
+          "dy": 90
         },
         "head1": {
-          "w": 485,
-          "rot": -3.2
+          "w": 523,
+          "rot": -2.6
         },
         "head2": {
-          "w": 490,
-          "dy": -86,
-          "rot": -3
+          "w": 539,
+          "dy": 91,
+          "rot": -2.5
         },
         "body1": {
-          "dx": -14,
-          "dy": -16,
-          "w": 515,
-          "h": 365
+          "dx": -12,
+          "dy": -13,
+          "w": 548,
+          "h": 565
         }
       },
       "bodyScale": 1,
-      "noteScale": 1.1,
+      "noteScale": 1.02,
       "textStyles": {
         "head1": {
           "family": "Caveat Brush",
-          "fontSize": 52,
+          "fontSize": 51,
           "bold": false,
           "color": "#c87135",
           "lineHeight": 1.1
         },
         "head2": {
           "family": "Caveat Brush",
-          "fontSize": 53,
+          "fontSize": 51,
           "bold": false,
           "color": "#c87135",
           "lineHeight": 1.1
@@ -121,12 +121,12 @@
         "body1": {
           "family": "Montserrat",
           "fontSize": 31,
-          "lineHeight": 1.24
+          "lineHeight": 1.2
         },
         "body2": {
           "family": "Montserrat",
           "fontSize": 31,
-          "lineHeight": 1.24
+          "lineHeight": 1.2
         }
       },
       "freeTexts": [],
@@ -139,7 +139,7 @@
     },
     {
       "id": "kura-nov26-02",
-      "name": "Spagna · Maiorca",
+      "name": "Spagna · Maiorca | Valldemossa e Serra de Tramuntana",
       "seed": "30132",
       "layout": 1,
       "background": 1,
@@ -148,22 +148,22 @@
       "note": 0,
       "fields": {
         "eyebrow": "02 / SPAGNA",
-        "head1": "Valldemossa",
-        "body1": "Maiorca a novembre? Sì, ma stavolta le spiagge le lasciamo stare. Perché nell'entroterra c'è un'isola completamente diversa da quella che siamo abituati a vedere.\n\nCi sono paesini di pietra come **Valldemossa** e **Deià**, stradine che si arrampicano tra le montagne e ulivi talmente vecchi da sembrare delle sculture.",
-        "head2": "e Serra de Tramuntana",
-        "body2": "Novembre è anche il periodo della **raccolta delle olive**: puoi fermarti in un frantoio ad assaggiare l'**olio nuovo**, perderti tra i vicoli e fare qualche camminata nella **Serra de Tramuntana**. E la cosa bella? Non devi neanche sopportarti la folla dell'estate.",
+        "head1": "Maiorca senza spiagge",
+        "body1": "Maiorca a novembre? Sì, ma stavolta le spiagge le lasciamo stare. Perché nell'entroterra c'è un'isola completamente diversa da quella che siamo abituati a vedere.\n\nCi sono paesini di pietra come **Valldemossa e Deià**, stradine che si arrampicano tra le montagne e **ulivi talmente vecchi** da sembrare delle sculture.",
+        "head2": "Olive, borghi e sentieri",
+        "body2": "Novembre è anche il periodo della raccolta delle olive: puoi fermarti in un frantoio ad assaggiare l'**olio nuovo**, perderti tra i vicoli e fare qualche camminata nella **Serra de Tramuntana**. E la cosa bella? Non devi neanche sopportarti la folla dell'estate.",
         "base": "Valldemossa o Sóller",
         "duration": "3–4 giorni",
-        "highlight": "Borghi, trekking e olio nuovo",
+        "highlight": "borghi, trekking e olio nuovo",
         "tips": "Porta una giacca antipioggia!",
         "label_highlight": "Da vivere"
       },
       "visuals": {
         "note": {
-          "x": 28,
-          "y": 315,
-          "w": 432,
-          "h": 550,
+          "x": 38,
+          "y": 240,
+          "w": 403,
+          "h": 520,
           "rot": 1,
           "scale": 1,
           "opacity": 1,
@@ -181,7 +181,7 @@
         },
         "scene": {
           "x": -24,
-          "y": 1143,
+          "y": 1168,
           "w": 1130,
           "h": 376,
           "rot": 0,
@@ -210,40 +210,40 @@
       ],
       "offsets": {
         "body1": {
-          "w": 511,
-          "h": 442,
-          "dx": -21,
-          "dy": -21
+          "w": 502,
+          "h": 520,
+          "dx": -27,
+          "dy": -27
         },
         "head1": {
-          "w": 495,
-          "rot": -3.2
+          "w": 520,
+          "rot": -2.4
         },
         "head2": {
-          "w": 505,
-          "dy": -7,
-          "rot": -3
+          "w": 504,
+          "dy": 58,
+          "rot": -2.5
         },
         "body2": {
-          "w": 510,
-          "h": 380,
-          "dx": -21,
-          "dy": -13
+          "w": 966,
+          "h": 257,
+          "dx": -480,
+          "dy": 100
         }
       },
       "bodyScale": 1,
-      "noteScale": 1.1,
+      "noteScale": 1.02,
       "textStyles": {
         "head1": {
           "family": "Caveat Brush",
-          "fontSize": 55,
+          "fontSize": 51,
           "bold": false,
           "color": "#c87135",
           "lineHeight": 1.1
         },
         "head2": {
           "family": "Caveat Brush",
-          "fontSize": 43,
+          "fontSize": 46,
           "bold": false,
           "color": "#c87135",
           "lineHeight": 1.1
@@ -251,12 +251,12 @@
         "body1": {
           "family": "Montserrat",
           "fontSize": 31,
-          "lineHeight": 1.24
+          "lineHeight": 1.2
         },
         "body2": {
           "family": "Montserrat",
           "fontSize": 31,
-          "lineHeight": 1.24
+          "lineHeight": 1.2
         }
       },
       "freeTexts": [],
@@ -269,7 +269,7 @@
     },
     {
       "id": "kura-nov26-03",
-      "name": "Sudafrica · Kruger",
+      "name": "Sudafrica · Kruger | Quando la savana torna verde",
       "seed": "30254",
       "layout": 3,
       "background": 3,
@@ -278,22 +278,22 @@
       "note": 0,
       "fields": {
         "eyebrow": "03 / SUDAFRICA",
-        "head1": "Quando la savana",
-        "body1": "Se pensi alla savana africana, probabilmente ti vengono in mente distese gialle, polvere e leoni all'ombra degli alberi. Ecco, a novembre il **Kruger** comincia a cambiare completamente faccia.\n\nArrivano le prime **piogge**, spunta il **verde**, tornano tantissimi **uccelli migratori** e gli **impala** iniziano a partorire i loro piccoli. Insomma, c'è parecchio movimento!",
-        "head2": "torna verde",
-        "body2": "E poi vuoi mettere partire per un **safari all'alba**, con la savana tutta verde, gli uccelli che si fanno sentire ovunque e magari la fortuna di vedere un **cucciolo** muovere i suoi primi passi? È uno di quei periodi in cui la natura sembra svegliarsi tutta insieme. E secondo noi vale davvero la pena esserci!",
-        "base": "Campi nel parco o nei dintorni",
+        "head1": "La savana cambia faccia",
+        "body1": "Se pensi alla savana africana, probabilmente ti vengono in mente distese gialle, polvere e leoni all'ombra degli alberi. Ecco, a novembre il Kruger comincia a cambiare completamente faccia.\n\nArrivano le **prime piogge**, spunta il verde, tornano tantissimi **uccelli migratori** e gli **impala** iniziano a partorire i loro piccoli. Insomma, c'è parecchio movimento!",
+        "head2": "Tutti svegli all'alba",
+        "body2": "E poi vuoi mettere partire per un **safari all'alba**, con la savana tutta verde, gli uccelli che si fanno sentire ovunque e magari la fortuna di vedere un cucciolo muovere i suoi primi passi? È uno di quei periodi in cui la natura sembra svegliarsi tutta insieme. E secondo noi vale davvero la pena esserci!",
+        "base": "campi nel parco o nei dintorni",
         "duration": "4–5 giorni",
-        "highlight": "Safari all'alba e birdwatching",
-        "tips": "Caldo, piogge e tanta vegetazione",
+        "highlight": "safari all'alba e birdwatching",
+        "tips": "caldo, piogge e tanta vegetazione",
         "label_highlight": "Da vivere"
       },
       "visuals": {
         "note": {
-          "x": 56,
-          "y": 240,
-          "w": 430,
-          "h": 550,
+          "x": 44,
+          "y": 210,
+          "w": 408,
+          "h": 530,
           "rot": -2,
           "scale": 1,
           "opacity": 1,
@@ -311,7 +311,7 @@
         },
         "scene": {
           "x": -24,
-          "y": 1160,
+          "y": 1206,
           "w": 1130,
           "h": 376,
           "rot": 0,
@@ -340,40 +340,40 @@
       ],
       "offsets": {
         "body1": {
-          "w": 505,
-          "h": 448,
-          "dx": -13,
-          "dy": -12
+          "w": 513,
+          "h": 534,
+          "dx": -19,
+          "dy": -14
         },
         "body2": {
-          "w": 507,
-          "h": 386,
-          "dx": -13,
-          "dy": 12
+          "w": 969,
+          "h": 287,
+          "dx": -481,
+          "dy": 111
         },
         "head1": {
-          "w": 495,
-          "rot": -3.2
+          "w": 517,
+          "rot": -2.5
         },
         "head2": {
-          "w": 505,
-          "dy": 11,
-          "rot": -3
+          "w": 522,
+          "dy": 103,
+          "rot": -2.5
         }
       },
       "bodyScale": 1,
-      "noteScale": 1.1,
+      "noteScale": 1.02,
       "textStyles": {
         "head1": {
           "family": "Caveat Brush",
-          "fontSize": 50,
+          "fontSize": 47,
           "bold": false,
           "color": "#c87135",
           "lineHeight": 1.1
         },
         "head2": {
           "family": "Caveat Brush",
-          "fontSize": 55,
+          "fontSize": 51,
           "bold": false,
           "color": "#c87135",
           "lineHeight": 1.1
@@ -381,12 +381,12 @@
         "body1": {
           "family": "Montserrat",
           "fontSize": 31,
-          "lineHeight": 1.24
+          "lineHeight": 1.2
         },
         "body2": {
           "family": "Montserrat",
           "fontSize": 31,
-          "lineHeight": 1.24
+          "lineHeight": 1.2
         }
       },
       "freeTexts": [],
