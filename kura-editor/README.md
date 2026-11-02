@@ -69,3 +69,9 @@ Il font Feeling Passionate di Din Studio è proprietario: per renderlo disponibi
 - Maniglie compatte: 26 px mouse e 30 px touch, anche per sticker, note e illustrazioni; tela non taglia controlli fuori bordo.
 - Tratto arancio dei sottotitoli posizionato a sinistra e centrato sulla parte visibile del brush KURA Brush2. Segue anche l'eventuale rotazione del titolo.
 - Dati MCP v2.7.2 invariati nelle chiavi; possibile creare/modificare pagine mediante patch JSON, browser API o caricamento progetto.
+
+## Tre tavole Novembre 2026 — Vipacco, Maiorca, Kruger
+- Progetto nativo: `projects/KURA_Progetto_Novembre_2026.json`, tre pagine informative con testi dell'utente, post-it indipendenti, 3 layout e sfondi diversi.
+- Apertura diretta: `?template=novembre-2026&v=2.8.0`. Il progetto viene aggiunto all'elenco, senza sovrascrivere quello corrente. Le modifiche successive vengono ripristinate alla riapertura.
+- MCP JavaScript: `await window.KURA_MCP.loadTemplate('novembre-2026')` e `window.KURA_MCP.applyPatch([...])`.
+- Asset disegnati per questa collezione: 3 PNG Giulia (degustazione vino, fotografia, birdwatching) e 3 collage paesaggistici WebP, tutti come livelli indipendenti.
