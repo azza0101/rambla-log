@@ -2,10 +2,10 @@
   "format": "KURA_EDITOR_V2",
   "width": 1080,
   "height": 1350,
-  "version": 3,
-  "schemaVersion": 3,
-  "projectId": "kura-nov26-travel-pages-v3",
-  "projectName": "KURA · Novembre 2026 · Fullwidth paper-cut v3",
+  "version": 4,
+  "schemaVersion": 4,
+  "projectId": "kura-nov26-travel-pages-v4",
+  "projectName": "KURA · Novembre 2026 · Testi aggiornati v4",
   "pages": [
     {
       "id": "kura-nov26-01",
@@ -18,14 +18,15 @@
       "note": 0,
       "fields": {
         "eyebrow": "01 / SLOVENIA",
-        "head1": "Il territorio",
-        "body1": "A pochi chilometri dal confine italiano esiste una valle fatta di **vigneti**, piccoli borghi di pietra, cantine familiari e tradizioni gastronomiche ancora molto vive.",
-        "head2": "Il vino e i borghi",
-        "body2": "Novembre è un momento interessante per conoscere i **vini del territorio**, soprattutto le varietà locali e le produzioni artigianali. Tra una degustazione e l’altra puoi esplorare **Vipava**, passeggiare tra le vigne e scoprire una Slovenia diversa dalle mete più conosciute.",
+        "head1": "Vigne, borghi",
+        "body1": "Se ti piacciono quei posti dove vai per bere un bicchiere di vino e finisci a chiacchierare per ore con chi l'ha prodotto, segnati la **Valle del Vipacco**.\n\nSiamo praticamente attaccati all'Italia, ma tra borghi di pietra e piccole cantine sembra di essere molto più lontani.",
+        "head2": "e orange wine",
+        "body2": "Qui trovi vini che difficilmente assaggerai altrove, come **Zelen** e **Pinela**, e un sacco di **orange wine**.\n\nA novembre poi è tutto più tranquillo: un giro tra le vigne, una degustazione e magari un bel pranzo con i prodotti locali. Unico avvertimento: non sottovalutare la **bora**. Quando si alza, si fa sentire!",
         "base": "Vipava o Ajdovščina",
         "duration": "3–4 giorni",
-        "highlight": "Cantine familiari, degustazioni, borghi di pietra e cucina locale",
-        "tips": "Prenota le visite in cantina. La bora può portare vento forte e modificare i programmi all’aperto."
+        "highlight": "Zelen, Pinela e orange wine",
+        "tips": "Prenota le cantine e occhio alla bora!",
+        "label_highlight": "Da provare"
       },
       "visuals": {
         "note": {
@@ -89,19 +90,19 @@
           "w": 425
         }
       },
-      "bodyScale": 0.96,
-      "noteScale": 1.1,
+      "bodyScale": 0.95,
+      "noteScale": 1,
       "textStyles": {
         "head1": {
-          "family": "Kaushan Script",
-          "fontSize": 39,
+          "family": "Caveat Brush",
+          "fontSize": 42,
           "bold": false,
           "color": "#c87135",
           "lineHeight": 1.15
         },
         "head2": {
-          "family": "Kaushan Script",
-          "fontSize": 39,
+          "family": "Caveat Brush",
+          "fontSize": 42,
           "bold": false,
           "color": "#c87135",
           "lineHeight": 1.15
@@ -126,14 +127,15 @@
       "note": 3,
       "fields": {
         "eyebrow": "02 / SPAGNA",
-        "head1": "L’isola rurale",
-        "body1": "A novembre **Maiorca** si scopre lontano dalle spiagge: borghi di pietra come **Valldemossa**, Deià e Sóller, sentieri tra ulivi secolari e piccoli frantoi.",
-        "head2": "Senza fretta",
-        "body2": "Le temperature spesso miti e i minori flussi di visitatori rendono questo periodo ideale per esplorare **l’anima rurale dell’isola**.",
+        "head1": "Valldemossa",
+        "body1": "Maiorca a novembre? Sì, ma stavolta le spiagge le lasciamo stare. Perché nell'entroterra c'è un'isola completamente diversa da quella che siamo abituati a vedere.\n\nCi sono paesini di pietra come **Valldemossa** e **Deià**, stradine che si arrampicano tra le montagne e ulivi talmente vecchi da sembrare delle sculture.",
+        "head2": "e Serra de Tramuntana",
+        "body2": "Novembre è anche il periodo della **raccolta delle olive**: puoi fermarti in un frantoio ad assaggiare l'**olio nuovo**, perderti tra i vicoli e fare qualche camminata nella **Serra de Tramuntana**. E la cosa bella? Non devi neanche sopportarti la folla dell'estate.",
         "base": "Valldemossa o Sóller",
         "duration": "3–4 giorni",
-        "highlight": "Borghi storici, sentieri della Serra de Tramuntana, uliveti e frantoi",
-        "tips": "Clima spesso mite (15–20 °C di giorno), ma possibili piogge e vento."
+        "highlight": "Borghi, trekking e olio nuovo",
+        "tips": "Porta una giacca antipioggia!",
+        "label_highlight": "Da vivere"
       },
       "visuals": {
         "note": {
@@ -201,19 +203,19 @@
           "h": 236
         }
       },
-      "bodyScale": 0.96,
-      "noteScale": 1.11,
+      "bodyScale": 0.95,
+      "noteScale": 1,
       "textStyles": {
         "head1": {
-          "family": "Kaushan Script",
-          "fontSize": 39,
+          "family": "Caveat Brush",
+          "fontSize": 42,
           "bold": false,
           "color": "#c87135",
           "lineHeight": 1.15
         },
         "head2": {
-          "family": "Kaushan Script",
-          "fontSize": 39,
+          "family": "Caveat Brush",
+          "fontSize": 42,
           "bold": false,
           "color": "#c87135",
           "lineHeight": 1.15
@@ -238,14 +240,15 @@
       "note": 2,
       "fields": {
         "eyebrow": "03 / SUDAFRICA",
-        "head1": "La savana verde",
-        "body1": "Novembre mostra un volto diverso del **Kruger**: arrivano le prime piogge, la savana comincia a rinverdire e tornano molti **uccelli migratori**.",
-        "head2": "Safari e birdwatching",
-        "body2": "I grandi animali possono essere meno prevedibili rispetto alla stagione secca, ma il paesaggio si anima di nuovi colori e, per alcune specie, dei **primi cuccioli**.",
-        "base": "Alloggi nel parco o nelle vicinanze",
+        "head1": "Quando la savana",
+        "body1": "Se pensi alla savana africana, probabilmente ti vengono in mente distese gialle, polvere e leoni all'ombra degli alberi. Ecco, a novembre il **Kruger** comincia a cambiare completamente faccia.\n\nArrivano le prime **piogge**, spunta il **verde**, tornano tantissimi **uccelli migratori** e gli **impala** iniziano a partorire i loro piccoli. Insomma, c'è parecchio movimento!",
+        "head2": "torna verde",
+        "body2": "E poi vuoi mettere partire per un **safari all'alba**, con la savana tutta verde, gli uccelli che si fanno sentire ovunque e magari la fortuna di vedere un **cucciolo** muovere i suoi primi passi? È uno di quei periodi in cui la natura sembra svegliarsi tutta insieme. E secondo noi vale davvero la pena esserci!",
+        "base": "Campi nel parco o nei dintorni",
         "duration": "4–5 giorni",
-        "highlight": "Safari all’alba, birdwatching e paesaggi della savana che cambia stagione",
-        "tips": "Inizia la stagione delle piogge. Vegetazione più fitta e animali meno concentrati vicino alle pozze d’acqua rendono gli avvistamenti meno prevedibili."
+        "highlight": "Safari all'alba e birdwatching",
+        "tips": "Caldo, piogge e tanta vegetazione",
+        "label_highlight": "Da vivere"
       },
       "visuals": {
         "note": {
@@ -313,19 +316,19 @@
           "w": 420
         }
       },
-      "bodyScale": 0.96,
-      "noteScale": 1.1,
+      "bodyScale": 0.95,
+      "noteScale": 1,
       "textStyles": {
         "head1": {
-          "family": "Kaushan Script",
-          "fontSize": 39,
+          "family": "Caveat Brush",
+          "fontSize": 42,
           "bold": false,
           "color": "#c87135",
           "lineHeight": 1.15
         },
         "head2": {
-          "family": "Kaushan Script",
-          "fontSize": 39,
+          "family": "Caveat Brush",
+          "fontSize": 42,
           "bold": false,
           "color": "#c87135",
           "lineHeight": 1.15
