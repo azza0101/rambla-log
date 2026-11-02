@@ -51,7 +51,7 @@
 <body>
 <header class="topbar">
  <div class="brand"><span class="brand-icon">⛰</span><div><b>KURA VIAGGI</b><small>Atelier · Pagine editoriali 4:5</small></div></div>
- <div class="top-actions"><button id="topNew" class="btn ghost">＋ Pagina</button><button id="topSeed" class="btn ghost">↻ Seed</button><button id="topUpdate" class="btn ghost" title="Controlla se GitHub ha una nuova versione" aria-label="Aggiorna KURA Editor da GitHub">⟳ Aggiorna app</button><button id="topSaveProject" class="btn ghost" title="Salva nel browser e scarica una copia JSON">💾 Salva progetto</button><button id="topOpenProject" class="btn ghost" title="Apri un progetto JSON modificabile">📂 Apri progetto</button><input id="topOpenProjectFile" type="file" accept=".json,application/json" hidden/><button id="topJson" class="btn ghost" title="Gestione progetti">Progetti</button><button id="topExport" class="btn primary">↓ PNG</button><button id="topZip" class="btn ghost">ZIP tutte</button></div>
+ <div class="top-actions"><button id="topNew" class="btn ghost">＋ Pagina</button><button id="topSeed" class="btn ghost">↻ Seed</button><button id="topUpdate" class="btn ghost" title="Controlla se GitHub ha una nuova versione" aria-label="Aggiorna KURA Editor da GitHub">⟳ Aggiorna app</button><button id="topSaveProject" class="btn ghost" title="Salva nel browser e scarica una copia JSON">💾 Salva progetto</button><button id="topOpenProject" class="btn ghost" title="Apri un progetto JSON modificabile">📂 Apri progetto</button><input id="topOpenProjectFile" type="file" accept=".json,application/json" hidden/><button id="topJson" class="btn ghost" title="Gestione progetti">Progetti</button><button id="topCopyPNG" class="btn ghost" title="Copia negli appunti questa pagina 1080 × 1350 senza scaricarla">⧉ Copia PNG</button><button id="topExport" class="btn primary">↓ PNG</button><button id="topZip" class="btn ghost">ZIP tutte</button></div>
 </header>
 <div class="shell">
  <section class="panel editor-panel">
@@ -418,9 +418,29 @@ async function zipFiles(entries){let parts=[],central=[],offset=0;for(const [nam
 function fileSafe(s){return String(s||'kura').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\w\d-]+/g,'_').slice(0,60).replace(/^_+|_+$/g,'')||'kura'}
 async function exportPagePNG(p){await Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,1500))]);const off=document.createElement('canvas');off.width=W;off.height=H;const out=off.getContext('2d',{alpha:false});render(p,out,false);return new Promise(resolve=>off.toBlob(resolve,'image/png'))}
 async function download(blob,name){if(!blob)return;const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000)}
+async function copyPagePNG(){
+ const btn=$('#topCopyPNG');
+ if(!navigator.clipboard?.write||typeof ClipboardItem==='undefined'){
+   emitToast('Copia PNG non disponibile: usa Chrome o Edge su HTTPS');
+   return;
+ }
+ try {
+   if(btn){btn.disabled=true;btn.textContent='Copia…'}
+   // Create ClipboardItem on the click gesture, while the image renders asynchronously.
+   const pngPromise=exportPagePNG(page()).then(blob=>{
+     if(!blob||blob.type!=='image/png')throw new Error('Impossibile creare il PNG');
+     return blob;
+   });
+   await navigator.clipboard.write([new ClipboardItem({'image/png':pngPromise})]);
+   emitToast('Pagina copiata negli appunti ✓ Incollala con Ctrl+V');
+ }catch(error){
+   console.error('KURA copy PNG:',error);
+   emitToast('Copia non riuscita: abilita gli appunti per questo sito');
+ }finally{if(btn){btn.disabled=false;btn.textContent='⧉ Copia PNG'}}
+}
 async function exportPNG(){const blob=await exportPagePNG(page());await download(blob,'KURA_'+fileSafe(page().fields.base||page().name)+'_'+page().seed+'.png');queueRender();emitToast('PNG 1080 × 1350 esportato')}
 async function exportAll(){emitToast('Preparazione ZIP...');const entries=[];for(let i=0;i<pages.length;i++){const p=pages[i];const blob=await exportPagePNG(p);entries.push([String(i+1).padStart(2,'0')+'_KURA_'+fileSafe(p.fields.base||p.name)+'.png',blob])}entries.push(['progetto_KURA.json',new Blob([JSON.stringify(exportProject(),null,2)],{type:'application/json'})]);await download(await zipFiles(entries),'KURA_carosello_'+pages.length+'_pagine.zip');queueRender();emitToast('Carosello esportato')}
-$('#topExport').onclick=$('#inspectPng').onclick=exportPNG;$('#topZip').onclick=$('#inspectAll').onclick=exportAll;
+$('#topExport').onclick=$('#inspectPng').onclick=exportPNG;$('#topCopyPNG').onclick=copyPagePNG;$('#topZip').onclick=$('#inspectAll').onclick=exportAll;
 // Fast mode / MCP JSON schema plus saved project roundtrip.
 function exportProject(){const usedCustom={};for(const p of pages){for(const id of Object.values(p.imageKeys||{})){if(id&&id.startsWith('custom_')&&ASSETS[id])usedCustom[id]=ASSETS[id]}}return{format:'KURA_EDITOR_V1',width:W,height:H,version:1,pages:deepClone(pages),customAssets:usedCustom}}
 function jsonFile(){return new Blob([JSON.stringify(exportProject(),null,2)],{type:'application/json;charset=utf-8'})}
