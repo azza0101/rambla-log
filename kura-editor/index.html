@@ -302,7 +302,15 @@ function render(p=page(),dest=ctx,selectedDraw=true){if(!p)return;const c=dest;i
  // hand-painted orange accents are independent PNG overlays; headings editable via true font.
  const brushHead={x:eyebrow.x+3,y:eyebrow.y+43,w:190,h:18};drawImageFit(c,assetImage('pennellata_1'),brushHead.x,brushHead.y,brushHead.w,brushHead.h);
  for(const [tbox,key] of [[h1,'head1'],[h2,'head2']]){
-  const br={x:tbox.x-1,y:tbox.y+(tbox.h-13)/2,w:64,h:13};drawImageFit(c,assetImage('pennellata_2'),br.x,br.y,br.w,br.h);
+  // Dash sits to the LEFT of the brush title at the optical midline of the ink,
+  // not at the bottom/baseline like an underline.
+  const brushFontSize=40,brushH=12;
+  const br={x:tbox.x+3,y:tbox.y+Math.round(brushFontSize*.44-brushH/2),w:56,h:brushH};
+  const titleOffset=p.offsets?.[key]||{};
+  const cx=tbox.x+70+(tbox.w-72)/2,cy=tbox.y+tbox.h/2;
+  c.save();c.translate(cx,cy);c.rotate((titleOffset.rot||0)*Math.PI/180);c.translate(-cx,-cy);
+  drawImageFit(c,assetImage('pennellata_2'),br.x,br.y,br.w,br.h);
+  c.restore();
   const heading={x:tbox.x+70,y:tbox.y,w:tbox.w-72,h:tbox.h};window.KURA_V2.paintEditable(c,p,key,p.fields[key],heading,{fontSize:40,script:true,bold:true,lineHeight:1.1,color:ORANGE});
  }
  window.KURA_V2.paintEditable(c,p,'body1',p.fields.body1,b1,{fontSize:30*p.bodyScale,lineHeight:1.26,color:GREEN});
