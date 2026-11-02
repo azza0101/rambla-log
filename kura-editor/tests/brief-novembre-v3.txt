@@ -1,0 +1,53 @@
+CAROSELLO KURA — NOVEMBRE 2026
+TIPO: PAGINE INFORMATIVE (3)
+STILE: master KURA approvato
+EDIZIONE TESTI: V3 — corpi alleggeriti ~40%; POST-IT invariati; due titoletti per meta
+VERSIONE: MCP v3.3.0
+
+PRESET GRAFICO CANONICO (APPLICARE A TUTTE LE PAGINE)
+Ogni destinazione genera UNA SOLA pagina 1080×1350 verticale 4:5, mai una griglia. Nessun logo nelle pagine informative. Montserrat per entrambi i corpi di testo (body1 e body2 con dimensione identica, target 31 px e caselle sufficientemente ampie); Caveat Brush per i due titoletti, in minuscolo/sentence case, colore arancio KURA. Conservare i marcatori **grassetto** editabili. Sfondo avorio materico e varianti stagionali papercut, con spazio negativo generoso e layout alternati. Post-it canonico originale, ricostruito solo dagli asset assets/postit-canon/; non rigenerare icone. Giulia canonica: ricci, nasino, occhiali ottagonali, occhi neri senza bianco. Unico PNG trasparente full-width, 2D papercut, con paesaggio integrato. Riutilizzare la grafica già approvata del progetto precedente. Creare un projectId univoco; non sovrascrivere altri progetti. Il sito statico non genera nuove immagini.
+
+DESTINAZIONE 1 — SLOVENIA · VALLE DEL VIPACCO
+SOTTOTITOLO INTERNO DI RIFERIMENTO (non scrivere in grafica): Vigne, borghi e orange wine
+TESTO:
+TITOLETTO 1: Un calice tira l'altro
+BODY1: In **Valle del Vipacco** vai per un calice e rischi di fermarti a chiacchierare ore col vignaiolo. Tra borghi di pietra e piccole cantine trovi vini insoliti come **Zelen e Pinela** e un sacco di **orange wine**.
+TITOLETTO 2: La dritta di novembre
+BODY2: A novembre è tutto più tranquillo: vigne, degustazioni e pranzi senza fretta. Occhio solo alla **bora**: quando si alza, si fa sentire!
+POST-IT:
+Base: Vipava o Ajdovščina
+Durata: 3–4 giorni
+Da non perdere: Zelen, Pinela e orange wine
+Da sapere: prenota le cantine e occhio alla bora!
+[IMMAGINE: PNG trasparente unico a tutta larghezza, paesaggio e Giulia in un solo asset 2D papercut con bordo superiore frastagliato, senza testo né post-it. Vigneti senape e rame, borgo di pietra e cantina familiare. Giulia a SINISTRA, seduta mentre assaggia orange wine, con occhiali ottagonali. Non ritagliare da screenshot.]
+[LAYOUT: testo a sinistra / post-it in alto a destra; vigneti e Giulia in fascia bassa, spazio negativo e PNG continuo sul bordo inferiore.]
+
+DESTINAZIONE 2 — MAIORCA, SPAGNA
+SOTTOTITOLO INTERNO DI RIFERIMENTO (non scrivere in grafica): Valldemossa e Serra de Tramuntana
+TESTO:
+TITOLETTO 1: Maiorca senza spiagge
+BODY1: Maiorca a novembre? Lascia perdere le spiagge. Tra **Valldemossa e Deià** trovi paesini di pietra, montagne e **ulivi secolari** che sembrano sculture. Un'isola che non ti aspetti.
+TITOLETTO 2: Olive, borghi e sentieri
+BODY2: È tempo di raccolta: fermati in un frantoio per l'**olio nuovo**, poi cammina nella **Serra de Tramuntana**. Senza la folla estiva è tutta un'altra storia.
+POST-IT:
+Base: Valldemossa o Sóller
+Durata: 3–4 giorni
+Da non perdere: borghi, trekking e olio nuovo
+Da sapere: porta una giacca antipioggia!
+[IMMAGINE: PNG trasparente fullwidth, Giulia e panorama nello stesso asset. Valldemossa, case miele, muretti a secco, uliveti e Tramuntana. Giulia a DESTRA con giacca leggera che fotografa gli ulivi monumentali. Papercut 2D, no screenshot.]
+[LAYOUT: testo a destra / post-it in alto a sinistra; scena inferiore con ulivi inclinati, spazio negativo.]
+
+DESTINAZIONE 3 — PARCO KRUGER, SUDAFRICA
+SOTTOTITOLO INTERNO DI RIFERIMENTO (non scrivere in grafica): Quando la savana torna verde
+TESTO:
+TITOLETTO 1: La savana cambia faccia
+BODY1: A novembre il **Kruger cambia faccia**: le prime piogge colorano la savana di verde, tornano gli **uccelli migratori** e gli **impala** iniziano a partorire. Altro che solita distesa gialla!
+TITOLETTO 2: Tutti svegli all'alba
+BODY2: Parti per un **safari all'alba** tra nuovi richiami e, con un po' di fortuna, cuccioli ai primi passi. Qui la natura sembra svegliarsi tutta insieme. E vuoi mettere esserci?
+POST-IT:
+Base: campi nel parco o nei dintorni
+Durata: 4–5 giorni
+Da non perdere: safari all'alba e birdwatching
+Da sapere: caldo, piogge e tanta vegetazione
+[IMMAGINE: PNG trasparente 1080px+ fullwidth con savana verde, acacia, elefante lontano, impala, uccelli e Giulia a DESTRA che osserva con binocolo in sicurezza. Stile papercut piatto, nessuna scritta.]
+[LAYOUT: testo a sinistra / post-it a destra leggermente sfalsato; savana ampia in basso.]
