@@ -2,10 +2,10 @@
   "format": "KURA_EDITOR_V2",
   "width": 1080,
   "height": 1350,
-  "version": 4,
-  "schemaVersion": 4,
-  "projectId": "kura-nov26-travel-pages-v4",
-  "projectName": "KURA · Novembre 2026 · Testi aggiornati v4",
+  "version": 5,
+  "schemaVersion": 5,
+  "projectId": "kura-nov26-travel-pages-v5",
+  "projectName": "KURA · Novembre 2026 · Vipacco, Maiorca, Kruger",
   "pages": [
     {
       "id": "kura-nov26-01",
@@ -90,8 +90,8 @@
           "w": 425
         }
       },
-      "bodyScale": 0.95,
-      "noteScale": 1,
+      "bodyScale": 1,
+      "noteScale": 1.04,
       "textStyles": {
         "head1": {
           "family": "Caveat Brush",
@@ -124,7 +124,7 @@
         "dx": 0,
         "dy": -45
       },
-      "noteTextAngle": 4.3
+      "noteTextAngle": 0
     },
     {
       "id": "kura-nov26-02",
@@ -134,7 +134,7 @@
       "background": 1,
       "backgroundId": "basic_2",
       "seasonHint": "autumn",
-      "note": 3,
+      "note": 0,
       "fields": {
         "eyebrow": "02 / SPAGNA",
         "head1": "Valldemossa",
@@ -213,8 +213,8 @@
           "h": 236
         }
       },
-      "bodyScale": 0.95,
-      "noteScale": 1,
+      "bodyScale": 1,
+      "noteScale": 1.04,
       "textStyles": {
         "head1": {
           "family": "Caveat Brush",
@@ -247,7 +247,7 @@
         "dx": -5,
         "dy": -50
       },
-      "noteTextAngle": 4
+      "noteTextAngle": 0
     },
     {
       "id": "kura-nov26-03",
@@ -257,7 +257,7 @@
       "background": 3,
       "backgroundId": "basic_4",
       "seasonHint": "autumn",
-      "note": 2,
+      "note": 0,
       "fields": {
         "eyebrow": "03 / SUDAFRICA",
         "head1": "Quando la savana",
@@ -336,8 +336,8 @@
           "w": 420
         }
       },
-      "bodyScale": 0.95,
-      "noteScale": 1,
+      "bodyScale": 1,
+      "noteScale": 1.04,
       "textStyles": {
         "head1": {
           "family": "Caveat Brush",
@@ -370,7 +370,7 @@
         "dx": 10,
         "dy": -45
       },
-      "noteTextAngle": 4.6
+      "noteTextAngle": 0
     }
   ],
   "customAssets": {},
