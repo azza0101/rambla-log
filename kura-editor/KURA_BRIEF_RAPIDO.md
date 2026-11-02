@@ -1,4 +1,4 @@
-# KURA — Brief rapido per generare pagine editoriali (MCP v3.1)
+# KURA — Brief rapido per generare pagine editoriali (MCP v3.2.2)
 Questo file descrive un unico input ripetibile che ChatGPT trasforma in pagine KURA 4:5 totalmente modificabili. **Non è necessario compilare alcun modulo**: è sufficiente incollare i contenuti in prosa come al solito.
 
 ## Modalità consigliata: minimo indispensabile
@@ -47,8 +47,8 @@ Usa un blocco **[IMMAGINE: ...]** solo se vuoi imporre azione, posizione o eleme
 2. L'illustrazione inferiore è un **PNG trasparente full-width**, preferibilmente 1080 px o più. Il personaggio e il paesaggio appartengono allo stesso asset. Non ritagliare Giulia dalle bozze con testi o sfondi.
 3. Layout, background, note e gerarchie differenziati tra pagine; però logo assente nelle pagine informative.
 4. Titoletti brush in **minuscolo/sentence case** e maiuscolo solo quando esplicitamente richiesto. Font di riferimento **Caveat Brush** (font open-source Google Fonts, self-hosted); Kaushan Script resta alternativa selezionabile.
-5. Il post-it è autoallungabile soltanto nella carta vuota; titolo stampato, scotch e icone restano a dimensioni native costanti durante il ridimensionamento; margini di sicurezza e testo ruotato insieme alla nota.
-6. Ogni testo, post-it, sticker, immagine e sfondo resta modificabile da editor/MCP. Salvataggio in IndexedDB, **Salva progetto** / **Apri progetto**, esportazione JSON/PNG.
+5. Esiste un solo post-it canonico per tutte le pagine: carta (ridimensionabile con 9-slice), scotch, titolo INFO DI VIAGGIO e quattro icone sono sette immagini PNG trasparenti generate separatamente dall'editor; solo la carta cambia dimensione. Le scritte e le icone non si deformano.
+6. Entrambi i paragrafi descrittivi hanno sempre lo stesso font Montserrat e la stessa dimensione per pagina, calcolata per rientrare negli spazi con conservazione del grassetto. Ogni testo, post-it, sticker, immagine e sfondo resta modificabile da editor/MCP. Salvataggio in IndexedDB, **Salva progetto** / **Apri progetto**, esportazione JSON/PNG.
 7. Pubblicazione con un commit GitHub che include i PNG e il JSON canonico; non creare un secondo HTML indipendente.
 8. Un nuovo carosello riceve un projectId univoco, senza sostituire progetti preesistenti. Link diretto `?template=<slug>`.
 
@@ -62,3 +62,6 @@ Usa un blocco **[IMMAGINE: ...]** solo se vuoi imporre azione, posizione o eleme
 
 ## API e compatibilità
 Nel browser `window.KURA_MCP.inspect()`, `window.KURA_MCP.applyPatch([...])`, `window.KURA_MCP.getProject()` e `window.KURA_MCP.loadTemplate('novembre-2026')` permettono di vedere e modificare i dati; il sito GitHub Pages è statico e **non genera autonomamente immagini**. Per generare nuovi PNG serve un agente con capacità immagini, poi il file entra nella libreria asset e nel progetto JSON.
+
+## Asset PNG del post-it unico
+Dentro il browser, `window.KURA_NOTE_PNGS.names` restituisce `paper`, `tape`, `title`, `pin`, `calendar`, `star`, `info`. `window.KURA_NOTE_PNGS.getPNG('title')` (o qualsiasi altro nome) restituisce un PNG trasparente in formato data URL. Il titolo usa Caveat Brush e viene ricostruito dopo il caricamento dei font. La composizione finale, inclusi tutti i layer, viene esportata nel PNG della tavola.
