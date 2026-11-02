@@ -5,7 +5,7 @@
   if(root)root.KURA_BRIEF_PARSER=api;
 })(typeof window!=='undefined'?window:null,function(){
   'use strict';
-  const FIELD_RE=/^\s*(?:#{1,6}\s*)?(TITOLETTO\s*[12]|BODY\s*[12]|POST[\s-]*IT|TESTO|BASE|DURATA|DA\s+NON\s+PERDERE|DA\s+VIVERE|DA\s+PROVARE|DA\s+SAPERE|SOTTOTITOLO\s+INTERNO\s+DI\s+RIFERIMENTO)\s*:\s*(.*)$/i;
+  const FIELD_RE=/^\s*(?:#{1,6}\s*)?(TITOLETTO\s*[12]|BODY\s*[12]|POST[\s-]*IT|TESTO|BASE|DURATA|DA\s+NON\s+PERDERE|DA\s+VIVERE|DA\s+PROVARE|DA\s+SAPERE|SOTTOTITOLO\s+INTERNO\s+DI\s+RIFERIMENTO(?:\s*\([^)]*\))?)\s*:\s*(.*)$/i;
   const HEADING_RE=/^\s*(?:#{1,6}\s*)?(?:\*\*)?\s*DESTINAZIONE\s+(\d{1,2})\s*[-—–:]\s*(.+?)(?:\*\*)?\s*$/gmi;
   const DIRECTIVE_RE=/\[\s*(IMMAGINE|LAYOUT|SFONDO)\s*:\s*([\s\S]*?)\s*\]/gi;
   function clean(s){return String(s||'').replace(/\r\n?/g,'\n').replace(/\u00a0/g,' ').replace(/\\([*_[\]])/g,'$1').trim();}
@@ -18,7 +18,7 @@
     let active=null;const fields={};
     let inPostit=false;
     for(const original of lines){
-      const line=original.replace(/^\s*(?:[-•]\s+|\d+\.\s+)(?=(?:Base|Durata|Da\s)/i,'').trimEnd();
+      const line=original.replace(/^\s*(?:[-•]\s+|\d+\.\s+)(?=(?:Base|Durata|Da\s))/i,'').trimEnd();
       const match=line.match(FIELD_RE);
       if(match){
         const label=keyOf(match[1]);
