@@ -496,5 +496,31 @@
     },
     "rotation": "note rot plus calibratable noteTextAngle",
     "margin": "retain approx 40.5% left (icon column), 13% right"
+  },
+  "localBriefImport": {
+    "version": "3.7.0",
+    "mode": "offline_browser_parser",
+    "requiresMCP": false,
+    "requiresImageGeneration": false,
+    "parser": "window.KURA_BRIEF_PARSER.parse(rawText)",
+    "createProject": "await window.KURA_PROJECTS.createFromBrief(spec,{useCurrentGraphics:true})",
+    "inputFormat": [
+      "DESTINAZIONE N — LOCATION",
+      "TITOLETTO 1: ...",
+      "BODY1: ...",
+      "TITOLETTO 2: ...",
+      "BODY2: ...",
+      "POST-IT:",
+      "Base: ...",
+      "Durata: ...",
+      "Da non perdere|Da vivere|Da provare: ...",
+      "Da sapere: ...",
+      "[IMMAGINE: ...]",
+      "[LAYOUT: ...]"
+    ],
+    "output": "New unique local project ID, as many pages as headings, with preserved source editorial graphics and nonprinted metadata.",
+    "demoTemplateSlug": "novembre-2026-mcp-test",
+    "maxPages": 50,
+    "save": "IndexedDB autosave; GitHub export requires explicit user connection"
   }
 }
