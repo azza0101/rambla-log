@@ -624,7 +624,7 @@ function bindProjectActions(){
 }
 function addV2Controls(){
  const textTab=$('#tab-texts');if(textTab){const b=document.createElement('button');b.className='btn flat';b.style.width='100%';b.textContent='＋ Aggiungi casella di testo';b.onclick=addFreeText;textTab.insertBefore(b,textTab.firstElementChild.nextElementSibling)}
- const fontBox=$('#fontStatus');if(fontBox){const info=document.createElement('div');info.className='kura-font-alert';info.innerHTML='Il font Feeling Passionate viene distribuito a tutti solo se è installato sul sito con licenza web/app e file autorizzato. Altrimenti il titolo usa temporaneamente Caveat, senza cambiare il nome del font nel progetto.';fontBox.after(info)}
+ const fontBox=$('#fontStatus');if(fontBox){const info=document.createElement('div');info.className='kura-font-alert';info.innerHTML='Il font predefinito dei minititoli è Kaushan Script (Google Fonts, licenza OFL). Caveat Brush è incluso come alternativa. Entrambi funzionano anche nell’esportazione PNG.';fontBox.after(info)}
 }
 async function checkHostedFont(){try{await Promise.all([document.fonts.load('39px "Kaushan Script"'),document.fonts.load('39px "Caveat Brush"')]);const box=$('#fontStatus');if(box)box.innerHTML='<b>Kaushan Script <span class="pill ok">Integrato ✓</span></b><p>Google Fonts OFL, salvato nel sito. Caveat Brush disponibile come alternativa. Il font è utilizzato anche nei PNG.</p>';queueRender()}catch(err){console.warn('KURA font',err)}}
 function assertPage(op){const p=op.pageId?pages.find(x=>x.id===op.pageId):pages[Number.isInteger(op.pageIndex)?op.pageIndex:current];if(!p)throw Error('Pagina non trovata');return ensurePage(p)}
