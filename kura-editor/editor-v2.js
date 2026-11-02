@@ -590,6 +590,38 @@ const originalUndo=undo,originalRedo=redo;
 undo=function(){originalUndo();shownPage=null;queueRender()};
 redo=function(){originalRedo();shownPage=null;queueRender()};
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&managerReady){clearTimeout(saveTimer);persistNow()}});
+
+function syncBackgroundControls(){
+ const p=page();if(!p)return;
+ const bt=p.bgTransform||{zoom:1,dx:0,dy:0};
+ for(const[id,val]of [['bgZoom',Math.round((bt.zoom||1)*100)],['bgShiftX',bt.dx||0],['bgShiftY',bt.dy||0]]){const el=$('#'+id);if(el&&document.activeElement!==el)el.value=val}
+ const f=$('#bgZoomValue'),x=$('#bgShiftXValue'),y=$('#bgShiftYValue');if(f)f.textContent=Math.round((bt.zoom||1)*100)+'%';if(x)x.textContent=Math.round(bt.dx||0);if(y)y.textContent=Math.round(bt.dy||0);
+}
+function bindBackgroundControls(){
+ const fields=[['bgZoom','zoom',v=>v/100],['bgShiftX','dx',Number],['bgShiftY','dy',Number]];
+ for(const[id,k,transform]of fields){const e=$('#'+id);if(!e)continue;e.addEventListener('input',()=>{const p=page();p.bgTransform??={zoom:1,dx:0,dy:0};p.bgTransform[k]=transform(e.value);syncBackgroundControls();queueRender();scheduleSave()})}
+ const reset=$('#bgReset');if(reset)reset.onclick=()=>{snapshot();page().bgTransform={zoom:1,dx:0,dy:0};syncBackgroundControls();queueRender();scheduleSave()};
+ const old=refreshGalleries;refreshGalleries=function(){old();syncBackgroundControls()};
+ syncBackgroundControls();
+}
+async function importSavedKuraProject(file){
+ if(!file)return;
+ const data=JSON.parse(await file.text());
+ if(!Array.isArray(data.pages)||!data.pages.length)throw Error('Seleziona un progetto JSON KURA valido, con almeno una pagina');
+ await persistNow();
+ const id=uuid(),label=String(data.projectName||file.name.replace(/\.json$/i,'')||'Progetto importato').slice(0,100);
+ pIndex.push({id,name:label,updatedAt:Date.now()});currentProjectId=id;
+ pages=data.pages.map(normalizePage).map(ensurePage);
+ for(const[key,val]of Object.entries(data.customAssets||{}))if(key.startsWith('custom_')&&typeof val==='string'&&val.startsWith('data:image/')){ASSETS[key]=val;imageCache.delete(key);assetImage(key)}
+ current=0;selected=null;activeKey=null;shownPage=null;history=[];future=[];updateHistory();
+ refreshAll();showProjectOptions();await persistNow();emitToast('Progetto aperto: '+pages.length+' pagine');
+}
+function bindProjectActions(){
+ const save=$('#topSaveProject'),open=$('#topOpenProject'),file=$('#topOpenProjectFile');
+ if(save)save.onclick=async()=>{await persistNow();download(jsonFile(),'KURA_Progetto_'+(pIndex.find(x=>x.id===currentProjectId)?.name||'editor').replace(/[^\wÀ-ÿ-]+/g,'_')+'.json');emitToast('Progetto salvato nel browser + copia JSON')};
+ if(open&&file){open.onclick=()=>file.click();file.onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{await importSavedKuraProject(f)}catch(err){emitToast('Errore apertura: '+err.message)}finally{file.value=''}}}
+ const projects=$('#topJson');if(projects)projects.onclick=()=>{setTab('pages');document.querySelector('#kuraProjectSelect')?.scrollIntoView({behavior:'smooth',block:'nearest'})};
+}
 function addV2Controls(){
  const textTab=$('#tab-texts');if(textTab){const b=document.createElement('button');b.className='btn flat';b.style.width='100%';b.textContent='＋ Aggiungi casella di testo';b.onclick=addFreeText;textTab.insertBefore(b,textTab.firstElementChild.nextElementSibling)}
  const fontBox=$('#fontStatus');if(fontBox){const info=document.createElement('div');info.className='kura-font-alert';info.innerHTML='Il font Feeling Passionate viene distribuito a tutti solo se è installato sul sito con licenza web/app e file autorizzato. Altrimenti il titolo usa temporaneamente Caveat, senza cambiare il nome del font nel progetto.';fontBox.after(info)}
@@ -637,7 +669,7 @@ window.KURA_MCP=Object.freeze({
  exportJSON:function(){return JSON.stringify(exportProject(),null,2)}
 });
 window.KURA_V2={version:'3.0.0',drawKuraBackground:drawKuraBackground,paintEditable:paintEditable,paintFreeTexts:paintFreeTexts};
-addV2Controls();initOverlay();initVisualTransform();
+addV2Controls();initOverlay();initVisualTransform();bindBackgroundControls();bindProjectActions();
 (function(){
  const top=document.querySelector('.top-actions');
  if(top&&!document.getElementById('kuraCoverLaunch')){
