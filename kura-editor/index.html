@@ -133,8 +133,8 @@
 <div class="toast" id="toast" role="status"></div>
 <script>
 'use strict';
-const KURA_BUILD='3.1.1';
-window.KURA_BUILD={version:'3.1.1',build:'20261102fa05'};
+const KURA_BUILD='3.1.2';
+window.KURA_BUILD={version:'3.1.2',build:'20261102fa06'};
 const ASSETS={"sticker_map":"./assets/sticker_map.png","sticker_berries":"./assets/sticker_berries.png","sticker_stamp":"./assets/sticker_stamp.png","postit_4":"./assets/postit_4.png","postit_1":"./assets/postit_1.png","pennellata_3":"./assets/pennellata_3.png","sticker_olive":"./assets/sticker_olive.png","sticker_monstera":"./assets/sticker_monstera.png","sticker_tape":"./assets/sticker_tape.png","pennellata_1":"./assets/pennellata_1.png","cartolina_kenrokuen":"./assets/cartolina_kenrokuen.png","sticker_compass":"./assets/sticker_compass.png","pennellata_2":"./assets/pennellata_2.png","sticker_camera":"./assets/sticker_camera.png","postit_3":"./assets/postit_3.png","giulia_kanazawa":"./assets/giulia_kanazawa.png","postit_2":"./assets/postit_2.png","sfondo_3":"./assets/sfondo_3.jpg","sfondo_4":"./assets/sfondo_4.jpg","sfondo_1":"./assets/sfondo_1.jpg","sfondo_2":"./assets/sfondo_2.jpg"};
 const W=1080,H=1350, GREEN='#153d2d',ORANGE='#cf7931',GREEN2='#17402f';
 const DEFAULT_FIELDS={
@@ -255,7 +255,7 @@ function noteAutoLayout(note,p,c=ctx){
 }
 function drawKuraNoteIcon(c,index,x,y){
  // Self-contained flat pictograms: never crop icon fragments from the post-it bitmap.
- c.save();c.translate(x,y);c.strokeStyle='#c85c2e';c.fillStyle='#c85c2e';c.lineWidth=3.3;c.lineCap='round';c.lineJoin='round';
+ c.save();c.translate(x,y);c.strokeStyle='#c85c2e';c.fillStyle='#c85c2e';c.lineWidth=4.1;c.scale(1.55,1.55);c.lineCap='round';c.lineJoin='round';
  if(index===0){ // location pin
   c.beginPath();c.moveTo(0,14);c.bezierCurveTo(-5,7,-11,0,-11,-6);c.arc(0,-6,11,Math.PI,0);c.bezierCurveTo(11,0,5,7,0,14);c.fill();c.beginPath();c.arc(0,-6,3.5,0,Math.PI*2);c.fillStyle='#ffd994';c.fill();
  }else if(index===1){ // calendar
@@ -267,21 +267,32 @@ function drawKuraNoteIcon(c,index,x,y){
  }c.restore();
 }
 function noteDrawSegments(c,im,L){
- const sw=im.naturalWidth,sh=im.naturalHeight;
- const edge=Math.min(19,L.w*.05);
- // Only clean paper is stretched; artwork is rendered as independent fixed-size overlays.
- c.drawImage(im,sw*.63,sh*.79,sw*.10,sh*.025,0,0,L.w,L.totalH);
- c.drawImage(im,0,0,sw*.035,sh,0,0,edge,L.totalH);
- c.drawImage(im,sw*.965,0,sw*.035,sh,L.w-edge,0,edge,L.totalH);
- c.drawImage(im,0,sh*.955,sw,sh*.045,0,L.totalH-20,L.w,20);
- // Printed masthead: crop below the tape, at its original scale.
- const headX=Math.max(20,(L.w-430)/2+20);
- c.drawImage(im,sw*.055,sh*.085,sw*.89,sh*.175,headX,42,383,95);
- // Tape overlaps the top edge, outside the paper by 12px.
- c.save();c.translate(L.w*.50,8);c.rotate(-.055);c.fillStyle='#bd623f';c.fillRect(-43,-22,86,36);
- c.globalAlpha=.18;c.fillStyle='#f5c09b';c.fillRect(-42,-20,84,3);c.restore();
- const positions=L.anchors||[L.h*.32,L.h*.455,L.h*.575,L.h*.748];
- positions.forEach((pos,i)=>drawKuraNoteIcon(c,i,Math.min(78,L.w*.225),pos+9));
+ // Three distinct rendering layers: clean resizable paper, fixed masthead/icons,
+ // fixed adhesive. No samples or artwork are cropped from old composite bitmap.
+ const w=L.w,h=L.totalH;
+ c.save();
+ // PAPER: independent warm paper sheet with subtle fibres and gently torn edges.
+ c.shadowColor='rgba(65,48,27,.14)';c.shadowBlur=9;c.shadowOffsetY=5;
+ c.fillStyle='#f5cd78';
+ c.beginPath();c.moveTo(8,7);c.lineTo(w-8,4);c.lineTo(w-4,h-8);c.lineTo(10,h-3);c.closePath();c.fill();
+ c.shadowColor='transparent';c.shadowBlur=0;c.shadowOffsetY=0;
+ const paper=c.createLinearGradient(0,0,w,h);paper.addColorStop(0,'#ffe3a1');paper.addColorStop(.56,'#f9d789');paper.addColorStop(1,'#f9de9f');
+ c.fillStyle=paper;c.fill();
+ c.strokeStyle='rgba(192,118,53,.15)';c.lineWidth=1.3;c.stroke();
+ for(let i=0;i<44;i++){const px=18+((i*73)%Math.max(1,w-36)),py=32+((i*137)%Math.max(1,h-57));c.strokeStyle='rgba(185,120,53,.045)';c.beginPath();c.moveTo(px,py);c.lineTo(px+10,py+1);c.stroke();}
+ c.restore();
+ // FIXED MASTHEAD, inside sheet (never scaled).
+ c.save();c.fillStyle='#173d2e';c.textAlign='center';c.textBaseline='middle';
+ c.font='37px "Caveat Brush", cursive';c.fillText('INFO DI VIAGGIO',w/2,79);
+ c.strokeStyle='#173d2e';c.lineWidth=2.4;c.beginPath();c.moveTo(w/2-119,106);c.quadraticCurveTo(w/2+12,112,w/2+119,103);c.stroke();c.restore();
+ // ICONS: each is an independent vector overlay, original fixed size.
+ L.anchors.forEach((y,i)=>drawKuraNoteIcon(c,i,Math.max(57,w*.235),y+11));
+ // TAPE: separate overlay, centred across top edge, fully in bounds of image canvas.
+ c.save();c.translate(w/2,8);c.rotate(-.065);
+ c.shadowColor='rgba(79,44,21,.17)';c.shadowBlur=4;c.shadowOffsetY=2;
+ c.fillStyle='#bd643f';c.beginPath();c.moveTo(-49,-6);c.lineTo(47,-6);c.lineTo(49,22);c.lineTo(-46,21);c.closePath();c.fill();
+ c.shadowColor='transparent';c.fillStyle='rgba(246,189,145,.24)';c.fillRect(-45,-4,89,2);
+ c.restore();
 }
 
 function drawAdaptiveNote(c,im,note,p){
@@ -422,7 +433,7 @@ function initKuraPWA(){
 }
 initKuraPWA();
 </script>
-<script src="./editor-v2.js?v=3.1.1"></script>
+<script src="./editor-v2.js?v=3.1.2"></script>
 <script>start();</script>
 </body>
 </html>
