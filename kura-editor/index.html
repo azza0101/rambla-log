@@ -290,6 +290,12 @@ function kuraNotePaper(c,w,h){
  for(let y=0;y<3;y++)for(let x=0;x<3;x++)
   c.drawImage(img,xs[x],ys[y],xs[x+1]-xs[x],ys[y+1]-ys[y],tx[x],ty[y],tx[x+1]-tx[x],ty[y+1]-ty[y]);
 }
+function drawKuraInkContain(c,img,x,y,w,h){
+ if(!img?.complete||!img.naturalWidth||!img.naturalHeight)return;
+ const ratio=Math.min(w/img.naturalWidth,h/img.naturalHeight);
+ const dw=img.naturalWidth*ratio,dh=img.naturalHeight*ratio;
+ c.drawImage(img,x+(w-dw)/2,y+(h-dh)/2,dw,dh);
+}
 function noteDrawSegments(c,unused,L){
  const w=L.w,h=L.totalH;
  const shadow=kuraNoteSprite('shadow');
@@ -300,12 +306,19 @@ function noteDrawSegments(c,unused,L){
  }
  kuraNotePaper(c,w,h);
  const title=kuraNoteSprite('title');
- if(title?.complete&&title.naturalWidth)c.drawImage(title,(w-397)/2,35,397,109);
+ // Printed heading has a dedicated fixed-area inset: it cannot collide with "Base".
+ if(title?.complete&&title.naturalWidth){
+  const headingWidth=Math.min(358,w-38), headingHeight=96;
+  drawKuraInkContain(c,title,(w-headingWidth)/2,24,headingWidth,headingHeight);
+ }
+ // Fixed size boxes and contain-fit; no atlas slicing or stretched source regions.
  const keys=['pin','calendar','star','info'];
  L.anchors.forEach((anchor,i)=>{
   const icon=kuraNoteSprite(keys[i]);
-  if(icon?.complete&&icon.naturalWidth)
-   c.drawImage(icon,Math.max(17,Math.min(69,w*.17)),anchor-7,64,64);
+  if(icon?.complete&&icon.naturalWidth){
+    const box=70;
+    drawKuraInkContain(c,icon,Math.max(16,w*.105),anchor-22,box,box);
+  }
  });
  const tape=kuraNoteSprite('tape');
  if(tape?.complete&&tape.naturalWidth)
@@ -356,16 +369,20 @@ function render(p=page(),dest=ctx,selectedDraw=true){if(!p)return;const c=dest;i
  // hand-painted orange accents are independent PNG overlays; headings editable via true font.
  const brushHead={x:eyebrow.x+3,y:eyebrow.y+43,w:190,h:18};drawImageFit(c,assetImage('pennellata_1'),brushHead.x,brushHead.y,brushHead.w,brushHead.h);
  for(const [tbox,key] of [[h1,'head1'],[h2,'head2']]){
-  // Dash sits to the LEFT of the brush title at the optical midline of the ink,
-  // not at the bottom/baseline like an underline.
-  const brushFontSize=39,brushH=11;
-  const br={x:tbox.x+3,y:tbox.y+Math.round(brushFontSize*.44-brushH/2),w:56,h:brushH};
+  // Dash and handwritten lettering share one optical centre and rotation.
+  // Font size follows the actual editable title instead of stale 39px constant.
+  const titleStyle=window.KURA_V2.styleFor?.(p,key)||null;
+  const fs=p.textStyles?.[key]?.fontSize||titleStyle?.fontSize||49;
   const titleOffset=p.offsets?.[key]||{};
-  const cx=tbox.x+70+(tbox.w-72)/2,cy=tbox.y+tbox.h/2;
+  const headingX=tbox.x+70;
+  const cx=headingX+(tbox.w-72)/2,cy=tbox.y+tbox.h/2;
+  const dashWidth=53,dashHeight=11;
+  const dashY=tbox.y+Math.min(tbox.h*.60,fs*.54)-dashHeight/2;
   c.save();c.translate(cx,cy);c.rotate((titleOffset.rot||0)*Math.PI/180);c.translate(-cx,-cy);
-  drawImageFit(c,assetImage('pennellata_2'),br.x,br.y,br.w,br.h);
+  drawImageFit(c,assetImage('pennellata_2'),tbox.x+3,dashY,dashWidth,dashHeight);
   c.restore();
-  const heading={x:tbox.x+70,y:tbox.y,w:tbox.w-72,h:tbox.h};window.KURA_V2.paintEditable(c,p,key,p.fields[key],heading,{fontSize:39,script:true,bold:false,lineHeight:1.12,color:ORANGE});
+  const heading={x:headingX,y:tbox.y,w:tbox.w-72,h:tbox.h};
+  window.KURA_V2.paintEditable(c,p,key,p.fields[key],heading,{fontSize:fs,script:true,bold:false,lineHeight:1.12,color:ORANGE});
  }
  window.KURA_V2.paintEditable(c,p,'body1',p.fields.body1,b1,{fontSize:30*p.bodyScale,lineHeight:1.26,color:GREEN});
  window.KURA_V2.paintEditable(c,p,'body2',p.fields.body2,b2,{fontSize:30*p.bodyScale,lineHeight:1.26,color:GREEN});window.KURA_V2.paintFreeTexts(c,p);
