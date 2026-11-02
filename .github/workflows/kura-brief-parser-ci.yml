@@ -1,0 +1,20 @@
+name: KURA Brief Parser Tests
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'kura-editor/kura-brief-parser.js'
+      - 'kura-editor/tests/**'
+      - 'kura-editor/projects/KURA_Progetto_Novembre_2026_MCP_TEST.json'
+      - '.github/workflows/kura-brief-parser-ci.yml'
+  workflow_dispatch:
+jobs:
+  offline-parser-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate structured KURA brief parser
+        run: node kura-editor/tests/test-kura-brief-parser.cjs
