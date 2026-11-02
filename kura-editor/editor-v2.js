@@ -2,14 +2,16 @@
    Expects the v1 editor's globals in index.html. No external runtime or API keys. */
 'use strict';
 (function(){
-const V2_VERSION='2.4.0';
+const V2_VERSION='2.5.0';
 const NOTE_LABELS={label_base:'Base',label_duration:'Durata',label_highlight:'Da non perdere',label_tips:'Da sapere'};
 const STANDARD=['eyebrow','head1','body1','head2','body2','label_base','base','label_duration','duration','label_highlight','highlight','label_tips','tips'];
 const PAPER=[{"id":"basic_1","name":"Basic 1 · Avorio","season":"basic","colors":["#f7f0e4","#f2e8d9"],"fibers":"#b4a692","direction":0,"tags":["basic","basic 1 · avorio"]},{"id":"basic_2","name":"Basic 2 · Salvia","season":"basic","colors":["#e9eee4","#f5f3e9"],"fibers":"#a0a995","direction":1,"tags":["basic","basic 2 · salvia"]},{"id":"basic_3","name":"Basic 3 · Sabbia","season":"basic","colors":["#f3e7dc","#f9f2e9"],"fibers":"#bc9b89","direction":2,"tags":["basic","basic 3 · sabbia"]},{"id":"basic_4","name":"Basic 4 · Perla","season":"basic","colors":["#f1f1eb","#e6ece5"],"fibers":"#aeb7ae","direction":3,"tags":["basic","basic 4 · perla"]},{"id":"spring_1","name":"Primavera 1 · Boccioli","season":"spring","colors":["#f5efe4","#dce7d7"],"fibers":"#98b689","direction":0,"tags":["spring","primavera 1 · boccioli"]},{"id":"spring_2","name":"Primavera 2 · Botanica","season":"spring","colors":["#edf2e3","#d5e2c7"],"fibers":"#9bb88d","direction":1,"tags":["spring","primavera 2 · botanica"]},{"id":"spring_3","name":"Primavera 3 · Luce","season":"spring","colors":["#f8f2df","#e9eedb"],"fibers":"#aabf9e","direction":2,"tags":["spring","primavera 3 · luce"]},{"id":"summer_1","name":"Estate 1 · Mediterranea","season":"summer","colors":["#f9efd9","#dfe9eb"],"fibers":"#91b0b4","direction":3,"tags":["summer","estate 1 · mediterranea"]},{"id":"summer_2","name":"Estate 2 · Sabbia","season":"summer","colors":["#f4ead6","#efd7b4"],"fibers":"#cfaa78","direction":0,"tags":["summer","estate 2 · sabbia"]},{"id":"summer_3","name":"Estate 3 · Agrumi","season":"summer","colors":["#fff1d9","#f2d59c"],"fibers":"#d29c5d","direction":1,"tags":["summer","estate 3 · agrumi"]},{"id":"autumn_1","name":"Autunno 1 · Terracotta","season":"autumn","colors":["#f3e3d7","#d8b59c"],"fibers":"#bd835d","direction":2,"tags":["autumn","autunno 1 · terracotta"]},{"id":"autumn_2","name":"Autunno 2 · Olivato","season":"autumn","colors":["#ece7d5","#c4c59e"],"fibers":"#8d9b68","direction":3,"tags":["autumn","autunno 2 · olivato"]},{"id":"autumn_3","name":"Autunno 3 · Vendemmia","season":"autumn","colors":["#f2e8dc","#c8a88b"],"fibers":"#9a7c66","direction":0,"tags":["autumn","autunno 3 · vendemmia"]},{"id":"winter_1","name":"Inverno 1 · Nebbia","season":"winter","colors":["#eff0ee","#d9dedd"],"fibers":"#9eafac","direction":1,"tags":["winter","inverno 1 · nebbia"]},{"id":"winter_2","name":"Inverno 2 · Bosco","season":"winter","colors":["#e7ece8","#cbd7cf"],"fibers":"#849e90","direction":2,"tags":["winter","inverno 2 · bosco"]},{"id":"winter_3","name":"Inverno 3 · Ghiaccio","season":"winter","colors":["#f1f3f2","#dde5ea"],"fibers":"#a9bfcc","direction":3,"tags":["winter","inverno 3 · ghiaccio"]}];
 const BACKGROUND_PRESETS=PAPER;
-const NEW_STICKERS=[['blossom','Fiori di primavera'],['lavender','Lavanda'],['citrus','Agrumi estivi'],['shell','Conchiglia'],['autumn_leaf','Foglia autunnale'],['grapes','Vendemmia'],['snowflake','Fiocco di neve'],['pine','Ramo di abete'],['ticket','Biglietto di viaggio']];
+const NEW_STICKERS=[["spring_blossom_branch","Ramo di ciliegio"],["spring_blossom_cluster","Fiori di ciliegio"],["spring_tulips","Tulipani"],["spring_pink_petals","Petali rosa"],["summer_lemon_branch","Limoni mediterranei"],["summer_orange_slices","Agrumi sezionati"],["summer_paper_shell","Conchiglia di carta"],["summer_swallow","Rondine"],["autumn_maple_leaf","Foglia d'acero"],["autumn_purple_grapes","Grappolo d'uva"],["autumn_olive_branch","Ramo d'ulivo"],["autumn_wheat","Spighe"],["winter_paper_snowflake","Fiocco di neve"],["winter_snowy_pine","Ramo innevato"],["winter_pine_cones","Pigne"],["winter_holly_branch","Agrifoglio"]];
+const LEGACY_STICKERS=['blossom','lavender','citrus','shell','autumn_leaf','grapes','snowflake','pine','ticket'];
+for(const old of LEGACY_STICKERS)ASSETS['sticker_'+old]='./assets/sticker_'+old+'.svg';
 for(const p of BACKGROUND_PRESETS){if(p.season!=='basic')ASSETS['sfondo_'+p.id]='./assets/sfondo_'+p.id+'.svg'}
-for(const [key,label] of NEW_STICKERS){ASSETS['sticker_'+key]='./assets/sticker_'+key+'.svg?v=2.4.0';if(!stickerDefs.some(x=>x[0]===key))stickerDefs.push([key,label])}
+for(const [key,label] of NEW_STICKERS){ASSETS['sticker_'+key]='./assets/'+key+'.webp?v=2.5.0';if(!stickerDefs.some(x=>x[0]===key))stickerDefs.push([key,label])}
 
 const KURA_SEASONS=[['basic','Basic'],['spring','Primavera'],['summer','Estate'],['autumn','Autunno'],['winter','Inverno']];
 
@@ -25,7 +27,7 @@ function offsetFor(p,key){const f=freeItem(p,key);return f||p.offsets[key]||{}}
 function defaultStyle(p,key){
  const s=p.noteScale||1,b=p.bodyScale||1;
  if(key==='eyebrow')return{fontSize:32,family:'Montserrat',bold:true,color:GREEN,lineHeight:1.12};
- if(key==='head1'||key==='head2')return{fontSize:47,family:'Feeling Passionate',bold:false,color:ORANGE,lineHeight:1.10};
+ if(key==='head1'||key==='head2')return{fontSize:47,family:'KURA Brush2',bold:false,color:ORANGE,lineHeight:1.10};
  if(key==='body1'||key==='body2')return{fontSize:30*b,family:'Montserrat',bold:false,color:GREEN,lineHeight:1.26};
  if(key.startsWith('label_'))return{fontSize:20*s,family:'Montserrat',bold:true,color:GREEN,lineHeight:1.12};
  if(['base','duration'].includes(key))return{fontSize:19*s,family:'Montserrat',bold:false,color:GREEN,lineHeight:1.18};
@@ -34,9 +36,9 @@ function defaultStyle(p,key){
 }
 function styleFor(p,key){
  const st=p.textStyles&&p.textStyles[key]||{},df=defaultStyle(p,key);
- return{fontSize:safeNumber(st.fontSize,10,160,df.fontSize),family:['Montserrat','Feeling Passionate','Caveat'].includes(st.family)?st.family:df.family,bold:typeof st.bold==='boolean'?st.bold:df.bold,color:/^#[0-9a-fA-F]{6}$/.test(st.color||'')?st.color:df.color,lineHeight:safeNumber(st.lineHeight,.8,2.5,df.lineHeight)};
+ return{fontSize:safeNumber(st.fontSize,10,160,df.fontSize),family:(st.family==='Feeling Passionate'?'KURA Brush2':(['Montserrat','KURA Brush2','Caveat'].includes(st.family)?st.family:df.family)),bold:typeof st.bold==='boolean'?st.bold:df.bold,color:/^#[0-9a-fA-F]{6}$/.test(st.color||'')?st.color:df.color,lineHeight:safeNumber(st.lineHeight,.8,2.5,df.lineHeight)};
 }
-function effectiveFamily(st){return st.family==='Feeling Passionate'&&!faceLoaded?'Caveat':st.family}
+function effectiveFamily(st){return st.family==='KURA Brush2'&&!faceLoaded?'Caveat':st.family}
 function textRect(p,key){
  ensurePage(p);const f=freeItem(p,key);
  if(f)return{x:safeNumber(f.x,-1000,2100,150),y:safeNumber(f.y,-1000,2000,200),w:safeNumber(f.w,30,1600,450)*(f.scale||1),h:safeNumber(f.h,24,1600,100)*(f.scale||1)};
@@ -264,19 +266,14 @@ applySeed=function(seed,random){originalApplySeed(seed,random);selectSeasonBackg
 const originalStickerGrid=refreshStickerGrid;
 refreshStickerGrid=function(){
  const root=$('#stickerGrid');if(!root)return;root.innerHTML='';
- const all=[['basic','ORIGINALI KURA',stickerDefs.filter(x=>!NEW_STICKERS.some(n=>n[0]===x[0]))],
- ['spring','PRIMAVERA',NEW_STICKERS.filter(x=>['blossom','lavender'].includes(x[0]))],
- ['summer','ESTATE',NEW_STICKERS.filter(x=>['citrus','shell'].includes(x[0]))],
- ['autumn','AUTUNNO',NEW_STICKERS.filter(x=>['autumn_leaf','grapes'].includes(x[0]))],
- ['winter','INVERNO',NEW_STICKERS.filter(x=>['snowflake','pine'].includes(x[0]))],
- ['other','EDITORIALI',NEW_STICKERS.filter(x=>x[0]==='ticket')]];
- for(const[season,heading,items]of all){
-  const title=document.createElement('div');title.className='kura-sticker-group';title.textContent=heading;
-  title.style.gridColumn='1 / -1';title.style.fontSize='11px';title.style.fontWeight='850';title.style.marginTop='8px';title.style.color='#173d2e';root.appendChild(title);
+ const originals=stickerDefs.filter(x=>!NEW_STICKERS.some(n=>n[0]===x[0]));
+ const seasonal=(kind)=>NEW_STICKERS.filter(x=>x[0].startsWith(kind+'_'));
+ const sets=[['basic','ORIGINALI KURA',originals],['spring','PRIMAVERA',seasonal('spring')],['summer','ESTATE',seasonal('summer')],['autumn','AUTUNNO',seasonal('autumn')],['winter','INVERNO',seasonal('winter')]];
+ for(const[season,heading,items]of sets){
+  const title=document.createElement('div');title.className='kura-sticker-group';title.textContent=heading;title.style.gridColumn='1 / -1';title.style.fontSize='11px';title.style.fontWeight='850';title.style.marginTop='8px';title.style.color='#173d2e';root.appendChild(title);
   for(const[key,name]of items){
    const b=document.createElement('button');b.className='sticker-btn';b.type='button';b.title='Aggiungi '+name;b.dataset.stickerId=key;b.dataset.season=season;
-   const im=document.createElement('img');im.alt=name;im.loading='lazy';im.src=ASSETS['sticker_'+key];b.appendChild(im);
-   b.onclick=()=>addSticker(key);root.appendChild(b);
+   const im=document.createElement('img');im.alt=name;im.loading='lazy';im.decoding='async';im.src=ASSETS['sticker_'+key];b.appendChild(im);b.onclick=()=>addSticker(key);root.appendChild(b);
   }
  }
 };
@@ -284,7 +281,7 @@ const originalRegenerateDecorations=regenerateDecorations;
 regenerateDecorations=function(addNew){
  originalRegenerateDecorations(addNew);if(!addNew)return;
  const p=page(),s=inferKuraSeason(p);
- const seasonal={spring:['blossom','lavender'],summer:['citrus','shell'],autumn:['autumn_leaf','grapes'],winter:['snowflake','pine'],basic:['ticket','map']};
+ const seasonal={spring:['spring_blossom_branch','spring_pink_petals'],summer:['summer_lemon_branch','summer_swallow'],autumn:['autumn_maple_leaf','autumn_purple_grapes'],winter:['winter_snowy_pine','winter_paper_snowflake'],basic:['olive','map']};
  const picks=seasonal[s]||seasonal.basic;
  p.stickers.forEach((st,i)=>{if(i<2)st.key='sticker_'+picks[i]});
 };
@@ -399,13 +396,13 @@ function addV2Controls(){
  const textTab=$('#tab-texts');if(textTab){const b=document.createElement('button');b.className='btn flat';b.style.width='100%';b.textContent='＋ Aggiungi casella di testo';b.onclick=addFreeText;textTab.insertBefore(b,textTab.firstElementChild.nextElementSibling)}
  const fontBox=$('#fontStatus');if(fontBox){const info=document.createElement('div');info.className='kura-font-alert';info.innerHTML='Il font Feeling Passionate viene distribuito a tutti solo se è installato sul sito con licenza web/app e file autorizzato. Altrimenti il titolo usa temporaneamente Caveat, senza cambiare il nome del font nel progetto.';fontBox.after(info)}
 }
-async function checkHostedFont(){try{const r=await fetch('./assets/FeelingPassionate.woff2',{cache:'force-cache'});if(r.ok){fontReadyFromHost=await installFont(await r.arrayBuffer(),true);if(fontReadyFromHost){const box=$('#fontStatus');box.innerHTML='<b>Feeling Passionate <span class="pill ok">Online ✓</span></b><p>Font ospitato sul sito: disponibile a tutti gli utenti.</p>'}}}catch(_){}}
+async function checkHostedFont(){try{const r=await fetch('./assets/Kura_Brush2.woff2?v=2.5.0',{cache:'force-cache'});if(r.ok){fontReadyFromHost=await installFont(await r.arrayBuffer(),true);if(fontReadyFromHost){const box=$('#fontStatus');box.innerHTML='<b>KURA Brush2 <span class="pill ok">Integrato ✓</span></b><p>Font completo caricato automaticamente dal sito e usato anche nell’esportazione PNG.</p>'}}}catch(_){}}
 function assertPage(op){const p=op.pageId?pages.find(x=>x.id===op.pageId):pages[Number.isInteger(op.pageIndex)?op.pageIndex:current];if(!p)throw Error('Pagina non trovata');return ensurePage(p)}
-function safeStylePatch(style){const out={};if(!style||typeof style!=='object')return out;if(style.fontSize!==undefined)out.fontSize=safeNumber(style.fontSize,10,160,30);if(['Montserrat','Feeling Passionate','Caveat'].includes(style.family))out.family=style.family;if(typeof style.bold==='boolean')out.bold=style.bold;if(/^#[0-9a-fA-F]{6}$/.test(style.color||''))out.color=style.color;if(style.lineHeight!==undefined)out.lineHeight=safeNumber(style.lineHeight,.8,2.5,1.2);return out}
+function safeStylePatch(style){const out={};if(!style||typeof style!=='object')return out;if(style.fontSize!==undefined)out.fontSize=safeNumber(style.fontSize,10,160,30);if(['Montserrat','KURA Brush2','Feeling Passionate','Caveat'].includes(style.family))out.family=style.family==='Feeling Passionate'?'KURA Brush2':style.family;if(typeof style.bold==='boolean')out.bold=style.bold;if(/^#[0-9a-fA-F]{6}$/.test(style.color||''))out.color=style.color;if(style.lineHeight!==undefined)out.lineHeight=safeNumber(style.lineHeight,.8,2.5,1.2);return out}
 window.KURA_MCP=Object.freeze({
- apiVersion:'2.2',contract:'./mcp-contract.json',
+ apiVersion:'2.5',contract:'./mcp-contract.json',
  getProject:function(){return deepClone(exportProject())},
- inspect:function(){return{apiVersion:'2.2',pageIds:pages.map(x=>x.id),editableTextKeys:STANDARD,backgroundCount:16,backgroundPresets:BACKGROUND_PRESETS.map(x=>({id:x.id,name:x.name,season:x.season,tags:x.tags})),backgroundNames:BACKGROUND_PRESETS.map(x=>x.name),layoutIds:LAYOUTS.map(x=>x.id),decorations:stickerDefs.map(x=>({id:x[0],name:x[1]})),actions:['setText','setBackground','setBackgroundId','setSeason','addSticker','addText','moveElement','setPageName','addPage']}},
+ inspect:function(){return{apiVersion:'2.5',pageIds:pages.map(x=>x.id),editableTextKeys:STANDARD,backgroundCount:16,backgroundPresets:BACKGROUND_PRESETS.map(x=>({id:x.id,name:x.name,season:x.season,tags:x.tags})),backgroundNames:BACKGROUND_PRESETS.map(x=>x.name),layoutIds:LAYOUTS.map(x=>x.id),decorations:stickerDefs.map(x=>({id:x[0],name:x[1]})),actions:['setText','setBackground','setBackgroundId','setSeason','addSticker','addText','moveElement','setPageName','addPage']}},
  applyPatch:function(operations){
   if(!Array.isArray(operations)||operations.length>200)throw Error('Sono necessarie 1-200 operazioni');
   const before=JSON.stringify({pages,current});let count=0;
@@ -440,7 +437,7 @@ window.KURA_MCP=Object.freeze({
  save:function(){return persistNow()},
  exportJSON:function(){return JSON.stringify(exportProject(),null,2)}
 });
-window.KURA_V2={version:'2.2.0',drawKuraBackground:drawKuraBackground,paintEditable:paintEditable,paintFreeTexts:paintFreeTexts};
+window.KURA_V2={version:'2.5.0',drawKuraBackground:drawKuraBackground,paintEditable:paintEditable,paintFreeTexts:paintFreeTexts};
 addV2Controls();initOverlay();
 (function(){
  const top=document.querySelector('.top-actions');
