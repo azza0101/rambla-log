@@ -1,4 +1,4 @@
-# KURA — Brief rapido per generare pagine editoriali (MCP v3.0)
+# KURA — Brief rapido per generare pagine editoriali (MCP v3.1)
 Questo file descrive un unico input ripetibile che ChatGPT trasforma in pagine KURA 4:5 totalmente modificabili. **Non è necessario compilare alcun modulo**: è sufficiente incollare i contenuti in prosa come al solito.
 
 ## Modalità consigliata: minimo indispensabile
@@ -9,7 +9,7 @@ Scrivi:
 - due paragrafi descrittivi (o un unico testo);
 - un post-it con Base / Durata / Da non perdere / Da sapere.
 
-Il resto si decide con i preset KURA: identità grafica invariabile, Montserrat + Kaushan Script, sfondi stagionali papercut, spazio negativo, layout alternati, Giulia canonica in pose differenti, post-it leggibile.
+Il resto si decide con i preset KURA: identità grafica invariabile, Montserrat + Caveat Brush, sfondi stagionali papercut, spazio negativo, layout alternati, Giulia canonica in pose differenti, post-it leggibile.
 
 ### Esempio copia/incolla
 
@@ -46,8 +46,8 @@ Usa un blocco **[IMMAGINE: ...]** solo se vuoi imporre azione, posizione o eleme
 1. Ogni destinazione = una pagina informativa 1080×1350; non creare griglie né pagine accorpate.
 2. L'illustrazione inferiore è un **PNG trasparente full-width**, preferibilmente 1080 px o più. Il personaggio e il paesaggio appartengono allo stesso asset. Non ritagliare Giulia dalle bozze con testi o sfondi.
 3. Layout, background, note e gerarchie differenziati tra pagine; però logo assente nelle pagine informative.
-4. Titoletti brush in **minuscolo/sentence case** e maiuscolo solo quando esplicitamente richiesto. Font di riferimento **Kaushan Script** (font open-source Google Fonts, self-hosted); Caveat Brush resta alternativa selezionabile.
-5. Il post-it è autoallungabile solo sulla carta vuota; icone/titolo non si deformano; margini di sicurezza e testo ruotato insieme alla nota.
+4. Titoletti brush in **minuscolo/sentence case** e maiuscolo solo quando esplicitamente richiesto. Font di riferimento **Caveat Brush** (font open-source Google Fonts, self-hosted); Kaushan Script resta alternativa selezionabile.
+5. Il post-it è autoallungabile soltanto nella carta vuota; titolo stampato, scotch e icone restano a dimensioni native costanti durante il ridimensionamento; margini di sicurezza e testo ruotato insieme alla nota.
 6. Ogni testo, post-it, sticker, immagine e sfondo resta modificabile da editor/MCP. Salvataggio in IndexedDB, **Salva progetto** / **Apri progetto**, esportazione JSON/PNG.
 7. Pubblicazione con un commit GitHub che include i PNG e il JSON canonico; non creare un secondo HTML indipendente.
 8. Un nuovo carosello riceve un projectId univoco, senza sostituire progetti preesistenti. Link diretto `?template=<slug>`.
