@@ -56,3 +56,10 @@ Il font Feeling Passionate di Din Studio è proprietario: per renderlo disponibi
 - Post-it responsive: due sezioni inferiori si allungano secondo il numero di righe, mantenendo il titolo e le icone originali. Tutti i testi ruotano con lo stesso pivot del post-it, anche durante editing in sovrimpressione.
 - Libreria decorazioni drag & drop desktop, trascinamento touch tramite ghost trasparente, e click per inserimento.
 - Autosalvataggio e schema MCP compatibili con i progetti pregressi.
+
+## 2.7.0 — post-it strutturale e selezione avanzata
+- Layout iconografico del post-it conservato nella forma originale: cinque fasce a dimensione nativa, con inserti ripetuti solo dalla carta vuota per le descrizioni lunghe.
+- Ogni riga ha una casella propria e il testo usa lo stesso pivot di rotazione del foglio; margine interno sinistro ~40,5% e destro ~13% del foglio.
+- Brush KURA Brush2 con spessore intermedio, evitando contorni eccessivi.
+- Tutti i livelli selezionabili hanno controlli locali: spostamento, rotazione, ridimensionamento orizzontale/verticale indipendente, flip X e Y. Caselle testo con dimensioni assolute; elementi grafici con scaleX e scaleY.
+- MCP applyPatch.moveElement gestisce scaleX, scaleY, flipX, flipY, w e h, oltre alle proprietà esistenti.
