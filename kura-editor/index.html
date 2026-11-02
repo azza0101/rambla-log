@@ -253,47 +253,80 @@ function noteAutoLayout(note,p,c=ctx){
  ];
  return{w,h,left,right,textW,anchors,inserts,totalExtra,totalH:h+totalExtra};
 }
-function drawKuraNoteIcon(c,index,x,y){
- // Self-contained flat pictograms: never crop icon fragments from the post-it bitmap.
- c.save();c.translate(x,y);c.strokeStyle='#c85c2e';c.fillStyle='#c85c2e';c.lineWidth=4.1;c.scale(1.55,1.55);c.lineCap='round';c.lineJoin='round';
- if(index===0){ // location pin
-  c.beginPath();c.moveTo(0,14);c.bezierCurveTo(-5,7,-11,0,-11,-6);c.arc(0,-6,11,Math.PI,0);c.bezierCurveTo(11,0,5,7,0,14);c.fill();c.beginPath();c.arc(0,-6,3.5,0,Math.PI*2);c.fillStyle='#ffd994';c.fill();
- }else if(index===1){ // calendar
-  c.strokeRect(-12,-8,24,20);c.beginPath();c.moveTo(-12,-2);c.lineTo(12,-2);c.moveTo(-6,-12);c.lineTo(-6,-5);c.moveTo(6,-12);c.lineTo(6,-5);c.stroke();
- }else if(index===2){ // star
-  c.beginPath();for(let i=0;i<10;i++){let angle=-Math.PI/2+i*Math.PI/5,r=i%2?6:13,xx=Math.cos(angle)*r,yy=Math.sin(angle)*r;i?c.lineTo(xx,yy):c.moveTo(xx,yy)}c.closePath();c.fill();
- }else{ // information badge
-  c.beginPath();c.ellipse(0,0,14,9,0,0,Math.PI*2);c.stroke();c.font='bold 18px Montserrat, sans-serif';c.textAlign='center';c.textBaseline='middle';c.fillText('i',0,0);
- }c.restore();
+// Canonical KURA note: every component is a separate transparent PNG canvas.
+// Only the paper is resized. Scotch, masthead and icons retain native dimensions.
+const KURA_NOTE_SPRITES=Object.create(null);
+function kuraNoteSprite(name){
+ if(KURA_NOTE_SPRITES[name])return KURA_NOTE_SPRITES[name];
+ const sizes={paper:[460,720],tape:[138,68],title:[400,115],pin:[80,80],calendar:[80,80],star:[80,80],info:[80,80]};
+ const size=sizes[name];if(!size)return null;
+ const layer=document.createElement('canvas');layer.width=size[0];layer.height=size[1];
+ const g=layer.getContext('2d'),w=layer.width,h=layer.height;
+ g.lineJoin='round';g.lineCap='round';
+ if(name==='paper'){
+  g.shadowColor='rgba(83,54,30,.10)';g.shadowBlur=7;g.shadowOffsetY=4;
+  g.beginPath();g.moveTo(8,5);g.lineTo(w*.30,8);g.lineTo(w*.70,3);g.lineTo(w-7,9);
+  g.lineTo(w-6,h*.42);g.lineTo(w-3,h-8);g.lineTo(w*.55,h-5);g.lineTo(10,h-3);
+  g.lineTo(4,h*.60);g.closePath();
+  const grad=g.createLinearGradient(0,0,w,h);grad.addColorStop(0,'#ffe1a0');grad.addColorStop(.54,'#f9d68c');grad.addColorStop(1,'#f4d184');
+  g.fillStyle=grad;g.fill();g.shadowColor='transparent';g.lineWidth=1.2;g.strokeStyle='rgba(168,94,41,.14)';g.stroke();
+  for(let i=0;i<190;i++){const x=14+(i*127%(w-28)),y=14+(i*233%(h-28));g.fillStyle=i%4?'rgba(255,255,247,.085)':'rgba(147,93,49,.035)';g.fillRect(x,y,i%3+1,1)}
+ }else if(name==='tape'){
+  g.shadowColor='rgba(72,43,21,.22)';g.shadowBlur=4;g.shadowOffsetY=3;
+  g.beginPath();g.moveTo(16,10);g.lineTo(121,6);g.lineTo(119,55);g.lineTo(19,59);g.closePath();
+  g.fillStyle='#b85b3a';g.fill();g.shadowColor='transparent';
+  g.fillStyle='rgba(248,188,138,.20)';g.fillRect(22,13,96,3);
+  for(let i=0;i<23;i++){g.fillStyle='rgba(248,218,185,.065)';g.fillRect(23+(i*23)%92,15+(i*17)%39,9,1)}
+ }else if(name==='title'){
+  g.fillStyle='#173d2e';g.textAlign='center';g.textBaseline='middle';
+  g.font='52px "Caveat Brush", cursive';
+  const title='INFO DI VIAGGIO',natural=g.measureText(title).width;
+  if(natural>365){g.save();g.translate(w/2,0);g.scale(365/natural,1);g.fillText(title,0,48);g.restore()}
+  else g.fillText(title,w/2,48);
+  g.strokeStyle='#173d2e';g.lineWidth=3;g.beginPath();g.moveTo(61,88);g.bezierCurveTo(158,93,269,83,342,88);g.stroke();
+ }else{
+  g.translate(40,40);g.fillStyle='#ce6635';g.strokeStyle='#ce6635';g.lineWidth=4.5;
+  if(name==='pin'){
+   g.beginPath();g.moveTo(0,25);g.bezierCurveTo(-9,11,-20,1,-20,-10);g.arc(0,-10,20,Math.PI,0);g.bezierCurveTo(20,1,9,11,0,25);g.closePath();g.fill();
+   g.fillStyle='#f9d68c';g.beginPath();g.arc(0,-10,7,0,Math.PI*2);g.fill();
+  }else if(name==='calendar'){
+   g.strokeRect(-24,-19,48,43);g.beginPath();g.moveTo(-24,-6);g.lineTo(24,-6);g.moveTo(-13,-24);g.lineTo(-13,-13);g.moveTo(13,-24);g.lineTo(13,-13);g.stroke();
+   g.fillRect(-13,3,8,7);g.fillRect(2,3,8,7);
+  }else if(name==='star'){
+   g.beginPath();for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,r=i%2?11:26;i?g.lineTo(Math.cos(a)*r,Math.sin(a)*r):g.moveTo(Math.cos(a)*r,Math.sin(a)*r)}g.closePath();g.fill();
+  }else if(name==='info'){
+   g.beginPath();g.ellipse(0,0,27,18,0,0,Math.PI*2);g.stroke();
+   g.font='bold 27px Montserrat, sans-serif';g.fillText('i',0,1);
+  }
+ }
+ KURA_NOTE_SPRITES[name]=layer;
+ return layer;
 }
-function noteDrawSegments(c,im,L){
- // Three distinct rendering layers: clean resizable paper, fixed masthead/icons,
- // fixed adhesive. No samples or artwork are cropped from old composite bitmap.
+function kuraNotePaper(c,w,h){
+ const img=kuraNoteSprite('paper'),S=30,T=Math.min(27,w*.10,h*.08);
+ const xs=[0,S,img.width-S,img.width],ys=[0,S,img.height-S,img.height],dx=[0,T,w-T,w],dy=[0,T,h-T,h];
+ for(let row=0;row<3;row++)for(let col=0;col<3;col++)
+  c.drawImage(img,xs[col],ys[row],xs[col+1]-xs[col],ys[row+1]-ys[row],dx[col],dy[row],dx[col+1]-dx[col],dy[row+1]-dy[row]);
+}
+function noteDrawSegments(c,unused,L){
  const w=L.w,h=L.totalH;
- c.save();
- // PAPER: independent warm paper sheet with subtle fibres and gently torn edges.
- c.shadowColor='rgba(65,48,27,.14)';c.shadowBlur=9;c.shadowOffsetY=5;
- c.fillStyle='#f5cd78';
- c.beginPath();c.moveTo(8,7);c.lineTo(w-8,4);c.lineTo(w-4,h-8);c.lineTo(10,h-3);c.closePath();c.fill();
- c.shadowColor='transparent';c.shadowBlur=0;c.shadowOffsetY=0;
- const paper=c.createLinearGradient(0,0,w,h);paper.addColorStop(0,'#ffe3a1');paper.addColorStop(.56,'#f9d789');paper.addColorStop(1,'#f9de9f');
- c.fillStyle=paper;c.fill();
- c.strokeStyle='rgba(192,118,53,.15)';c.lineWidth=1.3;c.stroke();
- for(let i=0;i<44;i++){const px=18+((i*73)%Math.max(1,w-36)),py=32+((i*137)%Math.max(1,h-57));c.strokeStyle='rgba(185,120,53,.045)';c.beginPath();c.moveTo(px,py);c.lineTo(px+10,py+1);c.stroke();}
- c.restore();
- // FIXED MASTHEAD, inside sheet (never scaled).
- c.save();c.fillStyle='#173d2e';c.textAlign='center';c.textBaseline='middle';
- c.font='37px "Caveat Brush", cursive';c.fillText('INFO DI VIAGGIO',w/2,79);
- c.strokeStyle='#173d2e';c.lineWidth=2.4;c.beginPath();c.moveTo(w/2-119,106);c.quadraticCurveTo(w/2+12,112,w/2+119,103);c.stroke();c.restore();
- // ICONS: each is an independent vector overlay, original fixed size.
- L.anchors.forEach((y,i)=>drawKuraNoteIcon(c,i,Math.max(57,w*.235),y+11));
- // TAPE: separate overlay, centred across top edge, fully in bounds of image canvas.
- c.save();c.translate(w/2,-2);c.rotate(-.065);
- c.shadowColor='rgba(79,44,21,.17)';c.shadowBlur=4;c.shadowOffsetY=2;
- c.fillStyle='#bd643f';c.beginPath();c.moveTo(-49,-6);c.lineTo(47,-6);c.lineTo(49,22);c.lineTo(-46,21);c.closePath();c.fill();
- c.shadowColor='transparent';c.fillStyle='rgba(246,189,145,.24)';c.fillRect(-45,-4,89,2);
- c.restore();
+ kuraNotePaper(c,w,h);
+ const title=kuraNoteSprite('title'),tape=kuraNoteSprite('tape');
+ c.drawImage(title,(w-400)/2,35,400,115);
+ const keys=['pin','calendar','star','info'];
+ L.anchors.forEach((anchor,i)=>{
+  const icon=kuraNoteSprite(keys[i]);
+  c.drawImage(icon,Math.min(77,Math.max(29,w*.19)),anchor-13,65,65);
+ });
+ // Place adhesive last; it overlaps the top edge, rather than sitting underneath the paper.
+ c.drawImage(tape,(w-138)/2,-24,138,68);
 }
+window.KURA_NOTE_PNGS=Object.freeze({
+ names:['paper','tape','title','pin','calendar','star','info'],
+ getPNG(name){const c=kuraNoteSprite(name);return c?c.toDataURL('image/png'):null}
+});
+if(document.fonts){document.fonts.ready.then(()=>{delete KURA_NOTE_SPRITES.title;queueRender()});
+ document.fonts.addEventListener?.('loadingdone',()=>{delete KURA_NOTE_SPRITES.title;queueRender()});}
 
 function drawAdaptiveNote(c,im,note,p){
  const L=noteAutoLayout(note,p,c);if(!L)return L;
