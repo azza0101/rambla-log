@@ -56,3 +56,11 @@
 #stickerGrid .sticker-btn:hover{background:#f3efe3;border-color:#c9af83}
 @media(max-width:760px){#stickerGrid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}#stickerGrid .sticker-btn{min-height:126px}#stickerGrid .sticker-btn img{height:90px}}
 @media(max-width:420px){#stickerGrid{grid-template-columns:repeat(3,minmax(0,1fr))}#stickerGrid .sticker-btn img{height:86px}}
+
+/* KURA 2.6 direct drag controls */
+#stickerGrid .sticker-btn{cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none;position:relative}
+#stickerGrid .sticker-btn:active{cursor:grabbing}
+#stickerGrid .sticker-btn img{pointer-events:none;-webkit-user-drag:none}
+.kura-drag-ghost{position:fixed;z-index:100000;width:104px;height:104px;object-fit:contain;pointer-events:none;opacity:.83;filter:drop-shadow(0 8px 12px rgba(0,0,0,.20));transform:rotate(-6deg)}
+.kura-text-edit{touch-action:manipulation}
+.kura-text-frame.is-selected{outline:1px solid rgba(220,120,54,.6)}
