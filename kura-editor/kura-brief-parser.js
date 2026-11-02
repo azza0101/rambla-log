@@ -24,7 +24,7 @@
         const label=keyOf(match[1]);
         if(label==='POSTIT'){inPostit=true;active=null;continue}
         if(label==='TESTO'){inPostit=false;active=null;continue}
-        if(label==='SOTTOTITOLOINTERNO DIRIFERIMENTO'.replace(/\s/g,'')){metadata.referenceSubtitle=plain(match[2]);active=null;continue}
+        if(label.startsWith('SOTTOTITOLOINTERNODIRIFERIMENTO')){metadata.referenceSubtitle=plain(match[2]);active=null;continue}
         const m={
           TITOLETTO1:'head1',TITOLETTO2:'head2',BODY1:'body1',BODY2:'body2',
           BASE:'base',DURATA:'duration',DANONPERDERE:'highlight',DAVIVERE:'highlight',
