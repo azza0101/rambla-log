@@ -21,3 +21,13 @@ Il pannello GitHub mostra il link `?cloud=<projectId>`. In un nuovo dispositivo 
 
 ### Se il salvataggio GitHub fallisce
 L'editor conserva comunque il progetto locale. Riprova dopo aver verificato i permessi del token; in alternativa usa **Progetti → Esporta progetto** per scaricare un backup JSON.
+
+## Collaborazione condivisa (KURA 3.8)
+
+Due persone aprono lo stesso link `?cloud=<projectId>`. Entrambe devono avere un proprio token GitHub autorizzato a scrivere nel repository; **non condividere il medesimo token**. La connessione viene memorizzata soltanto nel proprio browser mediante WebCrypto AES-GCM con chiave non esportabile e IndexedDB, e si ripristina ai successivi accessi. **Non è una protezione contro JavaScript dannoso o estensioni che possano eseguire codice sulla stessa origine**: limitare il token al solo repository e ai permessi Contents necessari, con scadenza breve. Il pulsante **Scollega** elimina le credenziali salvate dal browser.
+
+Dopo una modifica, cliccare **💾 Salva**. Il salvataggio cloud aggiorna lo stesso JSON e controlla il suo blob SHA contro la versione aperta: se un'altra persona ha già salvato un aggiornamento, il secondo salvataggio viene bloccato, senza sovrascrivere il suo lavoro. Usare **↻ Aggiorna dal cloud** per caricare la nuova versione (previa conferma), o **Salva con nome** per creare un progetto diverso. Il controllo non è ancora un merge delle modifiche: chi aggiorna il cloud sostituisce le pagine locali, quindi è bene salvare una copia prima se ci sono modifiche non pubblicate.
+
+Il browser controlla gli aggiornamenti condivisi ogni 45 secondi, mostra un avviso non distruttivo e **non sostituisce mai automaticamente le pagine**. Il tasto **⟳ Aggiorna app** aggiorna invece il software e non va confuso con l'aggiornamento del progetto.
+
+Il repository è pubblico: anche i JSON condivisi sono pubblici. Il collegamento `?cloud=<projectId>` funziona su dispositivi diversi; quando il progetto è già presente localmente, serve premere **Aggiorna dal cloud** per acquisire la versione remota. Le credenziali non vengono salvate sul server, sui file JSON o nel codice dell'app.
