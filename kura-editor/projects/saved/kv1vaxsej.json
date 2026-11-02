@@ -1,0 +1,315 @@
+{
+  "format": "KURA_EDITOR_V2",
+  "width": 1080,
+  "height": 1350,
+  "version": 2,
+  "pages": [
+    {
+      "id": "klnh496lk",
+      "name": "SLOVENIA · VALLE DEL VIPACCO",
+      "seed": "2407",
+      "layout": 0,
+      "background": 0,
+      "note": 0,
+      "fields": {
+        "eyebrow": "01 / SLOVENIA",
+        "head1": "Un calice tira l'altro",
+        "body1": "In **Valle del Vipacco** vai per un calice e rischi di fermarti a chiacchierare ore col vignaiolo. Tra borghi di pietra e piccole cantine trovi vini insoliti come **Zelen e Pinela** e un sacco di **orange wine**.",
+        "head2": "La dritta di novembre",
+        "body2": "A novembre è tutto più tranquillo: vigne, degustazioni e pranzi senza fretta. Occhio solo alla **bora**: quando si alza, si fa sentire!",
+        "base": "Vipava o Ajdovščina",
+        "duration": "3–4 giorni",
+        "highlight": "Zelen, Pinela e orange wine",
+        "tips": "prenota le cantine e occhio alla bora!",
+        "label_base": "Base",
+        "label_duration": "Durata",
+        "label_highlight": "Da non perdere",
+        "label_tips": "Da sapere"
+      },
+      "visuals": {
+        "note": {
+          "x": 623,
+          "y": 105,
+          "w": 411,
+          "h": 543,
+          "rot": -1,
+          "scale": 1,
+          "opacity": 1,
+          "visible": true
+        },
+        "postcard": {
+          "x": 684,
+          "y": 690,
+          "w": 319,
+          "h": 242,
+          "rot": -5,
+          "scale": 1,
+          "opacity": 1,
+          "visible": false
+        },
+        "scene": {
+          "x": 0,
+          "y": 987,
+          "w": 1070,
+          "h": 580,
+          "rot": 0,
+          "scale": 1,
+          "opacity": 1,
+          "visible": false
+        }
+      },
+      "imageKeys": {
+        "scene": "giulia_kanazawa",
+        "postcard": "cartolina_kenrokuen"
+      },
+      "stickers": [
+        {
+          "id": "k182xcbf6",
+          "key": "sticker_olive",
+          "x": 885,
+          "y": 10,
+          "w": 190,
+          "h": 97,
+          "rot": 10,
+          "scale": 1,
+          "opacity": 0.93
+        },
+        {
+          "id": "k9xo4nyis",
+          "key": "sticker_stamp",
+          "x": 19,
+          "y": 1010,
+          "w": 123,
+          "h": 81,
+          "rot": -5,
+          "scale": 1,
+          "opacity": 0.95
+        }
+      ],
+      "offsets": {},
+      "bodyScale": 1.6,
+      "noteScale": 1.27,
+      "textStyles": {},
+      "freeTexts": [],
+      "backgroundId": "basic_1",
+      "seasonHint": "basic",
+      "meta": {
+        "referenceSubtitle": "Vigne, borghi e orange wine",
+        "imageBrief": "PNG trasparente unico a tutta larghezza, paesaggio + Giulia in un solo asset 2D papercut, con bordo superiore frastagliato e irregolare, senza testo né post-it. vigneti dai toni senape e rame della Valle del Vipacco, borgo di pietra, cantina familiare e qualche grappolo o tralcio che spunta dal bordo superiore. Giulia a SINISTRA con occhiali ottagonali e maglia autunnale, seduta su un muretto mentre degusta un piccolo calice di orange wine. Integrare il personaggio davvero nella scena, senza ritagliarlo da immagini già impaginate.",
+        "layoutBrief": "testo a sinistra / post-it in alto a destra; vigneti e Giulia in fascia bassa. Allineare corpo1/corpo2; mantenere molto spazio negativo e il PNG continuo sul bordo inferiore.",
+        "backgroundBrief": "",
+        "importedFromBrief": true
+      }
+    },
+    {
+      "id": "kwjnpc24j",
+      "name": "MAIORCA, SPAGNA",
+      "seed": "2407",
+      "layout": 0,
+      "background": 0,
+      "note": 0,
+      "fields": {
+        "eyebrow": "02 / SPAGNA",
+        "head1": "Maiorca senza spiagge",
+        "body1": "Maiorca a novembre? Lascia perdere le spiagge. Tra **Valldemossa e Deià** trovi paesini di pietra, montagne e **ulivi secolari** che sembrano sculture. Un'isola che non ti aspetti.",
+        "head2": "Olive, borghi e sentieri",
+        "body2": "È tempo di raccolta: fermati in un frantoio per l'**olio nuovo**, poi cammina nella **Serra de Tramuntana**. Senza la folla estiva è tutta un'altra storia.",
+        "base": "Valldemossa o Sóller",
+        "duration": "3–4 giorni",
+        "highlight": "borghi, trekking e olio nuovo",
+        "tips": "porta una giacca antipioggia!",
+        "label_base": "Base",
+        "label_duration": "Durata",
+        "label_highlight": "Da non perdere",
+        "label_tips": "Da sapere"
+      },
+      "visuals": {
+        "note": {
+          "x": 623,
+          "y": 105,
+          "w": 411,
+          "h": 543,
+          "rot": -1,
+          "scale": 1,
+          "opacity": 1,
+          "visible": true
+        },
+        "postcard": {
+          "x": 684,
+          "y": 690,
+          "w": 319,
+          "h": 242,
+          "rot": -5,
+          "scale": 1,
+          "opacity": 1,
+          "visible": false
+        },
+        "scene": {
+          "x": 0,
+          "y": 987,
+          "w": 1070,
+          "h": 580,
+          "rot": 0,
+          "scale": 1,
+          "opacity": 1,
+          "visible": false
+        }
+      },
+      "imageKeys": {
+        "scene": "giulia_kanazawa",
+        "postcard": "cartolina_kenrokuen"
+      },
+      "stickers": [
+        {
+          "id": "k182xcbf6",
+          "key": "sticker_olive",
+          "x": 885,
+          "y": 10,
+          "w": 190,
+          "h": 97,
+          "rot": 10,
+          "scale": 1,
+          "opacity": 0.93
+        },
+        {
+          "id": "k9xo4nyis",
+          "key": "sticker_stamp",
+          "x": 19,
+          "y": 1010,
+          "w": 123,
+          "h": 81,
+          "rot": -5,
+          "scale": 1,
+          "opacity": 0.95
+        }
+      ],
+      "offsets": {},
+      "bodyScale": 1.6,
+      "noteScale": 1.27,
+      "textStyles": {},
+      "freeTexts": [],
+      "backgroundId": "basic_1",
+      "seasonHint": "basic",
+      "meta": {
+        "referenceSubtitle": "Valldemossa e Serra de Tramuntana",
+        "imageBrief": "PNG trasparente unico a tutta larghezza, paesaggio + Giulia in un solo asset 2D papercut, con bordo superiore frastagliato e irregolare, senza testo né post-it. Valldemossa sullo sfondo, case in pietra color miele, muretti a secco, terrazze d'ulivo e profilo della Tramuntana; rami e campanile sporgono dall'orlo irregolare. Giulia a DESTRA, con giacca leggera e fotocamera all'occhio, che fotografa gli ulivi monumentali. Integrare il personaggio davvero nella scena, senza ritagliarlo da immagini già impaginate.",
+        "layoutBrief": "testo a destra / post-it in alto a sinistra; scena inferiore con ulivi inclinati. Allineare corpo1/corpo2; mantenere molto spazio negativo e il PNG continuo sul bordo inferiore.",
+        "backgroundBrief": "",
+        "importedFromBrief": true
+      }
+    },
+    {
+      "id": "ko58xmb94",
+      "name": "PARCO KRUGER, SUDAFRICA",
+      "seed": "2407",
+      "layout": 0,
+      "background": 0,
+      "note": 0,
+      "fields": {
+        "eyebrow": "03 / SUDAFRICA",
+        "head1": "La savana cambia faccia",
+        "body1": "A novembre il **Kruger cambia faccia**: le prime piogge colorano la savana di verde, tornano gli **uccelli migratori** e gli **impala** iniziano a partorire. Altro che solita distesa gialla!",
+        "head2": "Tutti svegli all'alba",
+        "body2": "Parti per un **safari all'alba** tra nuovi richiami e, con un po' di fortuna, cuccioli ai primi passi. Qui la natura sembra svegliarsi tutta insieme. E vuoi mettere esserci?",
+        "base": "campi nel parco o nei dintorni",
+        "duration": "4–5 giorni",
+        "highlight": "safari all'alba e birdwatching",
+        "tips": "caldo, piogge e tanta vegetazione",
+        "label_base": "Base",
+        "label_duration": "Durata",
+        "label_highlight": "Da non perdere",
+        "label_tips": "Da sapere"
+      },
+      "visuals": {
+        "note": {
+          "x": 623,
+          "y": 105,
+          "w": 411,
+          "h": 543,
+          "rot": -1,
+          "scale": 1,
+          "opacity": 1,
+          "visible": true
+        },
+        "postcard": {
+          "x": 684,
+          "y": 690,
+          "w": 319,
+          "h": 242,
+          "rot": -5,
+          "scale": 1,
+          "opacity": 1,
+          "visible": false
+        },
+        "scene": {
+          "x": 0,
+          "y": 987,
+          "w": 1070,
+          "h": 580,
+          "rot": 0,
+          "scale": 1,
+          "opacity": 1,
+          "visible": false
+        }
+      },
+      "imageKeys": {
+        "scene": "giulia_kanazawa",
+        "postcard": "cartolina_kenrokuen"
+      },
+      "stickers": [
+        {
+          "id": "k182xcbf6",
+          "key": "sticker_olive",
+          "x": 885,
+          "y": 10,
+          "w": 190,
+          "h": 97,
+          "rot": 10,
+          "scale": 1,
+          "opacity": 0.93
+        },
+        {
+          "id": "k9xo4nyis",
+          "key": "sticker_stamp",
+          "x": 19,
+          "y": 1010,
+          "w": 123,
+          "h": 81,
+          "rot": -5,
+          "scale": 1,
+          "opacity": 0.95
+        }
+      ],
+      "offsets": {},
+      "bodyScale": 1.6,
+      "noteScale": 1.27,
+      "textStyles": {},
+      "freeTexts": [],
+      "backgroundId": "basic_1",
+      "seasonHint": "basic",
+      "meta": {
+        "referenceSubtitle": "Quando la savana torna verde",
+        "imageBrief": "PNG trasparente unico a tutta larghezza, paesaggio + Giulia in un solo asset 2D papercut, con bordo superiore frastagliato e irregolare, senza testo né post-it. savana del Kruger che rinverdisce, acacia piatta, elefante lontano e piccoli impala tra erba fresca, uccelli migratori; alberi e cespugli superano il bordo ritagliato. Giulia a DESTRA, in camicia da safari verde e binocolo, osserva la fauna da un punto rispettoso e sicuro, senza avvicinarsi agli animali. Integrare il personaggio davvero nella scena, senza ritagliarlo da immagini già impaginate.",
+        "layoutBrief": "testo a sinistra / post-it a destra, leggermente sfalsato; savana ampia in basso. Allineare corpo1/corpo2; mantenere molto spazio negativo e il PNG continuo sul bordo inferiore.",
+        "backgroundBrief": "",
+        "importedFromBrief": true
+      }
+    }
+  ],
+  "customAssets": {},
+  "schemaVersion": 2,
+  "projectId": "kv1vaxsej",
+  "projectName": "Kura novembre 2026",
+  "meta": {
+    "title": "CAROSELLO KURA — NOVEMBRE 2026",
+    "type": "PAGINE INFORMATIVE (3)",
+    "style": "master KURA approvato",
+    "textEdition": "V3 — corpi alleggeriti ~40%; POST-IT invariati; due titoletti per meta",
+    "sourceVersion": "MCP v3.3.0",
+    "canonicalPreset": "Ogni destinazione genera UNA SOLA pagina 1080×1350 verticale 4:5, mai una griglia. Nessun logo nelle pagine informative. Montserrat per entrambi i corpi di testo (body1 e body2 con dimensione identica, target 31 px e caselle sufficientemente ampie); Caveat Brush per i due titoletti, in minuscolo/sentence case, colore arancio KURA, mai automaticamente tutto maiuscolo. Conservare i marcatori **grassetto** editabili. Sfondo avorio materico e varianti stagionali papercut del preset KURA, con spazio negativo generoso, gerarchia coerente e layout alternati. Post-it canonico originale, ricostruito solo dagli asset assets/postit-canon/ con carta 9-slice, scotch, ombra, titolo e quattro icone originali: non rigenerare icone o note e non alterarne le proporzioni. Figura di Giulia canonica: ricci, nasino, occhiali OTTAGONALI, occhi neri senza bianco e nessuna resa realistica. Ogni illustrazione finale è un UNICO PNG trasparente full-width (larghezza almeno 1080 px), con Giulia e paesaggio integrati nello STESSO asset, bordo superiore irregolare/frastagliato paper-cut e nessuna scritta. Occupare la fascia inferiore della pagina senza interferire con testo e post-it; NO figure ritagliate da screenshot, mockup o tavole già impaginate. Layer piatti 2D con minime ombre di contatto, nessun 3D o acquerello. Background, posizione note, Giulia e decorazioni cambiano tra pagine. Se indispensabile, accorciare lievemente i corpi senza perdere il senso; correggere collisioni e safe margin. Utilizzare asset condivisi e generare soltanto Giulia+paesaggio che cambia. Creare un projectId univoco; non sovrascrivere altri progetti. Pubblicare PNG e JSON canonico con un solo commit, senza creare HTML parallelo; controllare live e link ?template=<slug>. La generazione immagini richiede un agente con capacità immagini; il sito statico da solo non le genera.",
+    "sourceProjectId": "k5ko4nd8i",
+    "importedAt": "2026-11-02T15:45:59.029Z",
+    "parserVersion": "1.0.0"
+  },
+  "githubSavedAt": "2026-11-02T15:47:17.086Z"
+}
