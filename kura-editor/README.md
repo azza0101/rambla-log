@@ -75,3 +75,10 @@ Il font Feeling Passionate di Din Studio è proprietario: per renderlo disponibi
 - Apertura diretta: `?template=novembre-2026&v=2.8.0`. Il progetto viene aggiunto all'elenco, senza sovrascrivere quello corrente. Le modifiche successive vengono ripristinate alla riapertura.
 - MCP JavaScript: `await window.KURA_MCP.loadTemplate('novembre-2026')` e `window.KURA_MCP.applyPatch([...])`.
 - Asset disegnati per questa collezione: 3 PNG Giulia (degustazione vino, fotografia, birdwatching) e 3 collage paesaggistici WebP, tutti come livelli indipendenti.
+
+## 3.0.0 — Typographic + scenic border overhaul
+- Google Fonts open-source Kaushan Script (default) and Caveat Brush (optional), with bundled OFL licenses and local TTF assets; Montserrat body retained.
+- Three new 1350px transparent PNG full-width papercut landscapes with Giulia integrated (Vipacco wine, Mallorca camera, Kruger binoculars).
+- Three editable November 2026 pages updated: mixed-case headings, cleaner original paper backgrounds, independently zoomable/pannable backgrounds, larger note text with calibrated note angle.
+- Header now has explicit Salva progetto / Apri progetto controls, including portable JSON download and new named autosaved project on import.
+- When using ?template=novembre-2026, a distinct v3 project is created, leaving user’s v2 work untouched.

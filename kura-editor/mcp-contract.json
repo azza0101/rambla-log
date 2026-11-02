@@ -1,6 +1,6 @@
 {
   "name": "KURA Carousel Editor",
-  "apiVersion": "2.8",
+  "apiVersion": "3.0.0",
   "browserNamespace": "window.KURA_MCP",
   "format": "KURA_EDITOR_V2",
   "units": {
@@ -35,7 +35,10 @@
   ],
   "fontFamilies": [
     "Montserrat",
-    "KURA Brush2"
+    "Kaushan Script",
+    "Caveat Brush",
+    "KURA Brush2",
+    "Caveat"
   ],
   "patchOperations": {
     "setText": {
@@ -388,11 +391,16 @@
   ],
   "fontAssets": [
     {
-      "id": "KURA Brush2",
-      "url": "./assets/Kura_Brush2.woff2",
-      "source": "full font converted from user-provided TTF (not subset)",
-      "loadedForEveryUser": true,
-      "legacyAlias": "Feeling Passionate"
+      "name": "Kaushan Script",
+      "file": "./assets/KaushanScript-Regular.ttf",
+      "license": "SIL OFL 1.1",
+      "defaultBrush": true
+    },
+    {
+      "name": "Caveat Brush",
+      "file": "./assets/CaveatBrush-Regular.ttf",
+      "license": "SIL OFL 1.1",
+      "defaultBrush": false
     }
   ],
   "postit": {
@@ -457,23 +465,36 @@
   "templates": [
     {
       "id": "novembre-2026",
-      "projectId": "kura-nov26-travel-pages",
-      "pageCount": 3,
+      "projectId": "kura-nov26-travel-pages-v3",
       "projectFile": "./projects/KURA_Progetto_Novembre_2026.json",
-      "openUrl": "./?template=novembre-2026&v=2.8.0",
-      "destinations": [
-        "Vipacco",
-        "Maiorca",
-        "Parco Kruger"
+      "pageCount": 3,
+      "GiuliaFullWidthBorders": [
+        "giulia_vipacco_border.png",
+        "giulia_maiorca_border.png",
+        "giulia_kruger_border.png"
       ],
-      "visualAssets": [
-        "giulia_vipacco.png",
-        "giulia_maiorca.png",
-        "giulia_kruger.png",
-        "paesaggio_vipacco.webp",
-        "paesaggio_maiorca.webp",
-        "paesaggio_kruger.webp"
-      ]
+      "openUrl": "./?template=novembre-2026&v=3.0.0"
     }
-  ]
+  ],
+  "projectActions": {
+    "save": "topSaveProject: autosave IndexedDB + download portable JSON",
+    "open": "topOpenProject: new project from uploaded JSON without overwriting existing",
+    "autosave": true
+  },
+  "backgroundTransform": {
+    "property": "pages[].bgTransform",
+    "zoom": "1–1.8",
+    "dx": "-300 to 300",
+    "dy": "-300 to 300",
+    "workflow": "Varianti > Dimensioni e posizione dello sfondo"
+  },
+  "noteText": {
+    "fontSizes": {
+      "labels": 21,
+      "values": 21,
+      "highlightTips": 19
+    },
+    "rotation": "note rot plus calibratable noteTextAngle",
+    "margin": "retain approx 40.5% left (icon column), 13% right"
+  }
 }
