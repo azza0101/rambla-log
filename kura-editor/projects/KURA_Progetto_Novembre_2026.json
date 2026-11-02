@@ -106,6 +106,16 @@
           "bold": false,
           "color": "#c87135",
           "lineHeight": 1.15
+        },
+        "body1": {
+          "fontSize": 27,
+          "family": "Montserrat",
+          "lineHeight": 1.26
+        },
+        "body2": {
+          "fontSize": 27,
+          "family": "Montserrat",
+          "lineHeight": 1.26
         }
       },
       "freeTexts": [],
@@ -219,6 +229,16 @@
           "bold": false,
           "color": "#c87135",
           "lineHeight": 1.15
+        },
+        "body1": {
+          "fontSize": 27,
+          "family": "Montserrat",
+          "lineHeight": 1.26
+        },
+        "body2": {
+          "fontSize": 27,
+          "family": "Montserrat",
+          "lineHeight": 1.26
         }
       },
       "freeTexts": [],
@@ -332,6 +352,16 @@
           "bold": false,
           "color": "#c87135",
           "lineHeight": 1.15
+        },
+        "body1": {
+          "fontSize": 27,
+          "family": "Montserrat",
+          "lineHeight": 1.26
+        },
+        "body2": {
+          "fontSize": 27,
+          "family": "Montserrat",
+          "lineHeight": 1.26
         }
       },
       "freeTexts": [],
