@@ -6,10 +6,68 @@
  const FOLDER='kura-editor/projects/saved';
  const API='https://api.github.com/repos/'+OWNER+'/'+REPO;
  let accessToken='',connectedUser='',busy=false;
+ const cloudBases=new Map();let authDB=null,authReady=false;
  const bridge=()=>window.KURA_PROJECTS;
  const gid=id=>/^[a-zA-Z0-9_-]{3,100}$/.test(String(id||''));
  const escaped=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function toast(message){const el=document.querySelector('#toast');if(el){el.textContent=message;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3200)}}
+ // Persistent credentials encrypted with a non-exportable WebCrypto key in browser IndexedDB.
+ // This protects stored token bytes, but not against malicious scripts on this origin.
+ function authDatabase(){
+  if(authDB)return Promise.resolve(authDB);
+  return new Promise((resolve,reject)=>{
+   const r=indexedDB.open('KURA_GITHUB_CREDENTIALS',1);
+   r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains('kv'))r.result.createObjectStore('kv')};
+   r.onerror=()=>reject(r.error);r.onsuccess=()=>{authDB=r.result;resolve(authDB)}
+  })
+ }
+ async function authGet(key){
+  const db=await authDatabase();return new Promise((resolve,reject)=>{
+   const r=db.transaction('kv','readonly').objectStore('kv').get(key);
+   r.onsuccess=()=>resolve(r.result||null);r.onerror=()=>reject(r.error)
+  })
+ }
+ async function authPut(key,value){
+  const db=await authDatabase();return new Promise((resolve,reject)=>{
+   const tx=db.transaction('kv','readwrite');tx.objectStore('kv').put(value,key);
+   tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error)
+  })
+ }
+ async function authClear(){
+  const db=await authDatabase();return new Promise((resolve,reject)=>{
+   const tx=db.transaction('kv','readwrite');tx.objectStore('kv').clear();
+   tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error)
+  })
+ }
+ async function storeCredential(token){
+  if(!crypto?.subtle)throw Error('Crittografia del browser non disponibile');
+  const key=await crypto.subtle.generateKey({name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+  const iv=crypto.getRandomValues(new Uint8Array(12));
+  const data=new TextEncoder().encode(token);
+  const sealed=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,data);
+  await authPut('credential',{key,iv:Array.from(iv),cipher:Array.from(new Uint8Array(sealed)),username:connectedUser});
+ }
+ async function restoreCredential(){
+  try{
+   const obj=await authGet('credential');if(!obj)return;
+   const clear=await crypto.subtle.decrypt({name:'AES-GCM',iv:Uint8Array.from(obj.iv)},obj.key,Uint8Array.from(obj.cipher));
+   accessToken=new TextDecoder().decode(clear);
+   const me=await api('https://api.github.com/user');
+   connectedUser=me.login||obj.username||'GitHub';
+   status('✓ GitHub collegato come '+connectedUser+' · accesso ricordato');
+   updateCloudButton();
+  }catch(err){accessToken='';connectedUser='';status('Ricollega GitHub: credenziali precedenti non disponibili');updateCloudButton()}
+ }
+ function updateCloudButton(){
+  const btn=document.getElementById('topGitHub');
+  if(btn)btn.textContent=accessToken?'☁ GitHub ✓':'☁ GitHub';
+ }
+ function baseKey(id){return 'kura:github:base:'+id}
+ function getBase(id){
+  if(cloudBases.has(id))return cloudBases.get(id);
+  try{return sessionStorage.getItem(baseKey(id))||null}catch(_){return null}
+ }
+ function setBase(id,sha){cloudBases.set(id,sha);try{sessionStorage.setItem(baseKey(id),sha)}catch(_){}}
  function encodeBase64(text){
   const bytes=new TextEncoder().encode(text);
   let binary='';
@@ -48,17 +106,35 @@
   else a.hidden=true
  }
  function filePath(id){if(!gid(id))throw Error('ID del progetto non valido');return FOLDER+'/'+id+'.json'}
- async function readCloud(id){
+ async function readCloudVersion(id){
   const response=await api('/contents/'+filePath(id)+'?ref='+BRANCH,{allowMissing:true});
   if(!response)throw Error('Questo progetto non è ancora salvato su GitHub');
   if(response.encoding!=='base64'||!response.content)throw Error('Il progetto GitHub non è leggibile');
-  return JSON.parse(decodeBase64(response.content))
+  return{data:JSON.parse(decodeBase64(response.content)),sha:response.sha}
+ }
+ async function readCloud(id){return(await readCloudVersion(id)).data}
+ async function refreshFromCloud(id=bridge()?.current()?.id,interactive=true){
+  if(!gid(id))throw Error('ID progetto non valido');
+  const cloud=await readCloudVersion(id);
+  const base=getBase(id);
+  if(base&&base===cloud.sha){status('✓ Nessuna modifica remota');return{updated:false}}
+  if(interactive){
+   if(!confirm('Caricare la versione GitHub? Le modifiche locali non pubblicate di questo progetto saranno sostituite. Puoi usare Salva con nome prima di aggiornare.'))return{updated:false,cancelled:true}
+  }
+  await bridge().replaceFromCloud(cloud.data);
+  setBase(id,cloud.sha);updateLink(id);
+  status('✓ Versione condivisa aggiornata dal cloud');toast('Modifiche del collaboratore caricate ✓');
+  return{updated:true}
  }
  async function loadRemote(id){
   if(!bridge())throw Error('Gestione progetti non disponibile');
-  const data=await readCloud(id);
-  const result=await bridge().openCloud(data);
-  updateLink(data.projectId);
+  const cloud=await readCloudVersion(id);
+  const result=await bridge().openCloud(cloud.data);
+  if(result.source==='local'){
+   const base=getBase(id);
+   if(!base||base!==cloud.sha)status('Progetto locale aperto: premi Aggiorna dal cloud per confrontare le versioni');
+  }else setBase(id,cloud.sha);
+  updateLink(cloud.data.projectId);
   toast(result.source==='local'?'Aperta la versione locale, con le tue modifiche':'Progetto GitHub importato nel browser');
   return result
  }
@@ -70,10 +146,16 @@
   const serialized=JSON.stringify({...pkg,githubSavedAt:new Date().toISOString()},null,2);
   if(new TextEncoder().encode(serialized).length>4_000_000)throw Error('Il progetto contiene immagini troppo grandi: esporta prima una copia JSON.');
   const current=await api('/contents/'+path+'?ref='+BRANCH,{allowMissing:true});
+  const known=getBase(id);
+  if(current&&(!known||known!==current.sha)){
+   status('⚠ La versione GitHub è cambiata: aggiorna o salva con un altro nome.');
+   throw Error('Un altro collaboratore ha salvato modifiche. Usa «Aggiorna dal cloud» oppure «Salva con nome» per non sovrascriverle.')
+  }
   const body={message:'KURA: salva '+String(pkg.projectName||id).slice(0,72),content:encodeBase64(serialized),branch:BRANCH};
   if(current?.sha)body.sha=current.sha;
   const saved=await api('/contents/'+path,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
   if(!saved?.commit?.sha)throw Error('GitHub non ha confermato il salvataggio');
+  setBase(id,saved.content?.sha||current?.sha||saved.commit.sha);
   status('✓ Salvato su GitHub · '+new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}));
   updateLink(id);
   return{projectId:id,commit:saved.commit.sha,link:cloudLink(id)}
@@ -105,11 +187,11 @@
   const dlg=document.createElement('dialog');dlg.id='kuraGithubDialog';
   dlg.style.cssText='border:1px solid #d4c9ab;border-radius:18px;padding:22px;max-width:min(92vw,520px);width:100%;font:14px Montserrat,sans-serif;color:#173d2e;background:#fffaf0;box-shadow:0 18px 65px #0004';
   dlg.innerHTML='<div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><strong style="font-size:19px">☁ Progetti su GitHub</strong><button id="kuraCloudClose" class="btn small" type="button">Chiudi</button></div>'+
-  '<p style="line-height:1.6;font-size:12px">Per salvare direttamente nel repository <strong>azza0101/rambla-log</strong>, inserisci un <strong>Fine-grained Personal Access Token</strong> con accesso <em>Contents: Read and write</em> a questo repository. Il token resta solo in memoria nella scheda e non viene salvato.</p>'+
+  '<p style="line-height:1.6;font-size:12px">Per salvare direttamente nel repository <strong>azza0101/rambla-log</strong>, inserisci un <strong>Fine-grained Personal Access Token</strong> con accesso <em>Contents: Read and write</em> a questo repository. Il token viene cifrato e conservato esclusivamente nel browser di questo dispositivo (IndexedDB). Puoi scollegarlo e cancellarlo quando vuoi.</p>'+
   '<p style="font-size:12px"><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">Crea il token su GitHub</a></p>'+
   '<div style="display:flex;gap:7px;flex-wrap:wrap"><input id="kuraGithubToken" aria-label="Token GitHub" type="password" autocomplete="off" placeholder="github_pat_…" style="flex:1;min-width:180px;border:1px solid #beb9a6;border-radius:8px;padding:10px"><button id="kuraGithubConnect" class="btn primary" type="button">Collega</button><button id="kuraGithubDisconnect" class="btn flat" type="button">Scollega</button></div>'+
   '<p id="kuraCloudStatus" role="status" style="min-height:22px;font-size:12px"></p>'+
-  '<div style="display:flex;flex-wrap:wrap;gap:8px;margin:12px 0"><button id="kuraCloudSave" type="button" class="btn primary">☁ Salva su GitHub</button><button id="kuraCloudRefresh" type="button" class="btn flat">↻ Mostra progetti GitHub</button></div>'+
+  '<div style="display:flex;flex-wrap:wrap;gap:8px;margin:12px 0"><button id="kuraCloudSave" type="button" class="btn primary">☁ Salva su GitHub</button><button id="kuraCloudSync" type="button" class="btn flat">↻ Aggiorna dal cloud</button><button id="kuraCloudRefresh" type="button" class="btn flat">Mostra progetti</button></div>'+
   '<a id="kuraCloudLink" target="_blank" rel="noopener noreferrer" hidden style="font-size:12px;overflow-wrap:anywhere"></a>'+
   '<div id="kuraCloudProjects" style="margin-top:12px;max-height:220px;overflow:auto"></div>'+
   '<p style="font-size:11px;line-height:1.5;color:#755d46">Attenzione: il repository è pubblico. Anche i progetti caricati su GitHub saranno pubblici. Le modifiche locali non vengono pubblicate finché non premi Salva dopo aver collegato GitHub.</p>';
@@ -123,12 +205,14 @@
    try{
     const me=await api('https://api.github.com/user');
     connectedUser=me.login||'account GitHub';
-    status('✓ Collegato come '+connectedUser+' (valido solo in questa scheda)');
+    await storeCredential(candidate);
+    status('✓ Collegato come '+connectedUser+' (accesso memorizzato su questo dispositivo)');updateCloudButton();
     await showCloudProjects();
    }catch(error){accessToken='';connectedUser='';status(error.message)}
   };
-  dlg.querySelector('#kuraGithubDisconnect').onclick=()=>{accessToken='';connectedUser='';status('GitHub scollegato: il token non è stato conservato')};
+  dlg.querySelector('#kuraGithubDisconnect').onclick=async()=>{accessToken='';connectedUser='';await authClear();updateCloudButton();status('GitHub scollegato: credenziali eliminate dal browser')};
   dlg.querySelector('#kuraCloudSave').onclick=async()=>{if(busy)return;busy=true;try{await saveToGitHub();toast('Progetto salvato su GitHub ✓');await showCloudProjects()}catch(error){status(error.message);toast(error.message)}finally{busy=false}};
+  dlg.querySelector('#kuraCloudSync').onclick=()=>refreshFromCloud().catch(error=>status(error.message));
   dlg.querySelector('#kuraCloudRefresh').onclick=()=>showCloudProjects().catch(error=>status(error.message));
   return dlg
  }
@@ -153,8 +237,9 @@
   if(!gid(id)){toast('ID progetto GitHub non valido');return}
   try{await loadRemote(id)}catch(error){toast('Progetto GitHub: '+error.message)}
  }
- window.KURA_GITHUB=Object.freeze({openFromQuery,saveToGitHub,isConnected:()=>!!accessToken});
+ window.KURA_GITHUB=Object.freeze({openFromQuery,saveToGitHub,refreshFromCloud,isConnected:()=>!!accessToken});
  const modal=makeDialog();
+ restoreCredential();
  const save=document.getElementById('topSaveProject');
  const saveAsButton=document.getElementById('topSaveAs');
  const cloudButton=document.getElementById('topGitHub');
