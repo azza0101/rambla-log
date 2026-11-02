@@ -2,10 +2,10 @@
   "format": "KURA_EDITOR_V2",
   "width": 1080,
   "height": 1350,
-  "version": 5,
-  "schemaVersion": 5,
-  "projectId": "kura-nov26-travel-pages-v5",
-  "projectName": "KURA · Novembre 2026 · Vipacco, Maiorca, Kruger",
+  "version": 6,
+  "schemaVersion": 6,
+  "projectId": "kura-nov26-travel-pages-v6",
+  "projectName": "KURA · Novembre 2026 · Editoriale definitivo",
   "pages": [
     {
       "id": "kura-nov26-01",
@@ -51,7 +51,7 @@
         },
         "scene": {
           "x": -24,
-          "y": 975,
+          "y": 1120,
           "w": 1130,
           "h": 376,
           "rot": 0,
@@ -80,42 +80,53 @@
       ],
       "offsets": {
         "body2": {
-          "w": 485,
-          "h": 258
+          "w": 515,
+          "h": 430,
+          "dx": -14,
+          "dy": -90
         },
         "head1": {
-          "w": 425
+          "w": 485,
+          "rot": -3.2
         },
         "head2": {
-          "w": 425
+          "w": 490,
+          "dy": -86,
+          "rot": -3
+        },
+        "body1": {
+          "dx": -14,
+          "dy": -16,
+          "w": 515,
+          "h": 365
         }
       },
       "bodyScale": 1,
-      "noteScale": 1.04,
+      "noteScale": 1.1,
       "textStyles": {
         "head1": {
           "family": "Caveat Brush",
-          "fontSize": 42,
+          "fontSize": 52,
           "bold": false,
           "color": "#c87135",
-          "lineHeight": 1.15
+          "lineHeight": 1.1
         },
         "head2": {
           "family": "Caveat Brush",
-          "fontSize": 42,
+          "fontSize": 53,
           "bold": false,
           "color": "#c87135",
-          "lineHeight": 1.15
+          "lineHeight": 1.1
         },
         "body1": {
-          "fontSize": 27,
           "family": "Montserrat",
-          "lineHeight": 1.26
+          "fontSize": 31,
+          "lineHeight": 1.24
         },
         "body2": {
-          "fontSize": 27,
           "family": "Montserrat",
-          "lineHeight": 1.26
+          "fontSize": 31,
+          "lineHeight": 1.24
         }
       },
       "freeTexts": [],
@@ -170,7 +181,7 @@
         },
         "scene": {
           "x": -24,
-          "y": 975,
+          "y": 1143,
           "w": 1130,
           "h": 376,
           "rot": 0,
@@ -199,46 +210,53 @@
       ],
       "offsets": {
         "body1": {
-          "w": 438,
-          "h": 420
+          "w": 511,
+          "h": 442,
+          "dx": -21,
+          "dy": -21
         },
         "head1": {
-          "w": 420
+          "w": 495,
+          "rot": -3.2
         },
         "head2": {
-          "w": 414
+          "w": 505,
+          "dy": -7,
+          "rot": -3
         },
         "body2": {
-          "w": 437,
-          "h": 236
+          "w": 510,
+          "h": 394,
+          "dx": -21,
+          "dy": -27
         }
       },
       "bodyScale": 1,
-      "noteScale": 1.04,
+      "noteScale": 1.1,
       "textStyles": {
         "head1": {
           "family": "Caveat Brush",
-          "fontSize": 42,
+          "fontSize": 55,
           "bold": false,
           "color": "#c87135",
-          "lineHeight": 1.15
+          "lineHeight": 1.1
         },
         "head2": {
           "family": "Caveat Brush",
-          "fontSize": 42,
+          "fontSize": 43,
           "bold": false,
           "color": "#c87135",
-          "lineHeight": 1.15
+          "lineHeight": 1.1
         },
         "body1": {
-          "fontSize": 27,
           "family": "Montserrat",
-          "lineHeight": 1.26
+          "fontSize": 31,
+          "lineHeight": 1.24
         },
         "body2": {
-          "fontSize": 27,
           "family": "Montserrat",
-          "lineHeight": 1.26
+          "fontSize": 31,
+          "lineHeight": 1.24
         }
       },
       "freeTexts": [],
@@ -293,7 +311,7 @@
         },
         "scene": {
           "x": -24,
-          "y": 975,
+          "y": 1160,
           "w": 1130,
           "h": 376,
           "rot": 0,
@@ -322,46 +340,53 @@
       ],
       "offsets": {
         "body1": {
-          "w": 456,
-          "h": 432
+          "w": 505,
+          "h": 448,
+          "dx": -13,
+          "dy": -12
         },
         "body2": {
-          "w": 454,
-          "h": 226
+          "w": 507,
+          "h": 386,
+          "dx": -13,
+          "dy": 12
         },
         "head1": {
-          "w": 416
+          "w": 495,
+          "rot": -3.2
         },
         "head2": {
-          "w": 420
+          "w": 505,
+          "dy": 11,
+          "rot": -3
         }
       },
       "bodyScale": 1,
-      "noteScale": 1.04,
+      "noteScale": 1.1,
       "textStyles": {
         "head1": {
           "family": "Caveat Brush",
-          "fontSize": 42,
+          "fontSize": 50,
           "bold": false,
           "color": "#c87135",
-          "lineHeight": 1.15
+          "lineHeight": 1.1
         },
         "head2": {
           "family": "Caveat Brush",
-          "fontSize": 42,
+          "fontSize": 55,
           "bold": false,
           "color": "#c87135",
-          "lineHeight": 1.15
+          "lineHeight": 1.1
         },
         "body1": {
-          "fontSize": 27,
           "family": "Montserrat",
-          "lineHeight": 1.26
+          "fontSize": 31,
+          "lineHeight": 1.24
         },
         "body2": {
-          "fontSize": 27,
           "family": "Montserrat",
-          "lineHeight": 1.26
+          "fontSize": 31,
+          "lineHeight": 1.24
         }
       },
       "freeTexts": [],
