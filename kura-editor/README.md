@@ -43,3 +43,9 @@ Il font Feeling Passionate di Din Studio è proprietario: per renderlo disponibi
 - Galleria divisa in Originali, Primavera, Estate, Autunno, Inverno, Editoriali; ogni asset rimane un livello spostabile.
 - Cover editor: rimossi i disegni segnaposto fuori stile, il logo ridisegnato e le false illustrazioni. Master bloccato; i sette asset canonici sono obbligatori per esportare.
 - Il titolo originale deve essere fornito come PNG realmente trasparente e il font proprietario Feeling Passionate non è compreso senza licenza di incorporamento.
+
+## Release 2.5.0 — Asset fotografici KURA e font originale
+- 16 WebP con trasparenza ricavati dai quattro sprite sheet KURA approvati: Primavera (4), Estate (4), Autunno (4), Inverno (4). Gli SVG semplificati sono rimossi dalla selezione, ma rimangono leggibili nei vecchi progetti.
+- I nuovi sticker mantengono texture di carta, ombre tra i livelli, ritagli e trasparenza e non vengono ridisegnati da canvas.
+- Il font completo caricato dall’utente, convertito integralmente in WOFF2, è servito come `assets/Kura_Brush2.woff2` a tutti gli utenti; i minititoli e l’anno della copertina usano KURA Brush2. Non è una versione subset.
+- Compatibilità MCP `KURA_MCP` v2.5: ID immutabili per ognuna delle 24 decorazioni.
