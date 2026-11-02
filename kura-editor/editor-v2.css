@@ -89,3 +89,40 @@
 .kura-text-frame.is-selected .kura-manip-handle{display:flex}
 .kura-text-frame.is-selected .kura-width-handle,.kura-text-frame.is-selected .kura-height-handle{background:#eaf0e5}
 @media (pointer:coarse){.kura-visual-handle{border-width:2px}.kura-visual-flipX{left:calc(50% - 65px)}.kura-visual-flipY{left:calc(50% + 14px)}}
+
+/* v2.7.2 — compact selection handles, font toolbar docked outside artwork */
+.stage-inner{overflow:visible}
+.kura-toolbar-dock{display:none;width:100%;max-width:100%;padding:5px 8px;border:1px solid #dbe3d8;border-radius:11px;background:#f7f4eb;align-items:center;justify-content:center;min-width:0}
+.kura-toolbar-dock.active{display:flex}
+.kura-toolbar-dock .kura-selection-toolbar{
+ position:relative!important;left:auto!important;top:auto!important;
+ display:flex;flex-wrap:wrap;justify-content:center;align-items:center;
+ width:100%;max-width:100%;min-height:0;gap:5px;padding:6px 8px;
+ border-radius:9px;box-shadow:0 3px 12px rgba(13,40,28,.16);
+}
+.kura-toolbar-dock .kura-selection-toolbar.hidden{display:none!important}
+.kura-toolbar-dock .kura-selection-toolbar select{width:min(160px,40vw)}
+.kura-toolbar-dock .kura-selection-toolbar input[type=number]{width:56px}
+.kura-toolbar-dock .kura-selection-toolbar button,
+.kura-toolbar-dock .kura-selection-toolbar select,
+.kura-toolbar-dock .kura-selection-toolbar input{
+ min-height:27px;padding:3px 5px;font-size:12px;border-radius:5px
+}
+.kura-toolbar-dock .kura-selection-toolbar button{min-width:27px}
+.kura-toolbar-dock .kura-bar-grip{font-size:11px}
+.kura-manip-handle,.kura-visual-handle{
+ width:26px!important;height:26px!important;min-width:26px!important;
+ border-radius:7px!important;font-size:15px!important;line-height:1!important;
+ border-width:1px!important;box-shadow:0 2px 7px rgba(0,0,0,.18)!important;
+}
+.kura-resize-handle,.kura-visual-resize{right:-13px;bottom:-13px}
+.kura-width-handle,.kura-visual-width{right:-13px;top:calc(50% - 13px)}
+.kura-height-handle,.kura-visual-height{bottom:-13px;left:calc(50% - 13px)}
+.kura-visual-handle{font-weight:700!important}
+@media (pointer:coarse){
+ .kura-manip-handle,.kura-visual-handle{width:30px!important;height:30px!important;min-width:30px!important;font-size:17px!important}
+ .kura-resize-handle,.kura-visual-resize{right:-15px;bottom:-15px}
+ .kura-width-handle,.kura-visual-width{right:-15px;top:calc(50% - 15px)}
+ .kura-height-handle,.kura-visual-height{bottom:-15px;left:calc(50% - 15px)}
+ .kura-toolbar-dock .kura-selection-toolbar{gap:5px}
+}
