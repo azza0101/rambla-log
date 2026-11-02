@@ -1,6 +1,6 @@
 {
   "name": "KURA Carousel Editor",
-  "apiVersion": "2.6",
+  "apiVersion": "2.7",
   "browserNamespace": "window.KURA_MCP",
   "format": "KURA_EDITOR_V2",
   "units": {
@@ -390,9 +390,11 @@
   ],
   "postit": {
     "autoHeight": true,
-    "rotation": "all label and value elements rotate together with note around its dynamic center",
-    "stretchStrategy": "five vertical source-image sections; expanding blank paper lanes without stretching printed header and icons",
-    "layout": "dynamic based on measured lines, bounded extensions"
+    "stretchStrategy": "native-scale icon/header rows; repeat blank-paper slices after rows for text overflow; no stretching printed icons",
+    "marginLeftPercent": 40.5,
+    "marginRightPercent": 13,
+    "contentRotation": "all note text uses common rotation pivot as paper",
+    "autoLineWrap": true
   },
   "dragAndDrop": {
     "desktop": "drag sticker from library onto canvas",
@@ -400,12 +402,40 @@
     "mcp": "addSticker and moveElement operations"
   },
   "typography": {
-    "headings": {
+    "heading": {
       "family": "KURA Brush2",
       "fontSize": 40,
       "bold": true,
-      "strokeWidth": 1.25
+      "strokeWidth": 0.6
     },
-    "accentStroke": "vertically centered at title box"
+    "underline": "orange stroke centered vertically beside heading"
+  },
+  "transformControls": {
+    "allEditableElements": true,
+    "directControls": [
+      "move",
+      "rotate",
+      "resize free width and height",
+      "resize width only",
+      "resize height only",
+      "flipX",
+      "flipY"
+    ],
+    "canvasCoordinates": "1080×1350",
+    "savedKeys": [
+      "x",
+      "y",
+      "dx",
+      "dy",
+      "w",
+      "h",
+      "rot",
+      "scale",
+      "scaleX",
+      "scaleY",
+      "flipX",
+      "flipY"
+    ],
+    "note": "Text widths and heights may be absolute overrides in offsets. Images use independent scaleX/scaleY ratios."
   }
 }
