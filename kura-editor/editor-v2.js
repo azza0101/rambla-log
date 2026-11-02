@@ -2,7 +2,7 @@
    Expects the v1 editor's globals in index.html. No external runtime or API keys. */
 'use strict';
 (function(){
-const V2_VERSION='2.5.0';
+const V2_VERSION='2.6.0';
 const NOTE_LABELS={label_base:'Base',label_duration:'Durata',label_highlight:'Da non perdere',label_tips:'Da sapere'};
 const STANDARD=['eyebrow','head1','body1','head2','body2','label_base','base','label_duration','duration','label_highlight','highlight','label_tips','tips'];
 const PAPER=[{"id":"basic_1","name":"Basic 1 · Avorio","season":"basic","colors":["#f7f0e4","#f2e8d9"],"fibers":"#b4a692","direction":0,"tags":["basic","basic 1 · avorio"]},{"id":"basic_2","name":"Basic 2 · Salvia","season":"basic","colors":["#e9eee4","#f5f3e9"],"fibers":"#a0a995","direction":1,"tags":["basic","basic 2 · salvia"]},{"id":"basic_3","name":"Basic 3 · Sabbia","season":"basic","colors":["#f3e7dc","#f9f2e9"],"fibers":"#bc9b89","direction":2,"tags":["basic","basic 3 · sabbia"]},{"id":"basic_4","name":"Basic 4 · Perla","season":"basic","colors":["#f1f1eb","#e6ece5"],"fibers":"#aeb7ae","direction":3,"tags":["basic","basic 4 · perla"]},{"id":"spring_1","name":"Primavera 1 · Boccioli","season":"spring","colors":["#f5efe4","#dce7d7"],"fibers":"#98b689","direction":0,"tags":["spring","primavera 1 · boccioli"]},{"id":"spring_2","name":"Primavera 2 · Botanica","season":"spring","colors":["#edf2e3","#d5e2c7"],"fibers":"#9bb88d","direction":1,"tags":["spring","primavera 2 · botanica"]},{"id":"spring_3","name":"Primavera 3 · Luce","season":"spring","colors":["#f8f2df","#e9eedb"],"fibers":"#aabf9e","direction":2,"tags":["spring","primavera 3 · luce"]},{"id":"summer_1","name":"Estate 1 · Mediterranea","season":"summer","colors":["#f9efd9","#dfe9eb"],"fibers":"#91b0b4","direction":3,"tags":["summer","estate 1 · mediterranea"]},{"id":"summer_2","name":"Estate 2 · Sabbia","season":"summer","colors":["#f4ead6","#efd7b4"],"fibers":"#cfaa78","direction":0,"tags":["summer","estate 2 · sabbia"]},{"id":"summer_3","name":"Estate 3 · Agrumi","season":"summer","colors":["#fff1d9","#f2d59c"],"fibers":"#d29c5d","direction":1,"tags":["summer","estate 3 · agrumi"]},{"id":"autumn_1","name":"Autunno 1 · Terracotta","season":"autumn","colors":["#f3e3d7","#d8b59c"],"fibers":"#bd835d","direction":2,"tags":["autumn","autunno 1 · terracotta"]},{"id":"autumn_2","name":"Autunno 2 · Olivato","season":"autumn","colors":["#ece7d5","#c4c59e"],"fibers":"#8d9b68","direction":3,"tags":["autumn","autunno 2 · olivato"]},{"id":"autumn_3","name":"Autunno 3 · Vendemmia","season":"autumn","colors":["#f2e8dc","#c8a88b"],"fibers":"#9a7c66","direction":0,"tags":["autumn","autunno 3 · vendemmia"]},{"id":"winter_1","name":"Inverno 1 · Nebbia","season":"winter","colors":["#eff0ee","#d9dedd"],"fibers":"#9eafac","direction":1,"tags":["winter","inverno 1 · nebbia"]},{"id":"winter_2","name":"Inverno 2 · Bosco","season":"winter","colors":["#e7ece8","#cbd7cf"],"fibers":"#849e90","direction":2,"tags":["winter","inverno 2 · bosco"]},{"id":"winter_3","name":"Inverno 3 · Ghiaccio","season":"winter","colors":["#f1f3f2","#dde5ea"],"fibers":"#a9bfcc","direction":3,"tags":["winter","inverno 3 · ghiaccio"]}];
@@ -10,7 +10,7 @@ const BACKGROUND_PRESETS=PAPER;
 const NEW_STICKERS=[["spring_blossom_branch","Ramo di ciliegio"],["spring_blossom_cluster","Fiori di ciliegio"],["spring_tulips","Tulipani"],["spring_pink_petals","Petali rosa"],["summer_lemon_branch","Limoni mediterranei"],["summer_orange_slices","Agrumi sezionati"],["summer_paper_shell","Conchiglia di carta"],["summer_swallow","Rondine"],["autumn_maple_leaf","Foglia d'acero"],["autumn_purple_grapes","Grappolo d'uva"],["autumn_olive_branch","Ramo d'ulivo"],["autumn_wheat","Spighe"],["winter_paper_snowflake","Fiocco di neve"],["winter_snowy_pine","Ramo innevato"],["winter_pine_cones","Pigne"],["winter_holly_branch","Agrifoglio"]];
 const LEGACY_STICKERS=['blossom','lavender','citrus','shell','autumn_leaf','grapes','snowflake','pine','ticket'];
 for(const old of LEGACY_STICKERS)ASSETS['sticker_'+old]='./assets/sticker_'+old+'.svg';
-for(const p of BACKGROUND_PRESETS){if(p.season!=='basic')ASSETS['sfondo_'+p.id]='./assets/sfondo_'+p.id+'.svg'}
+for(const p of BACKGROUND_PRESETS){if(p.season!=='basic')ASSETS['sfondo_'+p.id]='./assets/sfondo_'+p.id+'_paper_v3.svg?v=2.6.0'}
 for(const [key,label] of NEW_STICKERS){ASSETS['sticker_'+key]='./assets/'+key+'.webp?v=2.5.0';if(!stickerDefs.some(x=>x[0]===key))stickerDefs.push([key,label])}
 
 const KURA_SEASONS=[['basic','Basic'],['spring','Primavera'],['summer','Estate'],['autumn','Autunno'],['winter','Inverno']];
@@ -27,7 +27,7 @@ function offsetFor(p,key){const f=freeItem(p,key);return f||p.offsets[key]||{}}
 function defaultStyle(p,key){
  const s=p.noteScale||1,b=p.bodyScale||1;
  if(key==='eyebrow')return{fontSize:32,family:'Montserrat',bold:true,color:GREEN,lineHeight:1.12};
- if(key==='head1'||key==='head2')return{fontSize:47,family:'KURA Brush2',bold:false,color:ORANGE,lineHeight:1.10};
+ if(key==='head1'||key==='head2')return{fontSize:40,family:'KURA Brush2',bold:true,color:ORANGE,lineHeight:1.10};
  if(key==='body1'||key==='body2')return{fontSize:30*b,family:'Montserrat',bold:false,color:GREEN,lineHeight:1.26};
  if(key.startsWith('label_'))return{fontSize:20*s,family:'Montserrat',bold:true,color:GREEN,lineHeight:1.12};
  if(['base','duration'].includes(key))return{fontSize:19*s,family:'Montserrat',bold:false,color:GREEN,lineHeight:1.18};
@@ -93,16 +93,29 @@ function drawKuraBackground(c,index,mini=false){
  c.lineTo(W,H);c.closePath();c.fill();c.restore();
  drawSeasonMark(c,a.id,a.season);
 }
+const KURA_NOTE_KEYS=new Set(['label_base','label_duration','label_highlight','label_tips','base','duration','highlight','tips']);
+function noteVisualCenter(p){const n=p.visuals.note,L=noteAutoLayout(n,p);return{x:n.x+L.w/2,y:n.y+L.totalH/2,rotation:n.rot||0}}
+function rotateAroundPoint(x,y,cx,cy,deg){const a=deg*Math.PI/180,dx=x-cx,dy=y-cy;return{x:cx+dx*Math.cos(a)-dy*Math.sin(a),y:cy+dx*Math.sin(a)+dy*Math.cos(a)}}
 function paintEditable(c,p,key,raw,unusedRect,opt){
- ensurePage(p);
- const r=textRect(p,key);if(!r)return;
- const st=styleFor(p,key),o=offsetFor(p,key);
+ ensurePage(p);const r=textRect(p,key);if(!r)return;
+ const st=styleFor(p,key),o=offsetFor(p,key),isNoteText=KURA_NOTE_KEYS.has(key);
  if(c===ctx && p===page() && activeKey===key)return;
- c.save();c.globalAlpha=safeNumber(o.opacity,0,1,1);c.translate(r.x+r.w/2,r.y+r.h/2);c.rotate(safeNumber(o.rot,-360,360,0)*Math.PI/180);
- const fontSize=st.fontSize,df=defaultStyle(p,key);
- const res=drawText(c,raw,{x:-r.w/2,y:-r.h/2,w:r.w,h:r.h},{fontSize:fontSize,minFont:p.textStyles[key]?.fontSize?fontSize:fontSize*.77,script:false,family:effectiveFamily(st),bold:st.bold,color:st.color,lineHeight:st.lineHeight,track:true,label:key});
+ c.save();
+ let rotation=0,hitCenter={x:r.x+r.w/2,y:r.y+r.h/2};
+ if(isNoteText){
+  const note=noteVisualCenter(p);rotation=note.rotation;
+  c.translate(note.x,note.y);c.rotate(rotation*Math.PI/180);c.translate(-note.x,-note.y);
+  hitCenter=rotateAroundPoint(hitCenter.x,hitCenter.y,note.x,note.y,rotation);
+ }
+ c.globalAlpha=safeNumber(o.opacity,0,1,1);
+ c.translate(r.x+r.w/2,r.y+r.h/2);c.rotate(safeNumber(o.rot,-360,360,0)*Math.PI/180);
+ const res=drawText(c,raw,{x:-r.w/2,y:-r.h/2,w:r.w,h:r.h},{
+  fontSize:st.fontSize,minFont:p.textStyles[key]?.fontSize?st.fontSize:st.fontSize*.80,
+  script:false,family:effectiveFamily(st),bold:st.bold,color:st.color,lineHeight:st.lineHeight,
+  strokeWidth:st.family==='KURA Brush2'?1.25:0,track:true,label:key
+ });
  c.restore();if(c===ctx && p===page())metrics.set(key,res.fontSize);
- hitboxes.push({id:'text:'+key,x:r.x,y:r.y,w:r.w,h:r.h});
+ hitboxes.push({id:'text:'+key,x:hitCenter.x-r.w/2,y:hitCenter.y-r.h/2,w:r.w,h:r.h});
 }
 function paintFreeTexts(c,p){ensurePage(p);for(const f of p.freeTexts){paintEditable(c,p,'free:'+f.id,f.text,null,{})}}
 function htmlEscape(x){return String(x||'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -223,7 +236,12 @@ function updateOverlays(){
  for(const key of keys){
   const rect=textRect(p,key);if(!rect)continue;
   const o=offsetFor(p,key),st=styleFor(p,key),nd=nodeMap.get(key)||attachFrame(key);
-  nd.frame.style.left=rect.x+'px';nd.frame.style.top=rect.y+'px';nd.frame.style.width=rect.w+'px';nd.frame.style.height=rect.h+'px';nd.frame.style.transform='rotate('+(o.rot||0)+'deg)';
+  let posX=rect.x,posY=rect.y,rot=o.rot||0;
+  if(KURA_NOTE_KEYS.has(key)){
+   const n=noteVisualCenter(p),mapped=rotateAroundPoint(rect.x+rect.w/2,rect.y+rect.h/2,n.x,n.y,n.rotation);
+   posX=mapped.x-rect.w/2;posY=mapped.y-rect.h/2;rot+=n.rotation;
+  }
+  nd.frame.style.left=posX+'px';nd.frame.style.top=posY+'px';nd.frame.style.width=rect.w+'px';nd.frame.style.height=rect.h+'px';nd.frame.style.transform='rotate('+rot+'deg)';
   nd.frame.classList.toggle('is-selected',selected==='text:'+key);
   const scale=width/W,inv=1/scale;
   for(const button of nd.frame.querySelectorAll('.kura-manip-handle'))button.style.transform='scale('+inv+')';
@@ -232,7 +250,7 @@ function updateOverlays(){
   nd.edit.style.fontSize=(metrics.get(key)||st.fontSize)+'px';
   nd.edit.style.lineHeight=String(st.lineHeight);
   nd.edit.style.fontFamily='"'+effectiveFamily(st)+'",sans-serif';
-  nd.edit.style.fontWeight=st.bold?'800':'500';
+  nd.edit.style.fontWeight=st.bold?'800':'500';nd.edit.style.webkitTextStroke=st.family==='KURA Brush2'?'0.65px currentColor':'0';
   nd.edit.style.opacity=String(safeNumber(o.opacity,0,1,1));
   if(activeKey!==key){const raw=rawFor(p,key);if(nd.edit.dataset.lastRaw!==raw){nd.edit.innerHTML=markdownHTML(raw);nd.edit.dataset.lastRaw=raw}}
   nd.edit.classList.toggle('editing',activeKey===key);
@@ -400,9 +418,9 @@ async function checkHostedFont(){try{const r=await fetch('./assets/Kura_Brush2.w
 function assertPage(op){const p=op.pageId?pages.find(x=>x.id===op.pageId):pages[Number.isInteger(op.pageIndex)?op.pageIndex:current];if(!p)throw Error('Pagina non trovata');return ensurePage(p)}
 function safeStylePatch(style){const out={};if(!style||typeof style!=='object')return out;if(style.fontSize!==undefined)out.fontSize=safeNumber(style.fontSize,10,160,30);if(['Montserrat','KURA Brush2','Feeling Passionate','Caveat'].includes(style.family))out.family=style.family==='Feeling Passionate'?'KURA Brush2':style.family;if(typeof style.bold==='boolean')out.bold=style.bold;if(/^#[0-9a-fA-F]{6}$/.test(style.color||''))out.color=style.color;if(style.lineHeight!==undefined)out.lineHeight=safeNumber(style.lineHeight,.8,2.5,1.2);return out}
 window.KURA_MCP=Object.freeze({
- apiVersion:'2.5',contract:'./mcp-contract.json',
+ apiVersion:'2.6',contract:'./mcp-contract.json',
  getProject:function(){return deepClone(exportProject())},
- inspect:function(){return{apiVersion:'2.5',pageIds:pages.map(x=>x.id),editableTextKeys:STANDARD,backgroundCount:16,backgroundPresets:BACKGROUND_PRESETS.map(x=>({id:x.id,name:x.name,season:x.season,tags:x.tags})),backgroundNames:BACKGROUND_PRESETS.map(x=>x.name),layoutIds:LAYOUTS.map(x=>x.id),decorations:stickerDefs.map(x=>({id:x[0],name:x[1]})),actions:['setText','setBackground','setBackgroundId','setSeason','addSticker','addText','moveElement','setPageName','addPage']}},
+ inspect:function(){return{apiVersion:'2.6',pageIds:pages.map(x=>x.id),editableTextKeys:STANDARD,backgroundCount:16,backgroundPresets:BACKGROUND_PRESETS.map(x=>({id:x.id,name:x.name,season:x.season,tags:x.tags})),backgroundNames:BACKGROUND_PRESETS.map(x=>x.name),layoutIds:LAYOUTS.map(x=>x.id),decorations:stickerDefs.map(x=>({id:x[0],name:x[1]})),actions:['setText','setBackground','setBackgroundId','setSeason','addSticker','addText','moveElement','setPageName','addPage']}},
  applyPatch:function(operations){
   if(!Array.isArray(operations)||operations.length>200)throw Error('Sono necessarie 1-200 operazioni');
   const before=JSON.stringify({pages,current});let count=0;
@@ -437,7 +455,7 @@ window.KURA_MCP=Object.freeze({
  save:function(){return persistNow()},
  exportJSON:function(){return JSON.stringify(exportProject(),null,2)}
 });
-window.KURA_V2={version:'2.5.0',drawKuraBackground:drawKuraBackground,paintEditable:paintEditable,paintFreeTexts:paintFreeTexts};
+window.KURA_V2={version:'2.6.0',drawKuraBackground:drawKuraBackground,paintEditable:paintEditable,paintFreeTexts:paintFreeTexts};
 addV2Controls();initOverlay();
 (function(){
  const top=document.querySelector('.top-actions');
