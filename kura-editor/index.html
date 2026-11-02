@@ -438,7 +438,14 @@ function updateBulkScope(){
  const values=all?pages:[page()];
  const different=values.length>1&&(['bodyScale','noteScale'].some(key=>values.some(p=>Math.round((p[key]||1)*100)!==Math.round((values[0][key]||1)*100))));
  const status=$('#bulkFitHint');
- if(status)status.textContent=different?'Le pagine hanno dimensioni diverse: muovi uno slider per uniformarle.':'Se il testo diventa troppo lungo, aumenta lo spazio della casella o diminuisci la percentuale.';
+ if(status){
+  const currentPage=page();
+  const target=(Math.min(Number(currentPage?.textStyles?.body1?.fontSize)||27,Number(currentPage?.textStyles?.body2?.fontSize)||27)*(currentPage?.bodyScale||1));
+  const actual=window.KURA_V2?.commonBodyFontSize?.(currentPage);
+  if(different)status.textContent='Le pagine hanno dimensioni diverse: muovi uno slider per uniformarle.';
+  else if(Number.isFinite(actual)&&actual+1<target)status.textContent='Corpo: '+actual+' px effettivi. Per aumentarlo ulteriormente, amplia le caselle dei paragrafi.';
+  else status.textContent='Dimensioni applicate '+(all?'a tutte le '+pages.length+' pagine':'alla pagina corrente')+'. I grassetti rimangono invariati.';
+ }
 }
 function applyBulkTypeScale(key,pct){
  const value=Math.max(70,Math.min(160,Math.round(Number(pct)||100)));
