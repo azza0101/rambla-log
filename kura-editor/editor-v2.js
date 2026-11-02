@@ -29,7 +29,7 @@ function offsetFor(p,key){const f=freeItem(p,key);return f||p.offsets[key]||{}}
 function defaultStyle(p,key){
  const s=p.noteScale||1,b=p.bodyScale||1;
  if(key==='eyebrow')return{fontSize:32,family:'Montserrat',bold:true,color:GREEN,lineHeight:1.12};
- if(key==='head1'||key==='head2')return{fontSize:40,family:'KURA Brush2',bold:true,color:ORANGE,lineHeight:1.10};
+ if(key==='head1'||key==='head2')return{fontSize:40,family:'KURA Brush2',bold:false,color:ORANGE,lineHeight:1.10};
  if(key==='body1'||key==='body2')return{fontSize:30*b,family:'Montserrat',bold:false,color:GREEN,lineHeight:1.26};
  if(key.startsWith('label_'))return{fontSize:20*s,family:'Montserrat',bold:true,color:GREEN,lineHeight:1.12};
  if(['base','duration'].includes(key))return{fontSize:19*s,family:'Montserrat',bold:false,color:GREEN,lineHeight:1.18};
@@ -112,7 +112,7 @@ function paintEditable(c,p,key,raw,unusedRect,opt){
  const res=drawText(c,raw,{x:-r.w/2,y:-r.h/2,w:r.w,h:r.h},{
   fontSize:st.fontSize,minFont:p.textStyles[key]?.fontSize?st.fontSize:st.fontSize*.80,
   script:false,family:effectiveFamily(st),bold:st.bold,color:st.color,lineHeight:st.lineHeight,
-  strokeWidth:st.family==='KURA Brush2'?.6:0,track:true,label:key
+  strokeWidth:st.family==='KURA Brush2'?.85:0,track:true,label:key
  });
  c.restore();if(c===ctx && p===page())metrics.set(key,res.fontSize);
  hitboxes.push({id:'text:'+key,x:hitCenter.x-r.w/2,y:hitCenter.y-r.h/2,w:r.w,h:r.h});
@@ -274,7 +274,7 @@ function updateOverlays(){
   nd.edit.style.fontSize=(metrics.get(key)||st.fontSize)+'px';
   nd.edit.style.lineHeight=String(st.lineHeight);
   nd.edit.style.fontFamily='"'+effectiveFamily(st)+'",sans-serif';
-  nd.edit.style.fontWeight=st.bold?'800':'500';nd.edit.style.webkitTextStroke=st.family==='KURA Brush2'?'0.32px currentColor':'0';
+  nd.edit.style.fontWeight=st.bold?'800':'500';nd.edit.style.webkitTextStroke=st.family==='KURA Brush2'?'0.50px currentColor':'0';
   nd.edit.style.opacity=String(safeNumber(o.opacity,0,1,1));
   if(activeKey!==key){const raw=rawFor(p,key);if(nd.edit.dataset.lastRaw!==raw){nd.edit.innerHTML=markdownHTML(raw);nd.edit.dataset.lastRaw=raw}}
   nd.edit.classList.toggle('editing',activeKey===key);
