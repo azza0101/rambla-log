@@ -269,7 +269,7 @@ function noteAutoLayout(note,p,c=ctx){
   const lines=measureLines(c,raw,Math.max(72,textW),fs,LINE,false);
   return Math.max(24,lines.length*fs*LINE+7);
  };
- const headline=LAB*1.13+4,pad=8;
+ const headline=LAB*1.18+6,pad=10;
  const inserts=[
   Math.max(0,Math.ceil(headline+heightFor('base')+pad-.135*h+6)),
   Math.max(0,Math.ceil(headline+heightFor('duration')+pad-.12*h+6)),
@@ -361,12 +361,18 @@ function drawAdaptiveNote(c,im,note,p){
 }
 function noteBlocks(note,p){
  const L=noteAutoLayout(note,p),f=getFields(p),s=p.noteScale||1;
- return['base','duration','highlight','tips'].map((key,i)=>({
-  key,label:({base:'Base',duration:'Durata',highlight:'Da non perdere',tips:'Da sapere'})[key],
-  value:f[key],x:note.x+L.left,w:L.textW,top:note.y+L.anchors[i],
-  labSize:23*s,valueSize:i<2?23*s:22*s,
-  height:Math.max(22,i<3?L.anchors[i+1]-L.anchors[i]-36:L.totalH-L.anchors[i]-64)
- }));
+ const labelHeight=Math.max(27,Math.ceil(23*s*1.15));
+ const valueOffset=labelHeight+5;
+ return ['base','duration','highlight','tips'].map((key,i)=>{
+  const next=i<3?L.anchors[i+1]:L.totalH-35;
+  const available=next-L.anchors[i]-valueOffset-12;
+  return{
+   key,label:({base:'Base',duration:'Durata',highlight:'Da non perdere',tips:'Da sapere'})[key],
+   value:f[key],x:note.x+L.left,w:L.textW,top:note.y+L.anchors[i],
+   labSize:23*s,valueSize:(i<2?23:22)*s,
+   labelHeight,valueOffset,height:Math.max(24,available)
+  };
+ });
 }
 function render(p=page(),dest=ctx,selectedDraw=true){if(!p)return;const c=dest;if(c!==ctx){/* export uses independent context */}hitboxes=[];fitIssues=[];c.save();c.clearRect(0,0,W,H);c.fillStyle='#f7efde';c.fillRect(0,0,W,H);
  const bt=p.bgTransform||{};const bgZoom=Math.max(1,Math.min(1.8,Number(bt.zoom)||1));
@@ -378,7 +384,7 @@ function render(p=page(),dest=ctx,selectedDraw=true){if(!p)return;const c=dest;i
  if(note.visible){const L=drawAdaptiveNote(c,null,note,p);hitboxes.push({id:'note',x:note.x,y:note.y,w:L.w,h:L.totalH})}
  for(const s of p.stickers){const im=assetImage(s.key);let w=s.w*s.scale*(s.scaleX||1),h=(s.h||s.w*(im?.naturalHeight||1)/(im?.naturalWidth||1))*s.scale*(s.scaleY||1);drawImageFit(c,im,s.x,s.y,w,h,s.rot,s.opacity??1,false,s.flipX,s.flipY);hitboxes.push({id:'sticker:'+s.id,x:s.x,y:s.y,w,h})}
  // Editable note text. The note image owns only paper, heading and icons; labels & values are drawn live.
- if(note.visible){for(const item of noteBlocks(note,p)){const k='label_'+item.key,lab={x:item.x,y:item.top,w:item.w,h:27};window.KURA_V2.paintEditable(c,p,k,p.fields[k]??item.label,lab,{fontSize:item.labSize,bold:true,lineHeight:1.12});const val={x:item.x,y:item.top+27,w:item.w,h:item.height};window.KURA_V2.paintEditable(c,p,item.key,item.value,val,{fontSize:item.valueSize,lineHeight:1.18})}}
+ if(note.visible){for(const item of noteBlocks(note,p)){const k='label_'+item.key,lab={x:item.x,y:item.top,w:item.w,h:item.labelHeight};window.KURA_V2.paintEditable(c,p,k,p.fields[k]??item.label,lab,{fontSize:item.labSize,bold:true,lineHeight:1.12});const val={x:item.x,y:item.top+item.valueOffset,w:item.w,h:item.height};window.KURA_V2.paintEditable(c,p,item.key,item.value,val,{fontSize:item.valueSize,lineHeight:1.18})}}
  // Eyebrow
  const eyebrow=box(lay.eyebrow,p,'eyebrow'),h1=box(lay.head1,p,'head1'),h2=box(lay.head2,p,'head2'),b1=box(lay.body1,p,'body1'),b2=box(lay.body2,p,'body2');
  window.KURA_V2.paintEditable(c,p,'eyebrow',p.fields.eyebrow.toUpperCase(),eyebrow,{fontSize:32,bold:true,lineHeight:1.12});
