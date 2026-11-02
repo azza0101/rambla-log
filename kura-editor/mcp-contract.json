@@ -1,6 +1,6 @@
 {
   "name": "KURA Carousel Editor",
-  "apiVersion": "2.5",
+  "apiVersion": "2.6",
   "browserNamespace": "window.KURA_MCP",
   "format": "KURA_EDITOR_V2",
   "units": {
@@ -283,62 +283,74 @@
     {
       "id": "spring_1",
       "season": "spring",
-      "format": "illustrated svg"
+      "format": "embedded torn-paper JPG + real papercut WebP, SVG",
+      "path": "./assets/sfondo_spring_1_paper_v3.svg"
     },
     {
       "id": "spring_2",
       "season": "spring",
-      "format": "illustrated svg"
+      "format": "embedded torn-paper JPG + real papercut WebP, SVG",
+      "path": "./assets/sfondo_spring_2_paper_v3.svg"
     },
     {
       "id": "spring_3",
       "season": "spring",
-      "format": "illustrated svg"
+      "format": "embedded torn-paper JPG + real papercut WebP, SVG",
+      "path": "./assets/sfondo_spring_3_paper_v3.svg"
     },
     {
       "id": "summer_1",
       "season": "summer",
-      "format": "illustrated svg"
+      "format": "embedded torn-paper JPG + real papercut WebP, SVG",
+      "path": "./assets/sfondo_summer_1_paper_v3.svg"
     },
     {
       "id": "summer_2",
       "season": "summer",
-      "format": "illustrated svg"
+      "format": "embedded torn-paper JPG + real papercut WebP, SVG",
+      "path": "./assets/sfondo_summer_2_paper_v3.svg"
     },
     {
       "id": "summer_3",
       "season": "summer",
-      "format": "illustrated svg"
+      "format": "embedded torn-paper JPG + real papercut WebP, SVG",
+      "path": "./assets/sfondo_summer_3_paper_v3.svg"
     },
     {
       "id": "autumn_1",
       "season": "autumn",
-      "format": "illustrated svg"
+      "format": "embedded torn-paper JPG + real papercut WebP, SVG",
+      "path": "./assets/sfondo_autumn_1_paper_v3.svg"
     },
     {
       "id": "autumn_2",
       "season": "autumn",
-      "format": "illustrated svg"
+      "format": "embedded torn-paper JPG + real papercut WebP, SVG",
+      "path": "./assets/sfondo_autumn_2_paper_v3.svg"
     },
     {
       "id": "autumn_3",
       "season": "autumn",
-      "format": "illustrated svg"
+      "format": "embedded torn-paper JPG + real papercut WebP, SVG",
+      "path": "./assets/sfondo_autumn_3_paper_v3.svg"
     },
     {
       "id": "winter_1",
       "season": "winter",
-      "format": "illustrated svg"
+      "format": "embedded torn-paper JPG + real papercut WebP, SVG",
+      "path": "./assets/sfondo_winter_1_paper_v3.svg"
     },
     {
       "id": "winter_2",
       "season": "winter",
-      "format": "illustrated svg"
+      "format": "embedded torn-paper JPG + real papercut WebP, SVG",
+      "path": "./assets/sfondo_winter_2_paper_v3.svg"
     },
     {
       "id": "winter_3",
       "season": "winter",
-      "format": "illustrated svg"
+      "format": "embedded torn-paper JPG + real papercut WebP, SVG",
+      "path": "./assets/sfondo_winter_3_paper_v3.svg"
     }
   ],
   "stickers": [
@@ -375,5 +387,25 @@
       "loadedForEveryUser": true,
       "legacyAlias": "Feeling Passionate"
     }
-  ]
+  ],
+  "postit": {
+    "autoHeight": true,
+    "rotation": "all label and value elements rotate together with note around its dynamic center",
+    "stretchStrategy": "five vertical source-image sections; expanding blank paper lanes without stretching printed header and icons",
+    "layout": "dynamic based on measured lines, bounded extensions"
+  },
+  "dragAndDrop": {
+    "desktop": "drag sticker from library onto canvas",
+    "mobile": "touch drag within viewport or tap then reposition",
+    "mcp": "addSticker and moveElement operations"
+  },
+  "typography": {
+    "headings": {
+      "family": "KURA Brush2",
+      "fontSize": 40,
+      "bold": true,
+      "strokeWidth": 1.25
+    },
+    "accentStroke": "vertically centered at title box"
+  }
 }
