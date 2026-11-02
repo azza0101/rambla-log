@@ -122,7 +122,7 @@
    if(!confirm('Caricare la versione GitHub? Le modifiche locali non pubblicate di questo progetto saranno sostituite. Puoi usare Salva con nome prima di aggiornare.'))return{updated:false,cancelled:true}
   }
   await bridge().replaceFromCloud(cloud.data);
-  setBase(id,cloud.sha);updateLink(id);
+  setBase(id,cloud.sha);if(toolbarSync)toolbarSync.style.outline='';updateLink(id);
   status('✓ Versione condivisa aggiornata dal cloud');toast('Modifiche del collaboratore caricate ✓');
   return{updated:true}
  }
@@ -240,6 +240,32 @@
  window.KURA_GITHUB=Object.freeze({openFromQuery,saveToGitHub,refreshFromCloud,isConnected:()=>!!accessToken});
  const modal=makeDialog();
  restoreCredential();
+ const toolbarSync=document.getElementById('topCloudSync');
+ if(toolbarSync)toolbarSync.onclick=async()=>{
+   if(busy)return;
+   busy=true;toolbarSync.disabled=true;
+   try{await refreshFromCloud()}catch(err){toast('Aggiornamento cloud: '+err.message);status(err.message)}
+   finally{busy=false;toolbarSync.disabled=false}
+ };
+ // Non-destructive remote polling: check metadata only, never replace pages silently.
+ let lastNotified='';
+ async function pollSharedProject(){
+  if(document.visibilityState!=='visible'||!navigator.onLine)return;
+  const id=bridge()?.current()?.id;if(!gid(id))return;
+  const known=getBase(id);if(!known)return;
+  try{
+   const current=await api('/contents/'+filePath(id)+'?ref='+BRANCH,{allowMissing:true});
+   if(current?.sha&&current.sha!==known&&current.sha!==lastNotified){
+    lastNotified=current.sha;
+    status('● Collaboratore: nuova versione disponibile. Premi Aggiorna dal cloud.');
+    toast('Nuova versione condivisa disponibile ↻');
+    if(toolbarSync)toolbarSync.style.outline='2px solid #cf7931';
+   }else if(current?.sha===known){lastNotified='';if(toolbarSync)toolbarSync.style.outline=''}
+  }catch(err){console.warn('KURA cloud check',err.message)}
+ }
+ setInterval(pollSharedProject,45000);
+ document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')pollSharedProject()});
+
  const save=document.getElementById('topSaveProject');
  const saveAsButton=document.getElementById('topSaveAs');
  const cloudButton=document.getElementById('topGitHub');
