@@ -126,3 +126,21 @@
  .kura-height-handle,.kura-visual-height{bottom:-15px;left:calc(50% - 15px)}
  .kura-toolbar-dock .kura-selection-toolbar{gap:5px}
 }
+
+/* KURA bulk typography: separate body and post-it text scales. */
+.kura-bulk-font-panel{margin:8px 0 17px;padding:15px;background:#f7f2e7;border:1px solid #e7dfcf}
+.kura-bulk-font-panel .section-title{margin:0 0 11px}
+.kura-bulk-all{display:flex;align-items:center;gap:10px;padding:11px;background:#fffaf0;border:1px solid #d7dccc;border-radius:10px;cursor:pointer;margin-bottom:13px}
+.kura-bulk-all input{width:19px;height:19px;accent-color:#1c593e;flex:0 0 19px;cursor:pointer}
+.kura-bulk-all span{display:flex;flex-direction:column;gap:3px}
+.kura-bulk-all strong{font-size:12px;color:#173d2e}
+.kura-bulk-all small{font-size:10px;color:#627566}
+.kura-bulk-font-row{padding:11px 0;border-bottom:1px solid #e0dfd1}
+.kura-bulk-font-row>label{display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:12px;font-weight:750;color:#173d2e;margin-bottom:8px}
+.kura-bulk-font-row>label strong{font-size:13px;color:#bf6e36;font-variant-numeric:tabular-nums}
+.kura-bulk-slider{display:flex;align-items:center;gap:8px}
+.kura-bulk-slider input[type=range]{flex:1;min-width:0;accent-color:#c57734;cursor:pointer}
+.kura-bulk-slider .btn{flex:0 0 36px;padding:0;min-height:35px;font-size:18px}
+.kura-bulk-font-row .hint{display:block;margin-top:7px;line-height:1.5}
+.kura-bulk-reset{display:flex;justify-content:flex-end;margin-top:12px}
+.kura-bulk-font-panel #bulkFitHint{margin:9px 0 0;line-height:1.5}
