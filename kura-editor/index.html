@@ -232,7 +232,7 @@ function deleteSelected(){if(!selected)return;const p=page();snapshot();if(selec
 function box(base,p,k){const o=p.offsets?.[k]||{};return{x:base[0]+(o.dx||0),y:base[1]+(o.dy||0),w:base[2]*(o.scale||1),h:base[3]*(o.scale||1)}}
 function drawImageFit(c,im,x,y,w,h,rot=0,opacity=1,flipX=false,extraFlipX=false,flipY=false){if(!im||!im.complete||!im.naturalWidth)return;const sx=w/im.naturalWidth,sy=h/im.naturalHeight,scale=Math.min(sx,sy);const ww=im.naturalWidth*scale,hh=im.naturalHeight*scale;c.save();c.translate(x+w/2,y+h/2);c.rotate(rot*Math.PI/180);c.globalAlpha=opacity;if(flipX!==!!extraFlipX||flipY)c.scale((flipX!==!!extraFlipX)?-1:1,flipY?-1:1);c.drawImage(im,-ww/2,-hh/2,ww,hh);c.restore()}
 function drawAsset(key,r,rot=0,opacity=1,flip=false){drawImageFit(ctx,assetImage(key),r.x,r.y,r.w,r.h,rot,opacity,flip)}
-function textFont(sz,bold=false,script=false,family=null){const fam=family?'"'+family+'"':(script?(faceLoaded?'"KURA Brush2"':'"Caveat"'):'"Montserrat"');return`${script?'400':(bold?'800':'500')} ${sz}px ${fam},sans-serif`}
+function textFont(sz,bold=false,script=false,family=null){const fam=family?'"'+family+'"':(script?(faceLoaded?'"KURA Brush2"':'"Caveat"'):'"Montserrat"');const brush=family&&family.startsWith('KURA Brush');return`${brush?'400':(script?'400':(bold?'800':'500'))} ${sz}px ${fam},sans-serif`}
 function wrapTokens(raw){return String(raw||'').replace(/\r/g,'').split(/(\*\*[^*]+\*\*|\n|\s+)/).filter(x=>x!==''&&x!==undefined).map(x=>({text:x.startsWith('**')&&x.endsWith('**')?x.slice(2,-2):x,bold:x.startsWith('**')&&x.endsWith('**')}))}
 function measureLines(c,raw,w,fontSize,lineH,script=false,maxLines=99,family=null){
   const tokens=wrapTokens(raw),lines=[[]];
@@ -264,7 +264,18 @@ function drawText(c,raw,rect,opt={}){let fs=opt.fontSize||30, color=opt.color||G
  do{lines=measureLines(c,raw,rect.w,fs,lh,script,99,opt.family||null);overflow=lines.length*fs*lh>max;if(overflow&&fs>(opt.minFont||original*.79))fs-=.6;else break}while(fs>9);
  if(overflow&&opt.track)fitIssues.push((opt.label||'Testo')+' troppo lungo');
  c.save();c.fillStyle=color;c.textBaseline='top';let y=rect.y;
- for(const line of lines){let x=rect.x;for(const run of line){c.font=textFont(fs,run.bold||bold,script,opt.family||null);if(opt.strokeWidth){c.lineWidth=opt.strokeWidth;c.strokeStyle=color;c.lineJoin='round';c.strokeText(run.text,x,y)}c.fillText(run.text,x,y);x+=c.measureText(run.text).width}y+=fs*lh;if(y>rect.y+max+fs*.35)break}
+ for(const line of lines){
+  let width=0;
+  if(opt.align==='center')for(const run of line){c.font=textFont(fs,run.bold||bold,script,opt.family||null);width+=c.measureText(run.text).width}
+  let x=rect.x+(opt.align==='center'?(rect.w-width)/2:0);
+  for(const run of line){
+   c.font=textFont(fs,run.bold||bold,script,opt.family||null);
+   const ink=opt.brushFamily&&run.bold?Math.max(opt.strokeWidth||0,fs*.023):(opt.strokeWidth||0);
+   if(ink){c.lineWidth=ink;c.strokeStyle=color;c.lineJoin='round';c.strokeText(run.text,x,y)}
+   c.fillText(run.text,x,y);x+=c.measureText(run.text).width
+  }
+  y+=fs*lh;if(y>rect.y+max+fs*.35)break
+ }
  c.restore();return{fontSize:fs,overflow,lines:lines.length}
 }
 function getFields(p){return p.fields||DEFAULT_FIELDS}
@@ -487,7 +498,7 @@ $('#sceneFile').onchange=e=>setUpload(e.target.files?.[0],'scene');$('#postcardF
 async function installFont(buffer,persist=false){try{const ff=new FontFace('KURA Brush2',buffer,{style:'normal',weight:'400'});await ff.load();document.fonts.add(ff);faceLoaded=true;fontBlob=buffer;$('#fontStatus').innerHTML='<b>KURA Brush2 <span class="pill ok">Caricato ✓</span></b><p>Il font reale è attivo su tutti i minititoli, anche nei PNG. '+(persist?'Disponibile nell’app.':'Puoi salvarlo localmente con il pulsante sotto.')+'</p>';queueRender();return true}catch(err){console.error(err);emitToast('Font non valido o non compatibile');return false}}
 $('#fontFile').onchange=async e=>{const f=e.target.files?.[0];if(f){const b=await f.arrayBuffer();await installFont(b)}};
 $('#fontRemember').onclick=async()=>{if(!fontBlob){emitToast('Carica prima il font KURA Brush2');return}await dbPut('font',{buf:fontBlob});emitToast('Font salvato nel browser per le prossime visite')};
-$('#fontReset').onclick=async()=>{await dbDelete('font');fontBlob=null;faceLoaded=false;try{await document.fonts.load('39px "Kaushan Script"');queueRender();emitToast('Kaushan Script ripristinato')}catch(e){emitToast('Errore font: '+e.message)}};
+$('#fontReset').onclick=async()=>{await dbDelete('font');fontBlob=null;faceLoaded=false;await document.fonts.load('39px "KURA Brush2"');queueRender();emitToast('KURA Brush originale ripristinato')};
 // Offline ZIP (uncompressed PKZIP; works in Safari/Firefox/Chrome without libraries).
 const enc=new TextEncoder();function le16(x){return [x&255,(x>>>8)&255]}function le32(x){return[x&255,(x>>>8)&255,(x>>>16)&255,(x>>>24)&255]}const crcTable=(()=>{let t=[];for(let n=0;n<256;n++){let c=n;for(let j=0;j<8;j++)c=c&1?0xedb88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();function crc32(bytes){let c=0xffffffff;for(const b of bytes)c=crcTable[(c^b)&255]^(c>>>8);return(c^0xffffffff)>>>0}
 async function zipFiles(entries){let parts=[],central=[],offset=0;for(const [name,blob] of entries){const bytes=new Uint8Array(await blob.arrayBuffer()),nm=enc.encode(name),crc=crc32(bytes);const head=new Uint8Array([80,75,3,4,20,0,0,0,0,0,0,0,0,0,...le32(crc),...le32(bytes.length),...le32(bytes.length),...le16(nm.length),0,0]);parts.push(head,nm,bytes);const ch=new Uint8Array([80,75,1,2,20,0,20,0,0,0,0,0,0,0,0,0,...le32(crc),...le32(bytes.length),...le32(bytes.length),...le16(nm.length),0,0,0,0,0,0,0,0,0,0,0,0,...le32(offset)]);central.push(ch,nm);offset+=head.length+nm.length+bytes.length}const cc=central.reduce((n,p)=>n+p.length,0);const end=new Uint8Array([80,75,5,6,0,0,0,0,...le16(entries.length),...le16(entries.length),...le32(cc),...le32(offset),0,0]);return new Blob([...parts,...central,end],{type:'application/zip'})}
