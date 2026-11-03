@@ -68,6 +68,47 @@
   try{return sessionStorage.getItem(baseKey(id))||null}catch(_){return null}
  }
  function setBase(id,sha){cloudBases.set(id,sha);try{sessionStorage.setItem(baseKey(id),sha)}catch(_){}}
+ // A remembered SHA alone is not enough: compare the exact local working state.
+ // Baseline data survives a reload, but never contains the GitHub token.
+ function projectPayload(pkg){
+  return{pages:pkg?.pages||[],customAssets:pkg?.customAssets||{},meta:pkg?.meta||{},projectName:pkg?.projectName||''}
+ }
+ async function digest(pkg){
+  const bytes=new TextEncoder().encode(JSON.stringify(projectPayload(pkg)));
+  const hash=await crypto.subtle.digest('SHA-256',bytes);
+  return Array.from(new Uint8Array(hash),x=>x.toString(16).padStart(2,'0')).join('')
+ }
+ async function baselineFor(id){
+  try{return await authGet('shared-base:'+id)}catch(_){return null}
+ }
+ async function rememberBaseline(id,sha,project){
+  setBase(id,sha);
+  try{await authPut('shared-base:'+id,{sha,digest:await digest(project),updatedAt:Date.now()})}
+  catch(error){console.warn('KURA baseline unavailable:',error.message)}
+ }
+ async function workingCopy(id){
+  const current=bridge()?.current();
+  if(current?.id===id)return await bridge().snapshot();
+  return await bridge()?.localCopy(id)
+ }
+ async function isDirty(id){
+  const base=await baselineFor(id);
+  if(!base?.digest)return true;
+  const local=await workingCopy(id);
+  return !local||await digest(local)!==base.digest
+ }
+ function syncStatus(message,kind='info'){
+  status(message);
+  const el=document.getElementById('kuraSharedSyncStatus');
+  if(el){el.textContent=message;el.dataset.kind=kind}
+ }
+ function ensureSyncStatus(){
+  if(document.getElementById('kuraSharedSyncStatus'))return;
+  const el=document.createElement('span');
+  el.id='kuraSharedSyncStatus';el.className='kura-shared-sync-status';
+  el.setAttribute('role','status');el.textContent='Cloud: non ancora sincronizzato';
+  document.querySelector('.stage-head')?.appendChild(el)
+ }
  function encodeBase64(text){
   const bytes=new TextEncoder().encode(text);
   let binary='';
