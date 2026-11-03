@@ -4,6 +4,8 @@ on:
     branches: [main]
     paths:
       - 'kura-editor/kura-brief-parser.js'
+      - 'kura-editor/github-save.js'
+      - 'kura-editor/editor-v2.js'
       - 'kura-editor/tests/**'
       - 'kura-editor/projects/KURA_Progetto_Novembre_2026_MCP_TEST.json'
       - '.github/workflows/kura-brief-parser-ci.yml'
@@ -18,3 +20,5 @@ jobs:
           node-version: '22'
       - name: Validate structured KURA brief parser
         run: node kura-editor/tests/test-kura-brief-parser.cjs
+      - name: Validate conflict-safe KURA collaboration
+        run: node kura-editor/tests/test-collaboration-safety.cjs
