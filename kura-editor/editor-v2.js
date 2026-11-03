@@ -471,7 +471,10 @@ function kuraResolveSelection(id,append=false){
 }
 function kuraSelectedIds(){return [...kuraMulti].filter(k=>!!kuraMemberGeometry(k))}
 function kuraGroupSelection(){
- const ids=kuraSelectedIds();if(ids.length<2){emitToast('Seleziona almeno due elementi tenendo premuto Shift');return}
+ let ids=kuraSelectedIds();
+ // The note title and labels are children of the paper: avoid double transforms when the complete note is selected.
+ if(ids.includes('note'))ids=ids.filter(id=>id==='note'||!['text:note_title','text:label_base','text:base','text:label_duration','text:duration','text:label_highlight','text:highlight','text:label_tips','text:tips'].includes(id));
+ if(ids.length<2){emitToast('Seleziona almeno due elementi indipendenti tenendo premuto Shift');return}
  snapshot();const p=ensurePage(page());
  const moved=new Set(ids);
  p.groups=p.groups.map(g=>({...g,members:g.members.filter(id=>!moved.has(id))})).filter(g=>g.members.length>1);
