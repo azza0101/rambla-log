@@ -27,7 +27,7 @@ let pIndex=[], currentProjectId=null, currentProjectMeta={}, managerReady=false,
 let fontReadyFromHost=false;
 const metrics=new Map();
 function safeNumber(n,lo,hi,def){n=Number(n);return Number.isFinite(n)?Math.max(lo,Math.min(hi,n)):def}
-function ensurePage(p){if(!p)return p;p.fields=p.fields||{};p.offsets=p.offsets||{};p.textStyles=p.textStyles||{};p.freeTexts=Array.isArray(p.freeTexts)?p.freeTexts:[];for(const k of Object.keys(NOTE_LABELS))if(typeof p.fields[k]!=='string')p.fields[k]=NOTE_LABELS[k];if(typeof p.fields.note_title!=='string')p.fields.note_title='INFO DI VIAGGIO';return p}
+function ensurePage(p){if(!p)return p;p.fields=p.fields||{};p.offsets=p.offsets||{};p.textStyles=p.textStyles||{};p.groups=Array.isArray(p.groups)?p.groups:[];p.freeTexts=Array.isArray(p.freeTexts)?p.freeTexts:[];for(const k of Object.keys(NOTE_LABELS))if(typeof p.fields[k]!=='string')p.fields[k]=NOTE_LABELS[k];if(typeof p.fields.note_title!=='string')p.fields.note_title='INFO DI VIAGGIO';return p}
 function freeItem(p,key){return key.startsWith('free:')?p.freeTexts.find(x=>x.id===key.slice(5)):null}
 function rawFor(p,key){const item=freeItem(p,key);return item?String(item.text||''):String(p.fields[key]||'')}
 function offsetFor(p,key){const f=freeItem(p,key);return f||p.offsets[key]||{}}
@@ -426,6 +426,197 @@ function initVisualTransform(){
  visualOverlay.appendChild(visualBox);root.appendChild(visualOverlay);
  updateVisualSelection();
 }
+// KURA multi-selection and non-destructive groups.
+// Group membership lives in page.groups so it survives GitHub and JSON saves.
+let kuraMulti=new Set(),kuraGroupBox=null,kuraGroupMenu=null,kuraGroupPage=null;
+function kuraGroupFor(id,p=page()){return (p?.groups||[]).find(g=>g.members?.includes(id))||null}
+function kuraMemberGeometry(id,p=page()){
+ if(!p)return null;
+ if(id.startsWith('text:')){
+  const k=id.slice(5),r=textRect(p,k);if(!r)return null;
+  return{x:r.x,y:r.y,w:r.w,h:r.h,rot:offsetFor(p,k).rot||0,id,type:'text'}
+ }
+ const e=elementById(id);if(!e)return null;
+ const m=e.model;if(!m?.visible&&['scene','postcard','note'].includes(id))return null;
+ if(id==='note'){const n=noteAutoLayout(m,p);return{x:m.x,y:m.y,w:n.w,h:n.totalH,rot:m.rot||0,id,type:'note'}}
+ if(id.startsWith('sticker:')){
+  const im=assetImage(m.key),w=m.w*(m.scale||1)*(m.scaleX||1);
+  const h=(m.h||m.w*(im?.naturalHeight||1)/(im?.naturalWidth||1))*(m.scale||1)*(m.scaleY||1);
+  return{x:m.x,y:m.y,w,h,rot:m.rot||0,id,type:'sticker'}
+ }
+ return{x:m.x,y:m.y,w:m.w*(m.scale||1)*(m.scaleX||1),h:m.h*(m.scale||1)*(m.scaleY||1),rot:m.rot||0,id,type:id}
+}
+function kuraBounds(ids,p=page()){
+ const rects=[...ids].map(id=>kuraMemberGeometry(id,p)).filter(Boolean);
+ if(!rects.length)return null;
+ const corners=rects.flatMap(r=>{
+  const cx=r.x+r.w/2,cy=r.y+r.h/2,a=r.rot*Math.PI/180,ca=Math.cos(a),sa=Math.sin(a);
+  return [[-r.w/2,-r.h/2],[r.w/2,-r.h/2],[-r.w/2,r.h/2],[r.w/2,r.h/2]].map(([dx,dy])=>({x:cx+dx*ca-dy*sa,y:cy+dx*sa+dy*ca}))
+ });
+ const x=Math.min(...corners.map(c=>c.x)),y=Math.min(...corners.map(c=>c.y));
+ return{x,y,w:Math.max(30,Math.max(...corners.map(c=>c.x))-x),h:Math.max(30,Math.max(...corners.map(c=>c.y))-y)}
+}
+function kuraResolveSelection(id,append=false){
+ if(!id)return;
+ const group=kuraGroupFor(id);
+ if(!append){kuraMulti.clear();if(group)for(const k of group.members)kuraMulti.add(k);else kuraMulti.add(id)}
+ else{
+  const items=group?group.members:[id];
+  if(items.every(k=>kuraMulti.has(k)))items.forEach(k=>kuraMulti.delete(k));
+  else items.forEach(k=>kuraMulti.add(k))
+ }
+ selected=kuraMulti.size===1?[...kuraMulti][0]:null;
+ activeKey=null;refreshInspector();queueRender();requestAnimationFrame(kuraUpdateGroupBox)
+}
+function kuraSelectedIds(){return [...kuraMulti].filter(k=>!!kuraMemberGeometry(k))}
+function kuraGroupSelection(){
+ const ids=kuraSelectedIds();if(ids.length<2){emitToast('Seleziona almeno due elementi tenendo premuto Shift');return}
+ snapshot();const p=ensurePage(page());
+ const moved=new Set(ids);
+ p.groups=p.groups.map(g=>({...g,members:g.members.filter(id=>!moved.has(id))})).filter(g=>g.members.length>1);
+ const group={id:uuid(),members:ids};
+ p.groups.push(group);kuraMulti=new Set(ids);selected=null;queueRender();scheduleSave();kuraUpdateGroupBox();emitToast('Gruppo creato · usa i controlli intorno alla selezione')
+}
+function kuraUngroupSelection(){
+ const ids=kuraSelectedIds(),p=page();
+ const groups=(p?.groups||[]).filter(g=>g.members.some(id=>ids.includes(id)));
+ if(!groups.length){emitToast('Seleziona prima un gruppo');return}
+ snapshot();p.groups=p.groups.filter(g=>!groups.includes(g));kuraMulti=new Set(ids);selected=ids[0]||null;
+ queueRender();scheduleSave();kuraUpdateGroupBox();emitToast('Gruppo separato: gli elementi restano modificabili')
+}
+function kuraMembersTransform(before,ids,bounds,dx,dy,sx,sy,angle){
+ const center={x:bounds.x+bounds.w/2,y:bounds.y+bounds.h/2};
+ const radians=angle*Math.PI/180,ca=Math.cos(radians),sa=Math.sin(radians);
+ for(const id of ids){
+  const m=before[id];if(!m)continue;
+  const r=m.rect,origCenter={x:r.x+r.w/2,y:r.y+r.h/2};
+  const u=(origCenter.x-center.x)*sx,v=(origCenter.y-center.y)*sy;
+  const target={x:center.x+dx+u*ca-v*sa,y:center.y+dy+u*sa+v*ca};
+  const p=page();
+  if(id.startsWith('text:')){
+   const k=id.slice(5),free=freeItem(p,k),obj=free||(p.offsets[k]??={});
+   if(free){
+    free.x=m.model.x+target.x-origCenter.x;free.y=m.model.y+target.y-origCenter.y;
+    free.w=Math.max(30,(m.model.w||r.w)*sx);free.h=Math.max(18,(m.model.h||r.h)*sy)
+   }else{
+    obj.dx=(m.model.dx||0)+(target.x-origCenter.x);
+    obj.dy=(m.model.dy||0)+(target.y-origCenter.y);
+    obj.w=Math.max(30,r.w*sx);obj.h=Math.max(20,r.h*sy)
+   }
+   obj.rot=(m.model.rot||0)+angle;
+  }else{
+   const model=elementById(id)?.model;if(!model)continue;
+   model.x=m.model.x+target.x-origCenter.x;model.y=m.model.y+target.y-origCenter.y;
+   model.scaleX=(m.model.scaleX||1)*sx;model.scaleY=(m.model.scaleY||1)*sy;
+   model.rot=(m.model.rot||0)+angle
+  }
+ }
+ queueRender();kuraUpdateGroupBox()
+}
+function kuraUpdateGroupBox(){
+ if(!kuraGroupBox)return;
+ const ids=kuraSelectedIds();
+ const grouped=ids.length>1||ids.length===1&&!!kuraGroupFor(ids[0]);
+ const bounds=grouped?kuraBounds(ids):null;
+ kuraGroupBox.style.display=bounds?'block':'none';
+ if(!bounds)return;
+ const scale=canvas.getBoundingClientRect().width/W||1;
+ kuraGroupBox.style.left=bounds.x+'px';kuraGroupBox.style.top=bounds.y+'px';
+ kuraGroupBox.style.width=bounds.w+'px';kuraGroupBox.style.height=bounds.h+'px';
+ kuraGroupBox.style.transform='none';
+ kuraGroupBox.querySelectorAll('button').forEach(el=>el.style.transform='scale('+1/scale+')');
+ const label=kuraGroupBox.querySelector('.kura-group-count');if(label)label.textContent=ids.length+' elementi';
+}
+function kuraGroupGesture(e,action){
+ if(!kuraMulti.size)return;e.preventDefault();e.stopPropagation();
+ const ids=kuraSelectedIds(),bounds=kuraBounds(ids);if(!bounds)return;
+ const before={};for(const id of ids){const model=id.startsWith('text:')?deepClone(offsetFor(page(),id.slice(5))):deepClone(elementById(id)?.model);
+  before[id]={model,rect:kuraMemberGeometry(id)}}
+ const start=xyFromPointer(e),prior=JSON.stringify({pages,current});
+ let changed=false;const button=e.currentTarget;button.setPointerCapture(e.pointerId);
+ const move=ev=>{
+  const at=xyFromPointer(ev),dx=at.x-start.x,dy=at.y-start.y;
+  let sx=1,sy=1,angle=0,tx=0,ty=0;
+  if(action==='move'){tx=dx;ty=dy}
+  if(action==='rotate'){
+   const cx=bounds.x+bounds.w/2,cy=bounds.y+bounds.h/2;
+   angle=(Math.atan2(at.y-cy,at.x-cx)-Math.atan2(start.y-cy,start.x-cx))*180/Math.PI
+  }
+  if(action==='resize'){
+   const f=Math.max(.25,Math.min(4,1+Math.max(dx/Math.max(40,bounds.w),dy/Math.max(40,bounds.h))));
+   sx=f;sy=f
+  }
+  if(action==='width')sx=Math.max(.25,Math.min(4,1+dx/Math.max(40,bounds.w)));
+  if(action==='height')sy=Math.max(.25,Math.min(4,1+dy/Math.max(40,bounds.h)));
+  changed=true;kuraMembersTransform(before,ids,bounds,tx,ty,sx,sy,angle);
+ };
+ const end=()=>{
+  button.removeEventListener('pointermove',move);button.removeEventListener('pointerup',end);button.removeEventListener('pointercancel',end);
+  if(changed){history.push(prior);if(history.length>45)history.shift();future=[];updateHistory();scheduleSave()}
+ };
+ button.addEventListener('pointermove',move);button.addEventListener('pointerup',end);button.addEventListener('pointercancel',end)
+}
+function kuraInitGroups(){
+ const stage=document.querySelector('.stage-inner');if(!stage)return;
+ kuraGroupBox=document.createElement('div');kuraGroupBox.className='kura-group-box';kuraGroupBox.style.display='none';
+ kuraGroupBox.innerHTML='<span class="kura-group-count">Gruppo</span><button type="button" data-action="move" title="Sposta gruppo">⠿</button><button type="button" data-action="rotate" title="Ruota gruppo">↻</button><button type="button" data-action="resize" title="Scala gruppo">⤡</button><button type="button" data-action="width" title="Larghezza gruppo">↔</button><button type="button" data-action="height" title="Altezza gruppo">↕</button>';
+ stage.appendChild(kuraGroupBox);
+ for(const button of kuraGroupBox.querySelectorAll('button'))button.addEventListener('pointerdown',e=>kuraGroupGesture(e,button.dataset.action));
+ const bar=document.querySelector('.stage-head .compact-actions');
+ if(bar){
+  const group=document.createElement('button');group.className='btn small flat';group.textContent='Raggruppa';group.title='Raggruppa selezione multipla';group.onclick=kuraGroupSelection;
+  const ungroup=document.createElement('button');ungroup.className='btn small flat';ungroup.textContent='Separa';ungroup.title='Separa gruppo';ungroup.onclick=kuraUngroupSelection;
+  bar.append(group,ungroup)
+ }
+ stage.addEventListener('pointerdown',e=>{
+  if(e.target.closest('.kura-group-box'))return;
+  if(!(e.shiftKey||e.target===canvas))return;
+  const pt=xyFromPointer(e);
+  if(e.target===canvas&&page()?.visuals?.note?.visible){
+   const n=page().visuals.note,L=noteAutoLayout(n,page()),cx=n.x+L.w/2,cy=n.y+L.totalH/2;
+   const a=-(n.rot||0)*Math.PI/180,u=pt.x-cx,v=pt.y-cy;
+   const lx=u*Math.cos(a)-v*Math.sin(a)+L.w/2,ly=u*Math.sin(a)+v*Math.cos(a)+L.totalH/2;
+   if(lx>18&&lx<L.w-16&&ly>16&&ly<136){
+    if(page().noteTitleMode!=='text'){snapshot();page().noteTitleMode='text';scheduleSave()}
+    kuraResolveSelection('text:note_title',e.shiftKey);refreshAll();
+    requestAnimationFrame(()=>{const edit=getNode('note_title')?.edit;if(!e.shiftKey){edit?.focus();showToolbar('note_title')}});
+    e.preventDefault();e.stopImmediatePropagation();return
+   }
+  }
+  if(!e.shiftKey)return;
+  let key=null;
+  const frame=e.target.closest('.kura-text-frame');
+  if(frame)key='text:'+frame.dataset.key;
+  else{
+   const hit=[...hitboxes].reverse().find(b=>pt.x>=b.x&&pt.x<=b.x+b.w&&pt.y>=b.y&&pt.y<=b.y+b.h);
+   if(hit)key=hit.id
+  }
+  if(key){kuraResolveSelection(key,true);e.preventDefault();e.stopImmediatePropagation()}
+ },true);
+ stage.addEventListener('contextmenu',e=>{
+  const pt=xyFromPointer(e);
+  const hit=[...hitboxes].reverse().find(b=>pt.x>=b.x&&pt.x<=b.x+b.w&&pt.y>=b.y&&pt.y<=b.y+b.h);
+  if(!kuraMulti.size&&hit)kuraResolveSelection(hit.id,false);
+  const ids=kuraSelectedIds();
+  if(!ids.length)return;e.preventDefault();e.stopPropagation();
+  kuraGroupMenu?.remove();kuraGroupMenu=document.createElement('div');kuraGroupMenu.className='kura-group-context';
+  const group=kuraGroupFor(ids[0]);
+  kuraGroupMenu.innerHTML='<button type="button" data-group>Raggruppa elementi ('+ids.length+')</button><button type="button" data-ungroup>Separa gruppo</button>';
+  const join=kuraGroupMenu.querySelector('[data-group]'),split=kuraGroupMenu.querySelector('[data-ungroup]');
+  join.disabled=ids.length<2;split.disabled=!group;
+  join.onclick=()=>{kuraGroupSelection();kuraGroupMenu?.remove()};
+  split.onclick=()=>{kuraUngroupSelection();kuraGroupMenu?.remove()};
+  kuraGroupMenu.style.left=Math.min(innerWidth-210,e.clientX)+'px';kuraGroupMenu.style.top=Math.min(innerHeight-95,e.clientY)+'px';
+  document.body.appendChild(kuraGroupMenu)
+ },true);
+ document.addEventListener('pointerdown',e=>{if(kuraGroupMenu&&!kuraGroupMenu.contains(e.target)){kuraGroupMenu.remove();kuraGroupMenu=null}},true);
+ const formerRefresh=refreshAll;
+ refreshAll=function(){if(kuraGroupPage!==page()?.id){kuraMulti.clear();kuraGroupPage=page()?.id}formerRefresh();requestAnimationFrame(kuraUpdateGroupBox)};
+ const formerQueue=queueRender;
+ queueRender=function(){formerQueue();requestAnimationFrame(kuraUpdateGroupBox)};
+}
+requestAnimationFrame(kuraInitGroups);
+
 function resetSelection(){activeKey=null;selected=null;shownPage=null;queueRender()}
 function addFreeText(){
  snapshot();const p=ensurePage(page()),id=uuid(),f={id:id,text:'Nuovo testo',x:170,y:545,w:470,h:92,rot:0,scale:1,opacity:1};
