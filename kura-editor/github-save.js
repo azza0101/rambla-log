@@ -284,6 +284,25 @@
   if(!options.quiet)toast('Salvato su GitHub: l’altra persona può ora aggiornare ✓');
   return{projectId:id,commit:saved.commit.sha,link:cloudLink(id)}
  }
+ async function flushBeforeSwitch(){
+  await credentialReady;
+  if(!accessToken||busy)return{skipped:true};
+  const id=bridge()?.current()?.id;
+  if(!gid(id))return{skipped:true};
+  const baseline=await baselineFor(id);
+  if(!baseline?.sha||!await isDirty(id))return{skipped:true};
+  busy=true;
+  try{
+   const result=await saveToGitHub({quiet:true});
+   syncStatus('✓ Modifiche condivise prima di cambiare progetto','ok');
+   return result
+  }catch(error){
+   // Navigation remains possible; the local version is already saved in IndexedDB.
+   syncStatus('⚠ Modifiche del progetto precedente rimaste soltanto nel browser: '+error.message,'warning');
+   toast('Bozza conservata, ma NON pubblicata su GitHub: '+error.message);
+   return{error:error.message,localPreserved:true}
+  }finally{busy=false}
+ }
  async function normalSave(){
   if(busy){toast('Salvataggio GitHub già in corso…');return}
   busy=true;
@@ -371,7 +390,7 @@
   if(!gid(id)){toast('ID progetto GitHub non valido');return}
   try{await loadRemote(id)}catch(error){toast('Progetto GitHub: '+error.message)}
  }
- window.KURA_GITHUB=Object.freeze({openFromQuery,saveToGitHub,refreshFromCloud,isConnected:()=>!!accessToken});
+ window.KURA_GITHUB=Object.freeze({openFromQuery,saveToGitHub,refreshFromCloud,flushBeforeSwitch,isConnected:()=>!!accessToken});
  const modal=makeDialog();
  ensureSyncStatus();
  const credentialReady=restoreCredential();
