@@ -2,7 +2,7 @@
    Expects the v1 editor's globals in index.html. No external runtime or API keys. */
 'use strict';
 (function(){
-const V2_VERSION='4.1.1';
+const V2_VERSION='4.2.0';
 const NOTE_LABELS={label_base:'Base',label_duration:'Durata',label_highlight:'Da non perdere',label_tips:'Da sapere'};
 const STANDARD=['note_title','eyebrow','head1','body1','head2','body2','label_base','base','label_duration','duration','label_highlight','highlight','label_tips','tips'];
 const PAPER=[{"id":"basic_1","name":"Basic 1 · Avorio","season":"basic","colors":["#f7f0e4","#f2e8d9"],"fibers":"#b4a692","direction":0,"tags":["basic","basic 1 · avorio"]},{"id":"basic_2","name":"Basic 2 · Salvia","season":"basic","colors":["#e9eee4","#f5f3e9"],"fibers":"#a0a995","direction":1,"tags":["basic","basic 2 · salvia"]},{"id":"basic_3","name":"Basic 3 · Sabbia","season":"basic","colors":["#f3e7dc","#f9f2e9"],"fibers":"#bc9b89","direction":2,"tags":["basic","basic 3 · sabbia"]},{"id":"basic_4","name":"Basic 4 · Perla","season":"basic","colors":["#f1f1eb","#e6ece5"],"fibers":"#aeb7ae","direction":3,"tags":["basic","basic 4 · perla"]},{"id":"spring_1","name":"Primavera 1 · Boccioli","season":"spring","colors":["#f5efe4","#dce7d7"],"fibers":"#98b689","direction":0,"tags":["spring","primavera 1 · boccioli"]},{"id":"spring_2","name":"Primavera 2 · Botanica","season":"spring","colors":["#edf2e3","#d5e2c7"],"fibers":"#9bb88d","direction":1,"tags":["spring","primavera 2 · botanica"]},{"id":"spring_3","name":"Primavera 3 · Luce","season":"spring","colors":["#f8f2df","#e9eedb"],"fibers":"#aabf9e","direction":2,"tags":["spring","primavera 3 · luce"]},{"id":"summer_1","name":"Estate 1 · Mediterranea","season":"summer","colors":["#f9efd9","#dfe9eb"],"fibers":"#91b0b4","direction":3,"tags":["summer","estate 1 · mediterranea"]},{"id":"summer_2","name":"Estate 2 · Sabbia","season":"summer","colors":["#f4ead6","#efd7b4"],"fibers":"#cfaa78","direction":0,"tags":["summer","estate 2 · sabbia"]},{"id":"summer_3","name":"Estate 3 · Agrumi","season":"summer","colors":["#fff1d9","#f2d59c"],"fibers":"#d29c5d","direction":1,"tags":["summer","estate 3 · agrumi"]},{"id":"autumn_1","name":"Autunno 1 · Terracotta","season":"autumn","colors":["#f3e3d7","#d8b59c"],"fibers":"#bd835d","direction":2,"tags":["autumn","autunno 1 · terracotta"]},{"id":"autumn_2","name":"Autunno 2 · Olivato","season":"autumn","colors":["#ece7d5","#c4c59e"],"fibers":"#8d9b68","direction":3,"tags":["autumn","autunno 2 · olivato"]},{"id":"autumn_3","name":"Autunno 3 · Vendemmia","season":"autumn","colors":["#f2e8dc","#c8a88b"],"fibers":"#9a7c66","direction":0,"tags":["autumn","autunno 3 · vendemmia"]},{"id":"winter_1","name":"Inverno 1 · Nebbia","season":"winter","colors":["#eff0ee","#d9dedd"],"fibers":"#9eafac","direction":1,"tags":["winter","inverno 1 · nebbia"]},{"id":"winter_2","name":"Inverno 2 · Bosco","season":"winter","colors":["#e7ece8","#cbd7cf"],"fibers":"#849e90","direction":2,"tags":["winter","inverno 2 · bosco"]},{"id":"winter_3","name":"Inverno 3 · Ghiaccio","season":"winter","colors":["#f1f3f2","#dde5ea"],"fibers":"#a9bfcc","direction":3,"tags":["winter","inverno 3 · ghiaccio"]}];
@@ -767,8 +767,94 @@ async function createKuraProjectFromBrief(spec,options={}){
  refreshAll();showProjectOptions();await persistNow();emitToast('Nuovo progetto: '+pages.length+' pagine create ✓');
  return{ok:true,projectId:id,projectName:label,pages:pages.length,warnings,sourceProjectId,pageIds:pages.map(p=>p.id)}
 }
+// KURA element clipboard: survives project switches and page reloads in this browser.
+// Assets uploaded by the user are included; never mutates the source project on copy.
+const KURA_CLIPBOARD_STORAGE='kura:element-clipboard:v1';
+function kuraElementPayload(){
+ const p=page();if(!p||!selected)throw Error('Seleziona prima un elemento sulla tavola');
+ const id=selected,clip={format:'KURA_ELEMENT_V1',from:p.name,createdAt:Date.now(),kind:'',payload:null};
+ if(id.startsWith('sticker:')){
+  const obj=p.stickers.find(x=>x.id===id.slice(8));
+  if(!obj)throw Error('Decorazione non trovata');
+  clip.kind='sticker';clip.payload=deepClone(obj);
+ }else if(id.startsWith('text:')){
+  const key=id.slice(5),free=freeItem(p,key);
+  if(!free&&!Object.prototype.hasOwnProperty.call(p.fields,key))throw Error('Testo non disponibile');
+  const r=textRect(p,key),o=offsetFor(p,key);
+  clip.kind='text';
+  clip.payload={text:free?free.text:p.fields[key],style:deepClone(p.textStyles?.[key]||{}),
+   rect:deepClone(r||{x:170,y:430,w:430,h:110}),rot:o.rot||0,opacity:o.opacity??1};
+ }else if(['scene','postcard'].includes(id)){
+  clip.kind=id;clip.payload={visual:deepClone(p.visuals[id]),assetKey:p.imageKeys?.[id]||null};
+ }else if(id==='note'){
+  clip.kind='note';
+  const keys=['note_title','label_base','label_duration','label_highlight','label_tips','base','duration','highlight','tips'];
+  clip.payload={visual:deepClone(p.visuals.note),fields:{},offsets:{},styles:{},
+   noteScale:p.noteScale,noteTextShift:p.noteTextShift,noteTitleMode:p.noteTitleMode};
+  for(const key of keys){
+   clip.payload.fields[key]=p.fields[key];
+   if(p.offsets?.[key])clip.payload.offsets[key]=deepClone(p.offsets[key]);
+   if(p.textStyles?.[key])clip.payload.styles[key]=deepClone(p.textStyles[key]);
+  }
+ }else throw Error('Questo elemento non è copiabile');
+ const key=clip.kind==='sticker'?clip.payload.key:clip.kind==='scene'||clip.kind==='postcard'?clip.payload.assetKey:null;
+ if(key&&ASSETS[key]&&String(ASSETS[key]).startsWith('data:image/'))clip.customAsset={key,data:ASSETS[key]};
+ return clip
+}
+async function kuraCopyElement(){
+ const clip=kuraElementPayload();
+ const ok=await dbPut(KURA_CLIPBOARD_STORAGE,clip);
+ try{localStorage.setItem(KURA_CLIPBOARD_STORAGE,JSON.stringify(clip))}catch(_){}
+ try{await navigator.clipboard?.writeText?.(JSON.stringify(clip))}catch(_){}
+ emitToast('Elemento copiato: apri un altro progetto e premi Incolla ✓');
+ return{ok:true,kind:clip.kind,saved:ok}
+}
+async function kuraPasteElement(){
+ let clip=null;
+ try{
+  const raw=await navigator.clipboard?.readText?.();
+  if(raw){const obj=JSON.parse(raw);if(obj?.format==='KURA_ELEMENT_V1')clip=obj}
+ }catch(_){}
+ if(!clip)clip=await dbGet(KURA_CLIPBOARD_STORAGE);
+ if(!clip){try{clip=JSON.parse(localStorage.getItem(KURA_CLIPBOARD_STORAGE))}catch(_){}}
+ if(!clip||clip.format!=='KURA_ELEMENT_V1'||!['text','sticker','scene','postcard','note'].includes(clip.kind))throw Error('Nessun elemento KURA copiato');
+ const p=page();if(!p)throw Error('Apri prima un progetto');
+ if(clip.customAsset){
+  const {key,data}=clip.customAsset;
+  if(/^custom_[a-zA-Z0-9_-]+$/.test(key)&&typeof data==='string'&&data.startsWith('data:image/')&&data.length<15000000){
+   ASSETS[key]=data;imageCache.delete(key);assetImage(key)
+  }
+ }
+ snapshot();let pasteId='';
+ const obj=deepClone(clip.payload||{});
+ if(clip.kind==='sticker'){
+  obj.id=uuid();obj.x=(Number(obj.x)||200)+24;obj.y=(Number(obj.y)||300)+24;
+  p.stickers.push(obj);pasteId='sticker:'+obj.id;
+ }else if(clip.kind==='text'){
+  const id=uuid(),r=obj.rect||{},f={id,text:String(obj.text||''),x:(Number(r.x)||130)+20,y:(Number(r.y)||240)+20,
+   w:Math.max(80,Number(r.w)||440),h:Math.max(35,Number(r.h)||110),
+   rot:Number(obj.rot)||0,opacity:obj.opacity??1,scale:1};
+  ensurePage(p).freeTexts.push(f);p.textStyles['free:'+id]=deepClone(obj.style||{});
+  pasteId='text:free:'+id;
+ }else if(clip.kind==='scene'||clip.kind==='postcard'){
+  p.visuals[clip.kind]={...p.visuals[clip.kind],...obj.visual,visible:true};
+  p.imageKeys??={};p.imageKeys[clip.kind]=obj.assetKey;
+  pasteId=clip.kind;
+ }else{
+  p.visuals.note={...p.visuals.note,...obj.visual,visible:true};
+  p.noteScale=obj.noteScale??p.noteScale;p.noteTextShift=obj.noteTextShift??p.noteTextShift;
+  p.noteTitleMode=obj.noteTitleMode||'image';
+  Object.assign(p.fields,obj.fields||{});Object.assign(p.offsets,obj.offsets||{});
+  Object.assign(p.textStyles,obj.styles||{});pasteId='note'
+ }
+ selected=pasteId;activeKey=null;shownPage=null;refreshAll();scheduleSave();
+ emitToast('Elemento incollato nel progetto ✓');
+ return{ok:true,kind:clip.kind,selected:pasteId}
+}
 // Local-project bridge for optional GitHub cloud save. Never exposes auth credentials.
 window.KURA_PROJECTS=Object.freeze({
+ copyElement:kuraCopyElement,
+ pasteElement:kuraPasteElement,
  createFromBrief:createKuraProjectFromBrief,
  current(){return{id:currentProjectId,name:pIndex.find(v=>v.id===currentProjectId)?.name||'Carosello KURA'}},
  async saveLocal(){await persistNow();return exportProject()},
@@ -824,7 +910,7 @@ window.KURA_PROJECTS=Object.freeze({
   return{source:'github',id}
  }
 });
-window.KURA_V2={version:'4.1.1',drawKuraBackground:drawKuraBackground,paintEditable:paintEditable,paintFreeTexts:paintFreeTexts,commonBodyFontSize:commonBodyFontSize};
+window.KURA_V2={version:'4.2.0',drawKuraBackground:drawKuraBackground,paintEditable:paintEditable,paintFreeTexts:paintFreeTexts,commonBodyFontSize:commonBodyFontSize};
 addV2Controls();initOverlay();initVisualTransform();bindBackgroundControls();bindProjectActions();
 (function(){
  const top=document.querySelector('.top-actions');
