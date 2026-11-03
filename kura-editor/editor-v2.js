@@ -321,7 +321,7 @@ function updateOverlays(){
   nd.edit.style.fontSize=(metrics.get(key)||st.fontSize)+'px';
   nd.edit.style.lineHeight=String(st.lineHeight);
   nd.edit.style.fontFamily='"'+effectiveFamily(st)+'",sans-serif';
-  nd.edit.style.fontWeight=st.family.startsWith('KURA Brush')?'400':String(st.fontWeight||400);nd.edit.style.webkitTextStroke=st.family.startsWith('KURA Brush')?(st.fontWeight===800?'1.5px currentColor':st.fontWeight===700?'.75px currentColor':'0'):st.family==='Kaushan Script'?'0.18px currentColor':'0';nd.edit.style.textAlign=key==='note_title'?'center':'left';
+  nd.edit.style.fontWeight=st.family.startsWith('KURA Brush')?'400':(p.textStyles[key]?.fontWeight?String(st.fontWeight):st.bold?'800':'500');nd.edit.style.fontSynthesis=st.family.startsWith('KURA Brush')?'none':'weight';nd.edit.style.webkitTextStroke=st.family.startsWith('KURA Brush')?(st.fontWeight===800?'1.5px currentColor':st.fontWeight===700?'.75px currentColor':'0'):st.family==='Kaushan Script'?'0.18px currentColor':'0';nd.edit.style.textAlign=key==='note_title'?'center':'left';
   nd.edit.style.opacity=String(safeNumber(o.opacity,0,1,1));
   if(activeKey!==key){const raw=rawFor(p,key);if(nd.edit.dataset.lastRaw!==raw){nd.edit.innerHTML=markdownHTML(raw);nd.edit.dataset.lastRaw=raw}}
   nd.edit.classList.toggle('editing',activeKey===key);
