@@ -212,37 +212,64 @@
   }
   return result
  }
- async function saveToGitHub(){
-  if(!accessToken)throw Error('Prima collega GitHub dal pulsante ☁ GitHub');
+ async function saveToGitHub(options={}){
+  if(!accessToken)throw Error('GitHub non collegato. Collega il tuo account per pubblicare le modifiche.');
   const pkg=await bridge().saveLocal();
-  const id=pkg.projectId;
-  const path=filePath(id);
-  const serialized=JSON.stringify({...pkg,githubSavedAt:new Date().toISOString()},null,2);
-  if(new TextEncoder().encode(serialized).length>4_000_000)throw Error('Il progetto contiene immagini troppo grandi: esporta prima una copia JSON.');
+  const id=pkg.projectId,path=filePath(id);
   const current=await api('/contents/'+path+'?ref='+BRANCH,{allowMissing:true});
-  const known=getBase(id);
-  if(current&&(!known||known!==current.sha)){
-   status('⚠ La versione GitHub è cambiata: aggiorna o salva con un altro nome.');
-   throw Error('Un altro collaboratore ha salvato modifiche. Usa «Aggiorna dal cloud» oppure «Salva con nome» per non sovrascriverle.')
+  const baseline=await baselineFor(id);
+  const localHash=await digest(pkg);
+  if(current){
+   if(!baseline){
+    const remote=await readCloudVersion(id);
+    if(await digest(remote.data)===localHash){
+     await rememberBaseline(id,remote.sha,pkg);
+     syncStatus('✓ Già salvato su GitHub','ok');
+     return{projectId:id,alreadySaved:true,link:cloudLink(id)}
+    }
+    syncStatus('⚠ Impossibile pubblicare: la versione locale non è ancora collegata alla revisione GitHub','warning');
+    throw Error('Questa copia non ha una versione di partenza verificata. Ho conservato le modifiche locali. Usa «Aggiorna dal cloud» (con backup) oppure «Salva con nome».')
+   }
+   if(baseline.sha!==current.sha){
+    syncStatus('⚠ Conflitto: un collaboratore ha salvato nuove modifiche. La tua bozza è al sicuro nel browser.','warning');
+    throw Error('Un collaboratore ha salvato prima di te. NON ho sostituito le tue modifiche. Usa «Aggiorna dal cloud» oppure «Salva con nome».')
+   }
+   if(baseline.digest===localHash){
+    syncStatus('✓ Nessuna modifica da pubblicare','ok');
+    return{projectId:id,alreadySaved:true,link:cloudLink(id)}
+   }
   }
-  const body={message:'KURA: salva '+String(pkg.projectName||id).slice(0,72),content:encodeBase64(serialized),branch:BRANCH};
-  if(current?.sha)body.sha=current.sha;
-  const saved=await api('/contents/'+path,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  if(!saved?.commit?.sha)throw Error('GitHub non ha confermato il salvataggio');
-  setBase(id,saved.content?.sha||current?.sha||saved.commit.sha);
-  status('✓ Salvato su GitHub · '+new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}));
+  const serialized=JSON.stringify({...pkg,githubSavedAt:new Date().toISOString(),githubSavedBy:connectedUser||'Collaboratore'},null,2);
+  if(new TextEncoder().encode(serialized).length>4_000_000)throw Error('Progetto troppo grande per il salvataggio diretto GitHub: esporta il JSON.');
+  const data={message:'KURA: aggiorna '+String(pkg.projectName||id).slice(0,65),content:encodeBase64(serialized),branch:BRANCH};
+  if(current?.sha)data.sha=current.sha;
+  const saved=await api('/contents/'+path,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+  if(!saved?.commit?.sha||!saved.content?.sha)throw Error('GitHub non ha confermato la nuova revisione');
+  await rememberBaseline(id,saved.content.sha,pkg);
+  syncStatus('✓ Modifiche condivise · '+new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}),'ok');
   updateLink(id);
+  if(!options.quiet)toast('Salvato su GitHub: l’altra persona può ora aggiornare ✓');
   return{projectId:id,commit:saved.commit.sha,link:cloudLink(id)}
  }
  async function normalSave(){
   if(busy)return;
-  busy=true;const btn=document.getElementById('topSaveProject');if(btn)btn.disabled=true;
+  busy=true;
+  const btn=document.getElementById('topSaveProject');if(btn)btn.disabled=true;
   try{
-   await bridge().saveLocal();
-   if(accessToken){const result=await saveToGitHub();toast('Salvato nel browser e su GitHub ✓');status('✓ Salvato anche su GitHub')}
-   else{toast('Salvato nel browser ✓ Per il cloud: ☁ GitHub');status('✓ Salvato in questo browser (GitHub non collegato)')}
-  }catch(error){toast('Salvataggio GitHub non riuscito: '+error.message);status(error.message)}
-  finally{busy=false;if(btn)btn.disabled=false}
+   await credentialReady;
+   if(accessToken){
+    const result=await saveToGitHub();
+    if(result.alreadySaved)toast('Progetto già sincronizzato con GitHub ✓');
+   }else{
+    await bridge().saveLocal();
+    syncStatus('⚠ Salvato soltanto sul tuo dispositivo. Collega GitHub per condividerlo.','warning');
+    toast('Salvato LOCALMENTE: su GitHub non è stato pubblicato nulla.');
+   }
+  }catch(error){
+   console.warn('KURA cloud save:',error.message);
+   syncStatus('⚠ Salvataggio GitHub non completato. Le modifiche restano nel browser.','warning');
+   toast('NON pubblicato su GitHub: '+error.message);
+  }finally{busy=false;if(btn)btn.disabled=false}
  }
  async function saveAs(){
   if(busy)return;
