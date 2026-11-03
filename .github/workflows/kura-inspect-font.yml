@@ -1,0 +1,28 @@
+name: KURA Inspect Brush Font
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'kura-editor/tools/inspect_brush_font.py'
+      - '.github/workflows/kura-inspect-font.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install fonttools brotli
+      - run: python kura-editor/tools/inspect_brush_font.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add kura-editor/assets/kura-brush-capabilities.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Document KURA Brush actual glyph and weight features"
+            git push
+          fi
