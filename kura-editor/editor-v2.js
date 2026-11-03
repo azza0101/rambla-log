@@ -182,7 +182,7 @@ function attachFrame(key){
  const flipH=document.createElement('button');flipH.className='kura-manip-handle kura-fliph-handle';flipH.type='button';flipH.textContent='⇋';flipH.title='Ribalta orizzontalmente';frame.appendChild(flipH);
  const flipV=document.createElement('button');flipV.className='kura-manip-handle kura-flipv-handle';flipV.type='button';flipV.textContent='⇅';flipV.title='Ribalta verticalmente';frame.appendChild(flipV);
  frame.addEventListener('pointerdown',function(e){if(e.target===frame){startGesture(e,key,'move')}else if(e.target===edit){selected='text:'+key;refreshInspector();showToolbar(key)}});
- edit.addEventListener('focus',function(){activeKey=key;selected='text:'+key;frame.classList.add('is-editing');edit.classList.add('editing');refreshInspector();showToolbar(key);queueRender()});
+ edit.addEventListener('focus',function(){kuraMulti.clear();kuraUpdateGroupBox();activeKey=key;selected='text:'+key;frame.classList.add('is-editing');edit.classList.add('editing');refreshInspector();showToolbar(key);queueRender()});
  edit.addEventListener('input',function(){updateModel(key,readMarkdown(edit));updateToolbar()});
  edit.addEventListener('blur',function(){updateModel(key,readMarkdown(edit));if(activeKey===key)activeKey=null;frame.classList.remove('is-editing');edit.classList.remove('editing');queueRender()});
  edit.addEventListener('paste',function(e){e.preventDefault();const data=(e.clipboardData||window.clipboardData).getData('text/plain');document.execCommand('insertText',false,data)});
