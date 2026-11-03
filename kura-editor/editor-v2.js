@@ -310,7 +310,7 @@ function updateOverlays(){
    posX=mapped.x-rect.w/2;posY=mapped.y-rect.h/2;rot+=n.rotation;
   }
   nd.frame.style.left=posX+'px';nd.frame.style.top=posY+'px';nd.frame.style.width=rect.w+'px';nd.frame.style.height=rect.h+'px';nd.frame.style.transform='rotate('+rot+'deg) scale('+(o.flipX?-1:1)+','+(o.flipY?-1:1)+')';
-  nd.frame.classList.toggle('is-selected',selected==='text:'+key);
+  nd.frame.classList.toggle('is-selected',selected==='text:'+key||kuraMulti.has('text:'+key));
   const scale=width/W,inv=1/scale;
   for(const button of nd.frame.querySelectorAll('.kura-manip-handle'))button.style.transform='scale('+inv+')';
   for(const button of nd.frame.querySelectorAll('.kura-move-handle,.kura-rotate-handle,.kura-fliph-handle,.kura-flipv-handle'))button.style.top=(posY*scale<38?5:-34*inv)+'px';
@@ -459,6 +459,7 @@ function kuraBounds(ids,p=page()){
 function kuraResolveSelection(id,append=false){
  if(!id)return;
  const group=kuraGroupFor(id);
+ if(append&&kuraMulti.size===0&&selected&&selected!==id)kuraMulti.add(selected);
  if(!append){kuraMulti.clear();if(group)for(const k of group.members)kuraMulti.add(k);else kuraMulti.add(id)}
  else{
   const items=group?group.members:[id];
@@ -583,6 +584,13 @@ function kuraInitGroups(){
     e.preventDefault();e.stopImmediatePropagation();return
    }
   }
+  if(!e.shiftKey&&e.target===canvas){
+   const hit=[...hitboxes].reverse().find(b=>pt.x>=b.x&&pt.x<=b.x+b.w&&pt.y>=b.y&&pt.y<=b.y+b.h);
+   if(hit&&kuraGroupFor(hit.id)){
+    kuraResolveSelection(hit.id,false);e.preventDefault();e.stopImmediatePropagation();return
+   }
+   kuraMulti.clear();kuraUpdateGroupBox();return
+  }
   if(!e.shiftKey)return;
   let key=null;
   const frame=e.target.closest('.kura-text-frame');
@@ -598,7 +606,7 @@ function kuraInitGroups(){
   const hit=[...hitboxes].reverse().find(b=>pt.x>=b.x&&pt.x<=b.x+b.w&&pt.y>=b.y&&pt.y<=b.y+b.h);
   if(!kuraMulti.size&&hit)kuraResolveSelection(hit.id,false);
   const ids=kuraSelectedIds();
-  if(!ids.length)return;e.preventDefault();e.stopPropagation();
+  if(!ids.length)return;e.preventDefault();e.stopImmediatePropagation();
   kuraGroupMenu?.remove();kuraGroupMenu=document.createElement('div');kuraGroupMenu.className='kura-group-context';
   const group=kuraGroupFor(ids[0]);
   kuraGroupMenu.innerHTML='<button type="button" data-group>Raggruppa elementi ('+ids.length+')</button><button type="button" data-ungroup>Separa gruppo</button>';
@@ -611,7 +619,7 @@ function kuraInitGroups(){
  },true);
  document.addEventListener('pointerdown',e=>{if(kuraGroupMenu&&!kuraGroupMenu.contains(e.target)){kuraGroupMenu.remove();kuraGroupMenu=null}},true);
  const formerRefresh=refreshAll;
- refreshAll=function(){if(kuraGroupPage!==page()?.id){kuraMulti.clear();kuraGroupPage=page()?.id}formerRefresh();requestAnimationFrame(kuraUpdateGroupBox)};
+ refreshAll=function(){if(kuraGroupPage!==currentProjectId+':'+page()?.id){kuraMulti.clear();kuraGroupPage=currentProjectId+':'+page()?.id}formerRefresh();requestAnimationFrame(kuraUpdateGroupBox)};
  const formerQueue=queueRender;
  queueRender=function(){formerQueue();requestAnimationFrame(kuraUpdateGroupBox)};
 }
