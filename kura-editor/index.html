@@ -93,7 +93,7 @@
     <div class="kura-note-title-options" style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px">
      <label style="font-size:11px">Font
       <select id="noteTitleFont" style="width:100%">
-       <option value="KURA Brush2">KURA Brush originale</option>
+       <option value="KURA Brush2">KURA Brush originale</option><option value="KURA Custom Brush">Font personalizzato</option>
        <option value="Caveat Brush">Caveat Brush</option>
        <option value="Kaushan Script">Kaushan Script</option>
        <option value="Montserrat">Montserrat</option>
@@ -545,10 +545,21 @@ async function fileDataURL(file){return new Promise((resolve,reject)=>{const r=n
 async function setUpload(file,type){if(!file)return;if(!file.type.startsWith('image/')){emitToast('Carica un PNG o JPG');return}const data=await fileDataURL(file);const id='custom_'+uuid();ASSETS[id]=data;imageCache.delete(id);snapshot();page().imageKeys[type]=id;page().visuals[type].visible=true;queueRender();scheduleSave();emitToast('Immagine inserita come livello indipendente')}
 $('#sceneFile').onchange=e=>setUpload(e.target.files?.[0],'scene');$('#postcardFile').onchange=e=>setUpload(e.target.files?.[0],'postcard');
 // FontFace: user's own KURA Brush2 font loaded locally; font bytes are never bundled in this HTML.
-async function installFont(buffer,persist=false){try{const ff=new FontFace('KURA Brush2',buffer,{style:'normal',weight:'400'});await ff.load();document.fonts.add(ff);faceLoaded=true;fontBlob=buffer;$('#fontStatus').innerHTML='<b>KURA Brush2 <span class="pill ok">Caricato ✓</span></b><p>Il font reale è attivo su tutti i minititoli, anche nei PNG. '+(persist?'Disponibile nell’app.':'Puoi salvarlo localmente con il pulsante sotto.')+'</p>';queueRender();return true}catch(err){console.error(err);emitToast('Font non valido o non compatibile');return false}}
+let uploadedKuraFontFace=null;
+async function installFont(buffer,persist=false){
+ try{
+  const ff=new FontFace('KURA Custom Brush',buffer,{style:'normal',weight:'400'});
+  await ff.load();
+  if(uploadedKuraFontFace)document.fonts.delete(uploadedKuraFontFace);
+  document.fonts.add(ff);uploadedKuraFontFace=ff;
+  faceLoaded=true;fontBlob=buffer;
+  const box=$('#fontStatus');if(box)box.innerHTML='<b>Font aggiuntivo <span class="pill ok">Caricato ✓</span></b><p>Il font personale è disponibile come «KURA Custom Brush». Il font KURA Brush originale e le alternative restano invariati.</p>';
+  queueRender();return true
+ }catch(err){console.error(err);emitToast('Font non valido o non compatibile');return false}
+}
 $('#fontFile').onchange=async e=>{const f=e.target.files?.[0];if(f){const b=await f.arrayBuffer();await installFont(b)}};
-$('#fontRemember').onclick=async()=>{if(!fontBlob){emitToast('Carica prima il font KURA Brush2');return}await dbPut('font',{buf:fontBlob});emitToast('Font salvato nel browser per le prossime visite')};
-$('#fontReset').onclick=async()=>{await dbDelete('font');fontBlob=null;faceLoaded=false;await document.fonts.load('39px "KURA Brush2"');queueRender();emitToast('KURA Brush originale ripristinato')};
+$('#fontRemember').onclick=async()=>{if(!fontBlob){emitToast('Carica prima il font aggiuntivo');return}await dbPut('font',{buf:fontBlob});emitToast('Font salvato nel browser per le prossime visite')};
+$('#fontReset').onclick=async()=>{await dbDelete('font');fontBlob=null;faceLoaded=false;if(uploadedKuraFontFace){document.fonts.delete(uploadedKuraFontFace);uploadedKuraFontFace=null}await document.fonts.load('39px "KURA Brush2"');queueRender();emitToast('Font KURA originale ripristinato')};
 // Offline ZIP (uncompressed PKZIP; works in Safari/Firefox/Chrome without libraries).
 const enc=new TextEncoder();function le16(x){return [x&255,(x>>>8)&255]}function le32(x){return[x&255,(x>>>8)&255,(x>>>16)&255,(x>>>24)&255]}const crcTable=(()=>{let t=[];for(let n=0;n<256;n++){let c=n;for(let j=0;j<8;j++)c=c&1?0xedb88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();function crc32(bytes){let c=0xffffffff;for(const b of bytes)c=crcTable[(c^b)&255]^(c>>>8);return(c^0xffffffff)>>>0}
 async function zipFiles(entries){let parts=[],central=[],offset=0;for(const [name,blob] of entries){const bytes=new Uint8Array(await blob.arrayBuffer()),nm=enc.encode(name),crc=crc32(bytes);const head=new Uint8Array([80,75,3,4,20,0,0,0,0,0,0,0,0,0,...le32(crc),...le32(bytes.length),...le32(bytes.length),...le16(nm.length),0,0]);parts.push(head,nm,bytes);const ch=new Uint8Array([80,75,1,2,20,0,20,0,0,0,0,0,0,0,0,0,...le32(crc),...le32(bytes.length),...le32(bytes.length),...le16(nm.length),0,0,0,0,0,0,0,0,0,0,0,0,...le32(offset)]);central.push(ch,nm);offset+=head.length+nm.length+bytes.length}const cc=central.reduce((n,p)=>n+p.length,0);const end=new Uint8Array([80,75,5,6,0,0,0,0,...le16(entries.length),...le16(entries.length),...le32(cc),...le32(offset),0,0]);return new Blob([...parts,...central,end],{type:'application/zip'})}
