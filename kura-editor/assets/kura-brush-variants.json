@@ -1,0 +1,12 @@
+{
+  "ss01": {
+    "glyphSubstitutions": 24,
+    "codepointMappings": 24,
+    "file": "KURA_Brush_ss01.woff2"
+  },
+  "ss02": {
+    "glyphSubstitutions": 24,
+    "codepointMappings": 24,
+    "file": "KURA_Brush_ss02.woff2"
+  }
+}
