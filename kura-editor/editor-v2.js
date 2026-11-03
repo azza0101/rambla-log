@@ -46,7 +46,7 @@ function styleFor(p,key){
  const st=p.textStyles&&p.textStyles[key]||{},df=defaultStyle(p,key);
  if(key==='body1'||key==='body2')df.fontSize=commonBodyFontSize(p);
  if((key==='head1'||key==='head2')&&!st.family)st.family='Caveat Brush';
- return{fontSize:(key==='body1'||key==='body2'?df.fontSize:(KURA_NOTE_KEYS.has(key)&&Number.isFinite(st.fontSize)?safeNumber(st.fontSize*(p.noteScale||1),10,200,df.fontSize):safeNumber(st.fontSize,10,200,df.fontSize))),family:(st.family==='Feeling Passionate'?'KURA Brush2':(['Montserrat','KURA Brush2','KURA Brush Alt 1','KURA Brush Alt 2','Kaushan Script','Caveat Brush','Caveat'].includes(st.family)?st.family:df.family)),fontWeight:([400,700,800].includes(Number(st.fontWeight))?Number(st.fontWeight):(st.bold?700:400)),bold:typeof st.bold==='boolean'?st.bold:df.bold,color:/^#[0-9a-fA-F]{6}$/.test(st.color||'')?st.color:df.color,lineHeight:safeNumber(st.lineHeight,.8,2.5,df.lineHeight)};
+ return{fontSize:(key==='body1'||key==='body2'?df.fontSize:(KURA_NOTE_KEYS.has(key)&&Number.isFinite(st.fontSize)?safeNumber(st.fontSize*(p.noteScale||1),10,200,df.fontSize):safeNumber(st.fontSize,10,200,df.fontSize))),family:(st.family==='Feeling Passionate'?'KURA Brush2':(['Montserrat','KURA Brush2','KURA Brush Alt 1','KURA Brush Alt 2','KURA Custom Brush','Kaushan Script','Caveat Brush','Caveat'].includes(st.family)?st.family:df.family)),fontWeight:([400,700,800].includes(Number(st.fontWeight))?Number(st.fontWeight):(st.bold?700:400)),bold:typeof st.bold==='boolean'?st.bold:df.bold,color:/^#[0-9a-fA-F]{6}$/.test(st.color||'')?st.color:df.color,lineHeight:safeNumber(st.lineHeight,.8,2.5,df.lineHeight)};
 }
 // Both descriptive paragraphs always share one fitted font size.
 // The original renderer shrank them independently, causing inconsistent typography.
@@ -242,7 +242,7 @@ function updateToolbar(){
  if(!toolbar||toolbar.classList.contains('hidden'))return;
  const key=toolbar.dataset.key;if(!key||!page())return;
  const st=styleFor(page(),key),o=offsetFor(page(),key);
- const isKura=st.family.startsWith('KURA Brush');
+ const isKura=st.family==='KURA Brush2'||st.family==='KURA Brush Alt 1'||st.family==='KURA Brush Alt 2';
   toolbar.querySelector('[data-font]').value=isKura?'KURA Brush2':st.family;
   toolbar.querySelector('[data-glyph]').value=st.family==='KURA Brush Alt 1'?'1':st.family==='KURA Brush Alt 2'?'2':'0';
   toolbar.querySelector('[data-glyph]').style.display=isKura?'':'none';
@@ -252,7 +252,7 @@ function updateToolbar(){
  toolbar.querySelector('[data-bold]').classList.toggle('is-on',st.bold);
 }
 function makeToolbar(){
- toolbar=document.createElement('div');toolbar.className='kura-selection-toolbar hidden';toolbar.setAttribute('role','toolbar');toolbar.innerHTML='<span class="kura-bar-grip">⋮⋮</span><select data-font title="Font"><option>Montserrat</option><option value="KURA Brush2">KURA Brush originale</option><option>Kaushan Script</option><option>Caveat Brush</option><option>Caveat</option></select><select data-glyph title="Glifi KURA"><option value="0">Glifi base</option><option value="1">Glifi alternativi 01</option><option value="2">Glifi alternativi 02</option></select><select data-weight title="Spessore"><option value="400">Regular</option><option value="700">Bold</option><option value="800">ExtraBold</option></select><button type="button" data-minus title="Riduci dimensione">−</button><input data-size type="number" min="10" max="200" step="1" aria-label="Dimensione del testo"/><button type="button" data-plus title="Aumenta dimensione">＋</button><button type="button" data-bold title="Grassetto (anche sulla selezione)">B</button><span class="kura-control-label" data-rotation>0°</span><button type="button" data-reset title="Reimposta posizione">↺</button><button type="button" data-close title="Chiudi">×</button>';
+ toolbar=document.createElement('div');toolbar.className='kura-selection-toolbar hidden';toolbar.setAttribute('role','toolbar');toolbar.innerHTML='<span class="kura-bar-grip">⋮⋮</span><select data-font title="Font"><option>Montserrat</option><option value="KURA Brush2">KURA Brush originale</option><option value="KURA Custom Brush">Font personale</option><option>Kaushan Script</option><option>Caveat Brush</option><option>Caveat</option></select><select data-glyph title="Glifi KURA"><option value="0">Glifi base</option><option value="1">Glifi alternativi 01</option><option value="2">Glifi alternativi 02</option></select><select data-weight title="Spessore"><option value="400">Regular</option><option value="700">Bold</option><option value="800">ExtraBold</option></select><button type="button" data-minus title="Riduci dimensione">−</button><input data-size type="number" min="10" max="200" step="1" aria-label="Dimensione del testo"/><button type="button" data-plus title="Aumenta dimensione">＋</button><button type="button" data-bold title="Grassetto (anche sulla selezione)">B</button><span class="kura-control-label" data-rotation>0°</span><button type="button" data-reset title="Reimposta posizione">↺</button><button type="button" data-close title="Chiudi">×</button>';
  const stage=document.querySelector('.stage-inner');
  const canvasWrap=stage?.closest('.canvas-wrap');
  let dock=document.getElementById('kuraTextToolbarDock');
@@ -669,7 +669,7 @@ async function checkHostedFont(){
   await Promise.all(families.map(f=>document.fonts.load('42px "'+f+'"')));
   const missing=families.filter(f=>!document.fonts.check('42px "'+f+'"'));
   if(missing.length)throw Error('Varianti non caricate: '+missing.join(', '));
-  if(box)box.innerHTML='<b>KURA Brush originale <span class="pill ok">3 varianti ✓</span></b><p>Feeling Passionate: glifi base, ss01, ss02. Regular nativo; Bold ed ExtraBold simulati ispessendo il tratto, anche nel PNG esportato.</p>';
+  if(box&&!document.fonts.check('39px "KURA Custom Brush"'))box.innerHTML='<b>KURA Brush originale <span class="pill ok">3 varianti ✓</span></b><p>Feeling Passionate: glifi base, ss01, ss02. Regular nativo; Bold ed ExtraBold simulati ispessendo il tratto, anche nel PNG esportato.</p>';
   queueRender();
  }catch(err){
   if(box)box.textContent='KURA Brush: errore di caricamento. '+String(err.message||err);
