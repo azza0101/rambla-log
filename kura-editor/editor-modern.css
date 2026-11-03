@@ -1,0 +1,100 @@
+/* KURA 4.3 — quieter, contemporary forest-green editorial application chrome */
+:root{--kura-ui-edge:#dce5d9;--kura-ui-card:#fffdf9;--kura-ui-soft:#f2f5ee}
+body{background:#e9eee8;color:#1c3629}
+.topbar{background:#143629;box-shadow:none;border-bottom:1px solid #3b5a47;padding:10px 15px;gap:10px}
+.brand{min-width:158px;gap:9px}.brand-icon{width:35px;height:35px;border-radius:10px;background:#254b37;border-color:#53705d}
+.brand b{font-size:14px;letter-spacing:.025em}.brand small{letter-spacing:.015em;text-transform:none;opacity:.75}
+.top-actions{gap:5px}
+.top-actions .btn{min-height:35px;padding:7px 10px;font-size:11px;font-weight:680;white-space:nowrap;border-radius:9px}
+.top-actions .btn.ghost{border-color:#4b6855;background:transparent}
+.top-actions .btn.ghost:hover{background:#29503d}
+.top-actions .btn.primary{background:#dbb17b;color:#163725;border-color:#dbb17b}
+.shell{grid-template-columns:minmax(170px,192px) minmax(285px,320px) minmax(390px,1fr) minmax(200px,225px);max-width:1880px;padding:14px;gap:12px}
+.panel{border-radius:14px;background:var(--kura-ui-card);border:1px solid var(--kura-ui-edge);box-shadow:0 3px 12px #1b3c2910}
+.panehead{padding:17px 17px 12px;border-color:#e7ece4}
+.panehead .eyebrow{font-size:9px;letter-spacing:.09em}
+.panehead h2{font-size:18px;font-weight:770;letter-spacing:-.035em}
+.tabs{padding:6px 12px 8px;gap:4px;border-color:#e8ede6}
+.tab{font-size:11px;border-radius:8px;font-weight:680}
+.tab.active{color:#214b36;background:#e9f0e8}
+.tabpane{padding:14px 17px 20px}
+.section-title{font-size:11px;letter-spacing:.045em;font-weight:800;margin:16px 0 9px}
+.field{gap:5px;margin-bottom:12px}.field label{font-size:11px;font-weight:690}
+.field input,.field textarea,.field select{border:1px solid #dfe7dc;background:#fafbf7;border-radius:9px;color:#1d3d2a;font-size:12px;padding:9px 10px}
+.field input:focus,.field textarea:focus,.field select:focus{outline:2px solid #caa16b50;outline-offset:0;border-color:#c49b65}
+.btn{min-height:34px;border-radius:9px;padding:8px 10px;font-weight:685}
+.btn.flat{background:#edf3eb;border-color:#e4ece2;color:#2b553d}
+.btn.flat:hover{background:#e2eee0}
+.softbox,.kura-brief-import,.kura-bulk-font-panel{background:#f5f7f1;border-color:#e5ebe1;border-radius:12px}
+.kura-brief-import{padding:12px}.kura-bulk-font-panel{padding:12px}
+.kura-bulk-all{background:#fafcf8;border-color:#e8eee5}
+.kura-pages-sidebar{border-radius:13px;box-shadow:none}
+.kura-pages-rail-head{background:#f3f7f0;border-color:#e5ebe0;padding:11px}
+.kura-pages-rail-head strong{font-size:12px}
+.kura-pages-content{padding:9px}
+.kura-pages-content .pageitem{border:1px solid #e5eae2;border-radius:9px;padding:8px;margin-bottom:7px;background:#fffefa;gap:7px}
+.kura-pages-content .pageitem.active{background:#edf3e9;border-color:#afc9aa}
+.kura-pages-content .pageitem .title{font-size:11px;font-weight:740}
+.kura-pages-content .pageitem small{font-size:9px}
+.stage-head{min-height:31px;padding:0 4px}.stage-head strong{font-size:12px;font-weight:770}
+.stage-bg{background:#dfe7df;border:1px solid #d8e1d7;border-radius:13px;padding:14px}
+.stage-inner{box-shadow:0 13px 32px #172d2129}
+.preview-scroll{top:70px}.inspector{padding:14px}.inspector h3{font-size:15px;letter-spacing:-.03em}
+.kura-toolbar-dock{background:transparent!important;box-shadow:none!important;border:0!important;padding:0!important}
+.kura-selection-toolbar{background:#f4f7f1!important;color:#1f4030!important;border:1px solid #dce6da!important;box-shadow:0 5px 17px #183d2519!important;border-radius:12px!important;padding:5px 7px!important;gap:5px!important;max-width:100%!important}
+.kura-selection-toolbar .kura-bar-grip{color:#67806c}
+.kura-selection-toolbar select,.kura-selection-toolbar input,.kura-selection-toolbar button{background:#fffefa;border:1px solid #dee8dc;color:#22422e;border-radius:7px;min-height:29px;font-size:12px!important}
+.kura-selection-toolbar select{width:auto;max-width:155px}
+.kura-selection-toolbar [data-weight]{max-width:110px}
+.kura-selection-toolbar [data-bold].is-on{background:#e9c99a;border-color:#d2a56d}
+.kura-selection-toolbar .kura-control-label{color:#5f7764}
+.kura-note-title-options{padding:8px;border-radius:9px;background:#eef4eb}
+.kura-edit-title-button{width:100%;justify-content:center;margin-bottom:8px;font-size:12px}
+.kura-note-title-options label{font-size:11px}
+.kura-note-title-options input,.kura-note-title-options select{min-height:34px}
+/* Toolbar palette */
+.kura-selection-toolbar .kura-color-trigger{display:inline-flex;align-items:center;gap:5px;min-height:29px;padding:4px 7px;width:auto;border-radius:7px;cursor:pointer;white-space:nowrap}
+.kura-color-dot{display:inline-block;width:15px;height:15px;flex:0 0 15px;border-radius:5px;border:1px solid #1f352b33}
+.kura-color-hex{font:700 10px ui-monospace,Consolas,monospace;letter-spacing:0}.kura-color-chevron{opacity:.7}
+.kura-color-popover{position:fixed;z-index:1002;box-sizing:border-box;max-height:85vh;overflow-y:auto;border-radius:15px;background:#fffefa;color:#193b2a;border:1px solid #dae5d8;box-shadow:0 18px 55px #0e251a4a;padding:13px;font:12px Montserrat,system-ui,sans-serif;color-scheme:light}
+.kura-color-popover[hidden]{display:none!important}
+.kura-color-head,.kura-color-section-head{display:flex;align-items:center;justify-content:space-between;gap:9px}
+.kura-color-head{padding-bottom:8px}.kura-color-head b{font-size:13px}
+.kura-color-head [data-close]{width:28px;height:28px;border:0;border-radius:8px;cursor:pointer;background:#edf3eb;color:#254730;font-size:18px}
+.kura-color-section{padding:10px 0;border-top:1px solid #e6ebe5}
+.kura-color-section strong{font-size:11px;color:#587260}
+.kura-color-section-head button{padding:5px 8px;border:1px solid #d7e2d6;background:#eef5ec;color:#2d583a;border-radius:7px;font-size:10px;font-weight:700;cursor:pointer}
+.kura-color-grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:7px;margin-top:10px}
+.kura-color-swatch{display:block;aspect-ratio:1;min-width:0;width:100%;padding:0;border-radius:8px;background:var(--swatch);border:2px solid #102b211f;cursor:pointer;position:relative}
+.kura-color-swatch.selected{outline:2px solid #c28a50;outline-offset:2px}
+.kura-color-swatch.favorite:after{content:'★';position:absolute;right:2px;bottom:0;font-size:9px;color:white;text-shadow:0 1px 3px #0009}
+.kura-color-popover [data-empty]{color:#829484;font-size:10px;display:block;margin-top:8px}.kura-color-popover [data-empty][hidden]{display:none}
+.kura-color-custom{display:grid;grid-template-columns:87px 1fr auto;gap:7px;align-items:end;border-top:1px solid #e6ece5;padding-top:11px}
+.kura-color-custom label{display:flex;flex-direction:column;gap:5px;color:#57715f;font-size:10px;font-weight:750}
+.kura-color-custom input[type=color]{height:34px;cursor:pointer;width:100%;padding:2px;border:1px solid #d9e3da;border-radius:7px;background:white}
+.kura-color-custom input[type=text]{height:34px;box-sizing:border-box;width:100%;min-width:0;padding:5px 7px;border-radius:7px;background:#fafcf8;color:#264432;border:1px solid #dce5dc;font:700 12px ui-monospace,monospace}
+.kura-color-custom [data-apply]{white-space:nowrap}.kura-color-help{display:block;margin-top:11px;color:#758778;font-size:10px;line-height:1.5}
+/* Dark scheme refined; never recolors the paper or exported pixels */
+html[data-kura-theme="dark"]{--kura-ui-card:#132b21;--kura-ui-edge:#2b4739}
+html[data-kura-theme="dark"] body{background:#0a1e16}
+html[data-kura-theme="dark"] .topbar{background:#071b12}
+html[data-kura-theme="dark"] .panel{background:#132b21;border-color:#2a493a;box-shadow:0 4px 15px #06140942}
+html[data-kura-theme="dark"] .kura-pages-rail-head{background:#1a3829;border-color:#30503b}
+html[data-kura-theme="dark"] .kura-pages-content .pageitem{background:#1c382b;border-color:#33513e}
+html[data-kura-theme="dark"] .kura-pages-content .pageitem.active{background:#2c503b;border-color:#8caa88}
+html[data-kura-theme="dark"] .btn.flat{background:#294637;border-color:#3a5b45;color:#e5f0e6}
+html[data-kura-theme="dark"] .tab.active{background:#2a4b39;color:#f1f3e9}
+html[data-kura-theme="dark"] .softbox,html[data-kura-theme="dark"] .kura-brief-import,html[data-kura-theme="dark"] .kura-bulk-font-panel{background:#1b382b;border-color:#335340}
+html[data-kura-theme="dark"] .stage-bg{background:#0c241a;border-color:#2b4839}
+html[data-kura-theme="dark"] .kura-selection-toolbar{background:#203c2d!important;border-color:#48624e!important;color:#dce9df!important}
+html[data-kura-theme="dark"] .kura-selection-toolbar select,html[data-kura-theme="dark"] .kura-selection-toolbar input,html[data-kura-theme="dark"] .kura-selection-toolbar button{background:#163124;border-color:#44614d;color:#e4eee4}
+html[data-kura-theme="dark"] .kura-selection-toolbar .kura-color-trigger{background:#19392a;color:#e6eee3;border-color:#4e6d55}
+html[data-kura-theme="dark"] .kura-note-title-options{background:#203f30}
+html[data-kura-theme="dark"] .kura-color-popover{background:#1b382a;color:#e7f0e6;border-color:#526b55;color-scheme:dark}
+html[data-kura-theme="dark"] .kura-color-section{border-color:#3c5847}
+html[data-kura-theme="dark"] .kura-color-section strong,html[data-kura-theme="dark"] .kura-color-custom label{color:#c4d9c6}
+html[data-kura-theme="dark"] .kura-color-section-head button,html[data-kura-theme="dark"] .kura-color-head [data-close]{background:#2e4c3c;color:#e7efe4;border-color:#526a52}
+html[data-kura-theme="dark"] .kura-color-custom input[type=text]{background:#11291c;color:#f0f7ed;border-color:#536e5b}
+@media(max-width:1380px) and (min-width:1081px){.shell{grid-template-columns:minmax(160px,183px) minmax(264px,296px) minmax(300px,1fr) minmax(178px,203px);gap:9px;padding:10px}}
+@media(max-width:1080px) and (min-width:761px){.shell{grid-template-columns:160px minmax(240px,310px) minmax(260px,1fr)}}
+@media(max-width:760px){.shell{padding:8px;gap:10px}.topbar{padding:8px 10px}.top-actions .btn{font-size:10px;min-height:35px}.kura-selection-toolbar{gap:4px!important}.kura-color-popover{max-width:calc(100vw - 20px)}}
