@@ -93,7 +93,7 @@ html[data-kura-theme="dark"] .kura-context-menu button:hover{background:#31513e}
  .pageitem{gap:5px;padding:7px}
 }
 @media(max-width:1080px) and (min-width:761px){
- .shell{display:grid;grid-template-columns:190px minmax(300px,365px) minmax(340px,1fr);gap:12px;padding:12px}
+ .shell{display:grid;grid-template-columns:160px minmax(250px,315px) minmax(260px,1fr);gap:9px;padding:9px}
  .kura-pages-sidebar{grid-column:1;grid-row:1 / span 2}
  .editor-panel{grid-column:2}
  .canvas-wrap{grid-column:3}
