@@ -1,0 +1,28 @@
+name: KURA Generate alternate glyph fonts
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'kura-editor/tools/build_brush_alternates.py'
+      - '.github/workflows/kura-brush-alternates.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install fonttools brotli
+      - run: python kura-editor/tools/build_brush_alternates.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add kura-editor/assets/KURA_Brush_ss01.woff2 kura-editor/assets/KURA_Brush_ss02.woff2 kura-editor/assets/kura-brush-variants.json
+          if ! git diff --cached --quiet; then
+            git commit -m "KURA: publish actual ss01 and ss02 brush glyph variants"
+            git push
+          fi
