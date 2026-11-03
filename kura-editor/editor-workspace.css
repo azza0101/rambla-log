@@ -1,0 +1,132 @@
+/* KURA Editor 4.2 — permanent page navigator and dark forest-green workspace. */
+/* Preserve the paper/canvas artwork and all generated PNG colors. */
+.shell{max-width:1820px;grid-template-columns:minmax(190px,230px) minmax(290px,345px) minmax(335px,1fr) minmax(205px,245px);gap:14px}
+.kura-pages-sidebar{position:sticky;top:85px;min-width:0;max-height:calc(100dvh - 100px);overflow:auto;overscroll-behavior:contain;z-index:14}
+.kura-pages-rail-head{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;padding:13px 14px;background:#f5f5ed;border-bottom:1px solid #dfe6d8;color:#183d2e;gap:6px}
+.kura-pages-rail-head strong{font-size:13px;font-weight:900;letter-spacing:.015em}
+.kura-pages-rail-actions{display:flex;gap:5px}
+.kura-pages-rail-actions button{font-weight:800;background:#e8eee1;color:#17402e;border:1px solid #d7e0d2;border-radius:8px;width:31px;height:30px;cursor:pointer}
+.kura-pages-content{display:block;padding:8px 11px 17px}
+.kura-pages-content #pageList{min-width:0}
+.kura-pages-content .pageitem{min-width:0}
+.kura-pages-content .pageitem .title{overflow-wrap:anywhere}
+.kura-pages-content .kura-project-panel{padding:10px}
+.kura-pages-content .kura-project-panel .kura-project-row{gap:5px}
+.kura-pages-content .kura-project-panel .kura-project-row button{font-size:10px;padding:7px}
+.kura-pages-content .kura-project-panel select{max-width:100%;font-size:11px}
+.kura-element-clipboard{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap}
+.kura-element-clipboard .btn{flex:1;white-space:nowrap}
+#kuraPasteTop{white-space:nowrap}
+/* Dark mode only changes controls, backgrounds and panels, not scene or exported images. */
+html[data-kura-theme="dark"]{--green:#8ec8a9;--deep:#e5efe5;--muted:#b2c6b7;--stroke:#395b4b;--sand:#1d382c;--cream:#132b22;--paper:#1c372b;--shadow:0 14px 42px rgba(0,0,0,.44);color-scheme:dark}
+html[data-kura-theme="dark"] body{background:#0b2019;color:#e4f0e6}
+html[data-kura-theme="dark"] .topbar{background:#071911;border-bottom:1px solid #325440}
+html[data-kura-theme="dark"] .panel,
+html[data-kura-theme="dark"] .kura-pages-sidebar{background:#152f25;color:#e4eee5;border-color:#365345;box-shadow:0 5px 25px rgba(0,0,0,.21)}
+html[data-kura-theme="dark"] .panehead,
+html[data-kura-theme="dark"] .tabs{border-color:#345143}
+html[data-kura-theme="dark"] .panehead h2,
+html[data-kura-theme="dark"] .inspector h3,
+html[data-kura-theme="dark"] .stage-head strong,
+html[data-kura-theme="dark"] .section-title,
+html[data-kura-theme="dark"] .field label,
+html[data-kura-theme="dark"] .kura-brief-label{color:#d1e9d5}
+html[data-kura-theme="dark"] .hint,
+html[data-kura-theme="dark"] .footnote,
+html[data-kura-theme="dark"] .inspector p,
+html[data-kura-theme="dark"] .stage-footer,
+html[data-kura-theme="dark"] .stage-head small,
+html[data-kura-theme="dark"] .pageitem small{color:#b1c6b5}
+html[data-kura-theme="dark"] .tab{color:#b2c7b7}
+html[data-kura-theme="dark"] .tab.active{color:#fff4db;background:#2e513e}
+html[data-kura-theme="dark"] .btn:not(.ghost):not(.primary),
+html[data-kura-theme="dark"] .kura-pages-rail-actions button{background:#274738;color:#e6f1e8;border-color:#446c54}
+html[data-kura-theme="dark"] .btn.primary{background:#d5a66c;color:#1b2a1e;border-color:#d5a66c}
+html[data-kura-theme="dark"] .top-actions .btn.ghost{background:#122d21;color:#e4eee5;border-color:#44614c}
+html[data-kura-theme="dark"] .softbox,
+html[data-kura-theme="dark"] .kura-project-panel,
+html[data-kura-theme="dark"] .kura-bulk-font-panel,
+html[data-kura-theme="dark"] .kura-brief-import{background:#203c2d;border-color:#3f5c46;color:#e0ece1}
+html[data-kura-theme="dark"] .softbox.orange{background:#3e3426;border-color:#71583d}
+html[data-kura-theme="dark"] .softbox p,
+html[data-kura-theme="dark"] .kura-bulk-font-row .hint,
+html[data-kura-theme="dark"] .kura-project-panel p{color:#bfd0c0}
+html[data-kura-theme="dark"] .field input,
+html[data-kura-theme="dark"] .field textarea,
+html[data-kura-theme="dark"] .field select,
+html[data-kura-theme="dark"] #kuraBriefRaw,
+html[data-kura-theme="dark"] .kura-project-panel select,
+html[data-kura-theme="dark"] .jsonbox,
+html[data-kura-theme="dark"] .kura-note-title-options input,
+html[data-kura-theme="dark"] .kura-note-title-options select{background:#10271c;color:#eff6ee;border-color:#496b56}
+html[data-kura-theme="dark"] .field input:focus,
+html[data-kura-theme="dark"] .field textarea:focus,
+html[data-kura-theme="dark"] .field select:focus{background:#18382a}
+html[data-kura-theme="dark"] .pageitem,
+html[data-kura-theme="dark"] .thumb,
+html[data-kura-theme="dark"] .preset,
+html[data-kura-theme="dark"] .sticker-btn{background:#203c2c;color:#e4eee6;border-color:#42634f}
+html[data-kura-theme="dark"] .pageitem.active,
+html[data-kura-theme="dark"] .thumb.active,
+html[data-kura-theme="dark"] .preset.active{background:#3b5637;border-color:#d6aa6b}
+html[data-kura-theme="dark"] .pageitem .title,
+html[data-kura-theme="dark"] .preset-title{color:#edf5e9}
+html[data-kura-theme="dark"] .kura-pages-rail-head{background:#203b2b;color:#e9f2e9;border-color:#43604b}
+html[data-kura-theme="dark"] .kura-bulk-all,
+html[data-kura-theme="dark"] .kura-brief-preserve,
+html[data-kura-theme="dark"] .kura-brief-preview{background:#173125;color:#e5f0e6;border-color:#3b5c46}
+html[data-kura-theme="dark"] .kura-bulk-all strong,
+html[data-kura-theme="dark"] .kura-brief-preserve b{color:#e2efe2}
+html[data-kura-theme="dark"] .kura-bulk-all small,
+html[data-kura-theme="dark"] .kura-brief-preserve small{color:#b4c9b8}
+html[data-kura-theme="dark"] .stage-bg{background:#0d2119;border-color:#315442}
+html[data-kura-theme="dark"] .stage-inner{background:#fff;box-shadow:0 14px 45px rgba(0,0,0,.5)}
+html[data-kura-theme="dark"] .kura-brief-preview.has-error{background:#493026;border-color:#815445;color:#ffe1d4}
+html[data-kura-theme="dark"] .kura-font-alert,
+html[data-kura-theme="dark"] .kura-saved-label{color:#c6dcc6}
+html[data-kura-theme="dark"] .kura-context-menu{background:#193629;border-color:#5a725c}
+html[data-kura-theme="dark"] .kura-context-menu button{color:#e5f3e8}
+html[data-kura-theme="dark"] .kura-context-menu button:hover{background:#31513e}
+@media(max-width:1380px) and (min-width:1081px){
+ .shell{grid-template-columns:minmax(170px,195px) minmax(270px,305px) minmax(320px,1fr) minmax(180px,205px);gap:11px;padding:12px}
+ .kura-pages-content{padding:7px}
+ .pageitem{gap:5px;padding:7px}
+}
+@media(max-width:1080px) and (min-width:761px){
+ .shell{display:grid;grid-template-columns:190px minmax(300px,365px) minmax(340px,1fr);gap:12px;padding:12px}
+ .kura-pages-sidebar{grid-column:1;grid-row:1 / span 2}
+ .editor-panel{grid-column:2}
+ .canvas-wrap{grid-column:3}
+ .inspector{grid-column:2/4;grid-row:2}
+}
+@media(max-width:760px){
+ .shell{display:flex;flex-direction:column;gap:10px;padding:8px}
+ .kura-pages-sidebar{order:-1;position:sticky;top:0;width:100%;max-height:none;overflow:visible;z-index:55;border-radius:12px}
+ .kura-pages-rail-head{padding:5px 10px;min-height:36px}
+ .kura-pages-rail-head strong{font-size:12px}
+ .kura-pages-content{padding:0 7px 5px}
+ .kura-pages-content #pageList{display:flex;flex-flow:row nowrap;gap:7px;overflow-x:auto;max-width:100%;padding:3px 1px 6px;scroll-snap-type:x proximity;scrollbar-width:thin}
+ .kura-pages-content #pageList .pageitem{flex:0 0 150px;margin:0;padding:6px;scroll-snap-align:start;min-height:51px}
+ .kura-pages-content #pageList .pageitem .title{font-size:10px;line-height:1.3;max-height:31px;overflow:hidden}
+ .kura-pages-content #pageList .pageitem small{display:none}
+ .kura-pages-content #pageList .pageitem button{padding:3px}
+ .kura-pages-content .kura-project-panel,
+ .kura-pages-content > .section-title,
+ .kura-pages-content > .dual,
+ .kura-pages-content > .footnote,
+ .kura-pages-content > #fastBox{display:none!important}
+ .kura-pages-sidebar.expanded .kura-project-panel,
+ .kura-pages-sidebar.expanded .kura-pages-content > .section-title,
+ .kura-pages-sidebar.expanded .kura-pages-content > .dual,
+ .kura-pages-sidebar.expanded .kura-pages-content > .footnote,
+ .kura-pages-sidebar.expanded .kura-pages-content > #fastBox{display:flex!important;flex-direction:column}
+ .kura-pages-sidebar.expanded .kura-project-panel{display:block!important}
+ .kura-pages-sidebar.expanded .kura-pages-content > .section-title{display:block!important}
+ .kura-pages-sidebar.expanded .kura-pages-content > .dual{display:grid!important}
+ .kura-pages-sidebar.expanded{max-height:65vh;overflow:auto}
+ .editor-panel{order:1}
+ .canvas-wrap{order:0!important}
+ .inspector{order:2}
+ .stage-head{flex-wrap:wrap}
+ #kuraPasteTop{padding:6px 8px}
+}
