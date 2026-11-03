@@ -50,10 +50,11 @@
 </style>
 <link rel="stylesheet" href="./editor-v2.css?v=3.7.0"/>
 <link rel="stylesheet" href="./editor-workspace.css?v=4.2.2"/>
+<link rel="stylesheet" href="./editor-modern.css?v=4.3.0"/>
 </head>
 <body>
 <header class="topbar">
- <div class="brand"><span class="brand-icon">⛰</span><div><b>KURA Editor</b><small id="kuraEditorVersion">KURA Viaggi · v4.2.2</small></div></div>
+ <div class="brand"><span class="brand-icon">⛰</span><div><b>KURA Editor</b><small id="kuraEditorVersion">KURA Viaggi · v4.3.0</small></div></div>
  <div class="top-actions"><button id="topNew" class="btn ghost">＋ Pagina</button><button id="topSeed" class="btn ghost">↻ Seed</button><button id="topUpdate" class="btn ghost" title="Controlla se GitHub ha una nuova versione" aria-label="Aggiorna KURA Editor da GitHub">⟳ Aggiorna app</button><button id="topSaveProject" class="btn ghost" title="Salva nel browser e anche su GitHub se collegato">💾 Salva</button><button id="topSaveAs" class="btn ghost" title="Crea una versione indipendente con nome personalizzato">💾 Salva con nome</button><button id="topDuplicateProject" class="btn ghost" title="Duplica il progetto corrente senza modificarlo">⧉ Duplica progetto</button><button id="topShareProject" class="btn ghost" title="Condividi il link esatto del progetto già salvato su GitHub">↗ Condividi progetto</button><button id="topGitHub" class="btn ghost" title="Collega GitHub, salva e apri progetti cloud">☁ GitHub</button><button id="topCloudSync" class="btn ghost" title="Controlla e carica modifiche di altri collaboratori da GitHub">↻ Aggiorna dal cloud</button><button id="topOpenProject" class="btn ghost" title="Apri un progetto JSON modificabile">📂 Apri progetto</button><input id="topOpenProjectFile" type="file" accept=".json,application/json" hidden/><button id="topJson" class="btn ghost" title="Gestione progetti">Progetti</button><button id="topCopyPNG" class="btn ghost" title="Copia negli appunti questa pagina 1080 × 1350 senza scaricarla">⧉ Copia PNG</button><button id="topExport" class="btn primary">↓ PNG</button><button id="topZip" class="btn ghost">ZIP tutte</button></div>
 </header>
 <div class="shell">
@@ -88,6 +89,7 @@
    <div class="field" data-field="body2"><label for="f-body2">Secondo testo</label><textarea id="f-body2" data-text="body2" rows="5"></textarea></div>
    <div class="section-title">Post-it · Info di viaggio</div>
    <div class="field" data-field="note_title">
+    <button id="noteTitleEditNow" type="button" class="btn flat kura-edit-title-button">✎ Modifica “INFO DI VIAGGIO”</button>
     <label for="f-note-title">Scritta del post-it (modificabile)</label>
     <input id="f-note-title" data-text="note_title" maxlength="100" placeholder="INFO DI VIAGGIO"/>
     <label style="display:flex;align-items:center;gap:8px;margin-top:7px"><input id="noteTitleEditable" type="checkbox" style="width:18px;height:18px"/> Usa il titolo modificabile al posto del PNG</label>
@@ -186,8 +188,8 @@
 <div class="toast" id="toast" role="status"></div>
 <script>
 'use strict';
-const KURA_BUILD='4.2.2';
-window.KURA_BUILD={version:'4.2.2',build:'20261103fa05'};
+const KURA_BUILD='4.3.0';
+window.KURA_BUILD={version:'4.3.0',build:'20261103fa06'};
 const ASSETS={"sticker_map":"./assets/sticker_map.png","sticker_berries":"./assets/sticker_berries.png","sticker_stamp":"./assets/sticker_stamp.png","postit_4":"./assets/postit_4.png","postit_1":"./assets/postit_1.png","pennellata_3":"./assets/pennellata_3.png","sticker_olive":"./assets/sticker_olive.png","sticker_monstera":"./assets/sticker_monstera.png","sticker_tape":"./assets/sticker_tape.png","pennellata_1":"./assets/pennellata_1.png","cartolina_kenrokuen":"./assets/cartolina_kenrokuen.png","sticker_compass":"./assets/sticker_compass.png","pennellata_2":"./assets/pennellata_2.png","sticker_camera":"./assets/sticker_camera.png","postit_3":"./assets/postit_3.png","giulia_kanazawa":"./assets/giulia_kanazawa.png","postit_2":"./assets/postit_2.png","sfondo_3":"./assets/sfondo_3.jpg","sfondo_4":"./assets/sfondo_4.jpg","sfondo_1":"./assets/sfondo_1.jpg","sfondo_2":"./assets/sfondo_2.jpg"};
 // Approved original KURA post-it, extracted into actual independent transparent PNG files.
 Object.assign(ASSETS,{
@@ -521,6 +523,16 @@ for(const key of ['bodyScale','noteScale']){
  $('#'+key+'Plus').onclick=()=>{snapshot();applyBulkTypeScale(key,+slider.value+5)};
 }
 $('#noteTitleEditable').onchange=e=>{snapshot();page().noteTitleMode=e.target.checked?'text':'image';queueRender();scheduleSave()};
+$('#noteTitleEditNow').onclick=()=>{
+ snapshot();
+ const p=page();p.noteTitleMode='text';p.fields.note_title??='INFO DI VIAGGIO';
+ $('#noteTitleEditable').checked=true;
+ refreshAll();scheduleSave();
+ setTab('texts');
+ const input=$('#f-note-title');
+ input?.focus();input?.select();
+ emitToast('Titolo editabile attivato · scegli font e colore nella barra testo');
+};
 
 function updateNoteTitleControls(){
  const p=page();p.textStyles??={};p.textStyles.note_title??={};
@@ -640,7 +652,8 @@ function initKuraPWA(){
 }
 initKuraPWA();
 </script>
-<script src="./editor-v2.js?v=4.2.2"></script>
+<script src="./editor-v2.js?v=4.3.0"></script>
+<script src="./editor-colors.js?v=4.3.0"></script>
 <script src="./kura-brief-parser.js?v=3.7.0"></script>
 <script src="./kura-brief-import.js?v=4.0.0"></script>
 <script src="./github-save.js?v=3.9.0"></script>
