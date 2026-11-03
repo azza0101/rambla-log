@@ -86,3 +86,11 @@ I font caricati manualmente hanno la famiglia separata **KURA Custom Brush**, qu
 - **Dark mode KURA:** premi **☾ Dark mode** nella barra superiore per passare all'interfaccia verde bosco scuro. La preferenza viene ricordata nel browser. Le tavole 1080×1350 e i PNG esportati restano con lo sfondo e la palette originale KURA; viene modificata solo l'interfaccia di lavoro.
 
 Queste funzioni non cambiano i JSON dei progetti esistenti finché non incolli o modifichi un elemento. Per condividere modifiche con un collaboratore rimane necessario salvare su GitHub.
+
+## KURA Editor 4.3 — interfaccia moderna e palette testi
+
+L'interfaccia è stata alleggerita con spaziature uniformi, bordi sottili, pulsanti meno ingombranti, accenti terracotta e dark mode verde foresta attenuata. Non vengono modificate le tavole o i PNG esportati.
+
+**Colore testo:** seleziona una casella di testo nella tavola; nella toolbar appare un pulsante con il colore attuale e il codice HEX. Offre 32 campioni predefiniti, selettore colore libero del browser, inserimento HEX (#RRGGBB) e pulsante **☆ Salva preferito**. I preferiti sono salvati nel browser e disponibili anche cambiando progetto. Il colore della casella viene salvato nel JSON del progetto e incluso nel PNG.
+
+**Scritta INFO DI VIAGGIO:** vai in **Testi → Post-it** e premi **✎ Modifica “INFO DI VIAGGIO”**. Il pulsante attiva il testo modificabile e mette il cursore sul campo; scegli font, glifi, dimensione e spessore nel medesimo pannello, oppure seleziona il testo nella tavola per cambiare anche colore. Disattivando **Usa il titolo modificabile al posto del PNG** ripristini il titolo raster originale, senza cancellare il testo personalizzato. I vecchi progetti restano in modalità PNG finché non abiliti l'editing.
