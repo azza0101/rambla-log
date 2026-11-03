@@ -31,3 +31,25 @@ Dopo una modifica, cliccare **💾 Salva**. Il salvataggio cloud aggiorna lo ste
 Il browser controlla gli aggiornamenti condivisi ogni 45 secondi, mostra un avviso non distruttivo e **non sostituisce mai automaticamente le pagine**. Il tasto **⟳ Aggiorna app** aggiorna invece il software e non va confuso con l'aggiornamento del progetto.
 
 Il repository è pubblico: anche i JSON condivisi sono pubblici. Il collegamento `?cloud=<projectId>` funziona su dispositivi diversi; quando il progetto è già presente localmente, serve premere **Aggiorna dal cloud** per acquisire la versione remota. Le credenziali non vengono salvate sul server, sui file JSON o nel codice dell'app.
+
+## Correzione collaborazione e recupero dati — Editor 4.5.2
+
+**Se una collaboratrice ha modifiche ancora visibili nella scheda vecchia, esportare PRIMA un backup JSON e soltanto dopo aggiornare l'app.** Non chiudere né ricaricare la scheda finché il backup non esiste: la precedente versione 4.4.0 poteva leggere una risposta GitHub vecchia e ripristinare una copia locale.
+
+L'editor 4.5.2 introduce:
+
+- **Salvataggi locali serializzati:** un salvataggio IndexedDB in corso non può nascondere l'ultimo stato del progetto.
+- **Stato GitHub persistente per progetto:** confronta SHA del contenuto remoto e hash della bozza locale; non permette overwrite se qualcun altro ha pubblicato una nuova revisione.
+- **Aprire un link condiviso non sostituisce una bozza divergente:** il progetto remoto viene caricato automaticamente soltanto quando la copia locale coincide con la base nota. In caso contrario l'utente vede un avviso.
+- **Backup prima del refresh distruttivo:** se si richiede manualmente la versione GitHub e la copia locale contiene modifiche, viene creata una copia indipendente in Progetti (prefisso «Backup prima di aggiornare dal cloud»). Il backup è accessibile anche dopo aver ricaricato la pagina.
+- **Pubblicazione quasi live:** dopo 9 secondi di inattività da una modifica locale il progetto condiviso viene pubblicato su GitHub, quando la connessione è autorizzata e non ci sono conflitti. L'altro browser controlla ogni 10 secondi. Non è collaborazione CRDT lettera-per-lettera e non unisce automaticamente modifiche simultanee sullo stesso blocco.
+- **Riepilogo variazioni:** sopra la tavola una barra mostra lo stato del cloud e gli ultimi campi modificati da un collaboratore. Gli aggiornamenti remoti vengono applicati automaticamente *solo se non ci sono modifiche locali non pubblicate*.
+- **Backup manuale sempre visibile:** il pulsante «⤓ Backup JSON» accanto a Salva permette di scaricare una copia del progetto in qualsiasi momento, anche senza autorizzazione GitHub.
+- **Nessun ritorno alla prima pagina dopo un refresh remoto:** rimane selezionata la tavola corrente, quando presente nella nuova versione.
+- **Un vecchio risultato GitHub non può ripristinare una versione precedente:** il progetto remoto viene riletto dopo un eventuale salvataggio precedente al cambio progetto.
+
+**Cosa fare nei conflitti:** NON aggiornare ripetutamente la pagina. Usa «⤓ Backup JSON», poi scegli «↻ Aggiorna dal cloud» per vedere la nuova versione; KURA conserva comunque una bozza recuperabile. Se vuoi mantenere due versioni separate usa «Salva con nome».
+
+**Privacy:** il repository è pubblico e i JSON pubblicati lo sono altrettanto. I token restano nel browser, cifrati con WebCrypto e IndexedDB. Collaboratori diversi devono utilizzare credenziali individuali.
+
+Test di regressione: `node kura-editor/tests/test-collaboration-safety.cjs` (protezione conflitti, copie di recupero, refresh, salvataggio e doppio commit). Il test è eseguito in CI assieme a quello dell'importatore brief.
