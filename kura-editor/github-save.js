@@ -340,7 +340,8 @@
  }
  window.KURA_GITHUB=Object.freeze({openFromQuery,saveToGitHub,refreshFromCloud,isConnected:()=>!!accessToken});
  const modal=makeDialog();
- restoreCredential();
+ ensureSyncStatus();
+ const credentialReady=restoreCredential();
  const toolbarSync=document.getElementById('topCloudSync');
  if(toolbarSync)toolbarSync.onclick=async()=>{
    if(busy)return;
@@ -348,23 +349,72 @@
    try{await refreshFromCloud()}catch(err){toast('Aggiornamento cloud: '+err.message);status(err.message)}
    finally{busy=false;toolbarSync.disabled=false}
  };
- // Non-destructive remote polling: check metadata only, never replace pages silently.
- let lastNotified='';
- async function pollSharedProject(){
-  if(document.visibilityState!=='visible'||!navigator.onLine)return;
-  const id=bridge()?.current()?.id;if(!gid(id))return;
-  const known=getBase(id);if(!known)return;
-  try{
-   const current=await api('/contents/'+filePath(id)+'?ref='+BRANCH,{allowMissing:true});
-   if(current?.sha&&current.sha!==known&&current.sha!==lastNotified){
-    lastNotified=current.sha;
-    status('● Collaboratore: nuova versione disponibile. Premi Aggiorna dal cloud.');
-    toast('Nuova versione condivisa disponibile ↻');
-    if(toolbarSync)toolbarSync.style.outline='2px solid #cf7931';
-   }else if(current?.sha===known){lastNotified='';if(toolbarSync)toolbarSync.style.outline=''}
-  }catch(err){console.warn('KURA cloud check',err.message)}
+ // Shared editing over GitHub: publish completed local edits after a brief idle
+ // interval; check for remote versions. This is near-live, NOT per-keystroke realtime.
+ let lastNotified='',autoPublishTimer=null,pollBusy=false;
+ async function automaticPublish(id){
+  if(busy||!accessToken||document.visibilityState==='hidden'||bridge()?.current()?.id!==id)return;
+  const baseline=await baselineFor(id);
+  if(!baseline?.sha||!await isDirty(id))return;
+  busy=true;
+  try{await saveToGitHub({quiet:true});syncStatus('✓ Modifiche pubblicate automaticamente su GitHub','ok')}
+  catch(error){
+   syncStatus('⚠ '+error.message,'warning');
+   toast('Modifiche NON pubblicate: '+error.message)
+  }finally{busy=false}
  }
- setInterval(pollSharedProject,45000);
+ document.addEventListener('kura:local-saved',event=>{
+  const id=event.detail?.projectId;
+  if(!gid(id)||!accessToken)return;
+  clearTimeout(autoPublishTimer);
+  autoPublishTimer=setTimeout(()=>automaticPublish(id).catch(error=>console.warn('KURA auto save:',error.message)),9000)
+ });
+ function changedSummary(local,remote){
+  const messages=[];
+  for(let i=0;i<Math.max(local?.pages?.length||0,remote?.pages?.length||0);i++){
+   const older=local?.pages?.[i],newer=remote?.pages?.[i];
+   if(!newer){messages.push('Pagina eliminata');continue}
+   if(!older){messages.push('Nuova pagina: '+(newer.name||i+1));continue}
+   for(const [key,label] of [['head1','Titolo 1'],['body1','Testo 1'],['head2','Titolo 2'],['body2','Testo 2'],['base','Base'],['duration','Durata'],['highlight','Da non perdere'],['tips','Da sapere'],['note_title','Titolo post-it']]){
+    if(older.fields?.[key]!==newer.fields?.[key])messages.push((newer.name||'Pagina '+(i+1))+' · '+label)
+   }
+   if(JSON.stringify(older.visuals)!==JSON.stringify(newer.visuals))messages.push((newer.name||'Pagina '+(i+1))+' · layout/immagini');
+   if(JSON.stringify(older.textStyles)!==JSON.stringify(newer.textStyles))messages.push((newer.name||'Pagina '+(i+1))+' · stile testo');
+  }
+  return messages.slice(0,4).join('; ')+(messages.length>4?' e altre '+(messages.length-4):'')
+ }
+ async function pollSharedProject(){
+  if(pollBusy||busy||document.visibilityState!=='visible'||!navigator.onLine)return;
+  const id=bridge()?.current()?.id;
+  if(!gid(id))return;
+  const baseline=await baselineFor(id);
+  if(!baseline?.sha)return;
+  pollBusy=true;
+  try{
+   const metadata=await api('/contents/'+filePath(id)+'?ref='+BRANCH,{allowMissing:true});
+   if(!metadata?.sha)return;
+   if(metadata.sha===baseline.sha){
+    lastNotified='';
+    if(toolbarSync)toolbarSync.style.outline='';
+    return
+   }
+   if(!await isDirty(id)){
+    await refreshFromCloud(id,false);
+    syncStatus('✓ Nuove modifiche del collaboratore caricate','ok');
+    return
+   }
+   if(metadata.sha!==lastNotified){
+    lastNotified=metadata.sha;
+    const cloud=await readCloudVersion(id),local=await bridge().snapshot();
+    const detail=changedSummary(local,cloud.data);
+    syncStatus('● '+(cloud.data.githubSavedBy||'Collaboratore')+' ha aggiornato: '+(detail||'il progetto')+'. La tua bozza è conservata.','warning');
+    toast('Novità sul progetto: '+(detail||'modifiche disponibili'));
+    if(toolbarSync)toolbarSync.style.outline='2px solid #cf7931';
+   }
+  }catch(error){console.warn('KURA collaboration check:',error.message)}
+  finally{pollBusy=false}
+ }
+ setInterval(()=>{pollSharedProject()},10000);
  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')pollSharedProject()});
 
  const save=document.getElementById('topSaveProject');
