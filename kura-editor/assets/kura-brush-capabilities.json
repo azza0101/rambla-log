@@ -1,0 +1,18 @@
+{
+  "font": "Kura_Brush2.woff2",
+  "units": 1000,
+  "glyphs": 308,
+  "features": [
+    "aalt",
+    "liga",
+    "salt",
+    "ss01",
+    "ss02"
+  ],
+  "axes": [],
+  "names": [
+    "Regular",
+    "KURA_Brush",
+    "Feeling Passionate"
+  ]
+}
