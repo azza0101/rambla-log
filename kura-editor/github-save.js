@@ -217,8 +217,11 @@
  }
  async function loadRemote(id){
   if(!bridge())throw Error('Gestione progetti non disponibile');
+  const initial=await readCloudVersion(id);
+  const result=await bridge().openCloud(initial.data);
+  // switchProject may publish edits: re-fetch after the switch, otherwise a stale
+  // response could restore a previous version of the very same shared project.
   const cloud=await readCloudVersion(id);
-  const result=await bridge().openCloud(cloud.data);
   updateLink(cloud.data.projectId);
   if(result.source!=='local'){
    await rememberBaseline(id,cloud.sha,await bridge().snapshot());
