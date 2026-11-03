@@ -155,28 +155,61 @@
  }
  async function readCloud(id){return(await readCloudVersion(id)).data}
  async function refreshFromCloud(id=bridge()?.current()?.id,interactive=true){
-  if(!gid(id))throw Error('ID progetto non valido');
+  if(!gid(id))throw Error('Seleziona un progetto condiviso valido');
   const cloud=await readCloudVersion(id);
-  const base=getBase(id);
-  if(base&&base===cloud.sha){status('✓ Nessuna modifica remota');return{updated:false}}
-  if(interactive){
-   if(!confirm('Caricare la versione GitHub? Le modifiche locali non pubblicate di questo progetto saranno sostituite. Puoi usare Salva con nome prima di aggiornare.'))return{updated:false,cancelled:true}
+  const baseline=await baselineFor(id);
+  const local=await workingCopy(id);
+  const localHash=local?await digest(local):null;
+  const remoteHash=await digest(cloud.data);
+  if(localHash===remoteHash){
+   await rememberBaseline(id,cloud.sha,local);syncStatus('✓ Il progetto è già aggiornato','ok');
+   return{updated:false,upToDate:true}
   }
+  const dirty=!!local&&(!baseline?.digest||baseline.digest!==localHash);
+  if(dirty){
+   if(!interactive){
+    syncStatus('● Aggiornamenti remoti disponibili, ma hai modifiche locali da salvare','warning');
+    return{updated:false,dirty:true}
+   }
+   if(!confirm('La versione GitHub è diversa dalla tua. Prima di sostituirla KURA creerà un BACKUP locale del tuo lavoro. Continuare?'))return{updated:false,cancelled:true};
+   const backup=await bridge().preserveDraft('Backup prima di aggiornare dal cloud');
+   toast('Backup delle tue modifiche conservato in Progetti: '+backup.name);
+  }else if(interactive&&!confirm('Caricare le ultime modifiche condivise da GitHub?'))return{updated:false,cancelled:true}
   await bridge().replaceFromCloud(cloud.data);
-  setBase(id,cloud.sha);if(toolbarSync)toolbarSync.style.outline='';updateLink(id);
-  status('✓ Versione condivisa aggiornata dal cloud');toast('Modifiche del collaboratore caricate ✓');
+  await rememberBaseline(id,cloud.sha,await bridge().snapshot());
+  if(toolbarSync)toolbarSync.style.outline='';
+  updateLink(id);
+  syncStatus('✓ Aggiornato dal cloud · '+new Date().toLocaleTimeString('it-IT'),'ok');
+  if(interactive)toast('Modifiche del collaboratore caricate ✓');
   return{updated:true}
  }
  async function loadRemote(id){
   if(!bridge())throw Error('Gestione progetti non disponibile');
   const cloud=await readCloudVersion(id);
   const result=await bridge().openCloud(cloud.data);
-  if(result.source==='local'){
-   const base=getBase(id);
-   if(!base||base!==cloud.sha)status('Progetto locale aperto: premi Aggiorna dal cloud per confrontare le versioni');
-  }else setBase(id,cloud.sha);
   updateLink(cloud.data.projectId);
-  toast(result.source==='local'?'Aperta la versione locale, con le tue modifiche':'Progetto GitHub importato nel browser');
+  if(result.source!=='local'){
+   await rememberBaseline(id,cloud.sha,await bridge().snapshot());
+   syncStatus('✓ Progetto condiviso aggiornato da GitHub','ok');
+   toast('Progetto condiviso aperto ✓');
+   return result
+  }
+  const local=await bridge().snapshot(),localHash=await digest(local);
+  const remoteHash=await digest(cloud.data);
+  const baseline=await baselineFor(id);
+  if(localHash===remoteHash){
+   await rememberBaseline(id,cloud.sha,local);
+   syncStatus('✓ Versione locale e GitHub corrispondono','ok');
+  }else if(baseline?.digest===localHash){
+   // Local copy has not been changed. A newer collaborator revision may replace it safely.
+   await bridge().replaceFromCloud(cloud.data);
+   await rememberBaseline(id,cloud.sha,await bridge().snapshot());
+   syncStatus('✓ Ultima versione condivisa caricata','ok');
+  }else{
+   // A reload must NEVER discard an un-published local draft.
+   syncStatus('⚠ Modifiche locali conservate: confronta con Aggiorna dal cloud','warning');
+   toast('Ho conservato la tua bozza locale. GitHub ha una versione diversa.');
+  }
   return result
  }
  async function saveToGitHub(){
