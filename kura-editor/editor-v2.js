@@ -579,6 +579,12 @@ function kuraInitGroups(){
  }
  stage.addEventListener('pointerdown',e=>{
   if(e.target.closest('.kura-group-box'))return;
+  const frame=e.target.closest('.kura-text-frame');
+  if(!e.shiftKey&&frame){
+   const id='text:'+frame.dataset.key;
+   if(kuraGroupFor(id)){kuraResolveSelection(id,false);e.preventDefault();e.stopImmediatePropagation()}
+   return
+  }
   if(!(e.shiftKey||e.target===canvas))return;
   const pt=xyFromPointer(e);
   if(e.target===canvas&&page()?.visuals?.note?.visible){
@@ -601,8 +607,8 @@ function kuraInitGroups(){
   }
   if(!e.shiftKey)return;
   let key=null;
-  const frame=e.target.closest('.kura-text-frame');
-  if(frame)key='text:'+frame.dataset.key;
+  const textFrame=e.target.closest('.kura-text-frame');
+  if(textFrame)key='text:'+textFrame.dataset.key;
   else{
    const hit=[...hitboxes].reverse().find(b=>pt.x>=b.x&&pt.x<=b.x+b.w&&pt.y>=b.y&&pt.y<=b.y+b.h);
    if(hit)key=hit.id
