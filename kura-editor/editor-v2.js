@@ -123,7 +123,7 @@ function drawKuraBackground(c,index,mini=false){
  if(fallback?.complete&&fallback.naturalWidth){c.drawImage(fallback,0,0,W,H);return}
  c.fillStyle='#f7f0e5';c.fillRect(0,0,W,H);
 }
-const KURA_NOTE_KEYS=new Set(['label_base','label_duration','label_highlight','label_tips','base','duration','highlight','tips']);
+const KURA_NOTE_KEYS=new Set(['note_title','label_base','label_duration','label_highlight','label_tips','base','duration','highlight','tips']);
 function noteVisualCenter(p){const n=p.visuals.note,L=noteAutoLayout(n,p);return{x:n.x+L.w/2,y:n.y+L.totalH/2,rotation:n.rot||0}}
 function rotateAroundPoint(x,y,cx,cy,deg){const a=deg*Math.PI/180,dx=x-cx,dy=y-cy;return{x:cx+dx*Math.cos(a)-dy*Math.sin(a),y:cy+dx*Math.sin(a)+dy*Math.cos(a)}}
 function paintEditable(c,p,key,raw,unusedRect,opt){
@@ -232,11 +232,11 @@ function selectWordBold(key){
  const nd=getNode(key);if(!nd)return;
  const sel=window.getSelection(),inText=sel&&sel.rangeCount&&nd.edit.contains(sel.anchorNode)&&nd.edit.contains(sel.focusNode);
  if(inText){nd.edit.focus();document.execCommand('bold',false,null);updateModel(key,readMarkdown(nd.edit))}
- else{const p=ensurePage(page());p.textStyles[key]??={};const st=styleFor(p,key);p.textStyles[key].bold=!st.bold;scheduleSave();queueRender()}
+ else{const p=ensurePage(page());p.textStyles[key]??={};const st=styleFor(p,key);p.textStyles[key].bold=!st.bold;p.textStyles[key].fontWeight=st.bold?400:700;scheduleSave();queueRender()}
  updateToolbar();
 }
 function changeStyle(key,changes){
- const p=ensurePage(page());p.textStyles[key]??={};Object.assign(p.textStyles[key],changes);scheduleSave();queueRender();updateToolbar()
+ const p=ensurePage(page());p.textStyles[key]??={};Object.assign(p.textStyles[key],changes);if(key==='note_title')p.noteTitleMode='text';scheduleSave();queueRender();updateToolbar()
 }
 function updateToolbar(){
  if(!toolbar||toolbar.classList.contains('hidden'))return;
@@ -263,12 +263,12 @@ function makeToolbar(){
  }
  (dock||canvasWrap||stage).appendChild(toolbar);
  for(const n of toolbar.querySelectorAll('button'))n.addEventListener('pointerdown',function(e){e.preventDefault()});
- toolbar.querySelector('[data-minus]').onclick=function(){const key=toolbar.dataset.key;changeStyle(key,{fontSize:safeNumber(styleFor(page(),key).fontSize-2,10,160,30)})};
- toolbar.querySelector('[data-plus]').onclick=function(){const key=toolbar.dataset.key;changeStyle(key,{fontSize:safeNumber(styleFor(page(),key).fontSize+2,10,160,30)})};
+ toolbar.querySelector('[data-minus]').onclick=function(){const key=toolbar.dataset.key;changeStyle(key,{fontSize:safeNumber(styleFor(page(),key).fontSize-2,10,200,30)})};
+ toolbar.querySelector('[data-plus]').onclick=function(){const key=toolbar.dataset.key;changeStyle(key,{fontSize:safeNumber(styleFor(page(),key).fontSize+2,10,200,30)})};
  toolbar.querySelector('[data-font]').onchange=function(e){changeStyle(toolbar.dataset.key,{family:e.target.value})};
   toolbar.querySelector('[data-glyph]').onchange=function(e){changeStyle(toolbar.dataset.key,{family:e.target.value==='1'?'KURA Brush Alt 1':e.target.value==='2'?'KURA Brush Alt 2':'KURA Brush2'})};
   toolbar.querySelector('[data-weight]').onchange=function(e){const weight=Number(e.target.value);changeStyle(toolbar.dataset.key,{fontWeight:weight,bold:weight!==400})};
- toolbar.querySelector('[data-size]').onchange=function(e){changeStyle(toolbar.dataset.key,{fontSize:safeNumber(e.target.value,10,160,30)})};
+ toolbar.querySelector('[data-size]').onchange=function(e){changeStyle(toolbar.dataset.key,{fontSize:safeNumber(e.target.value,10,200,30)})};
  toolbar.querySelector('[data-bold]').onclick=function(){selectWordBold(toolbar.dataset.key)};
  toolbar.querySelector('[data-reset]').onclick=function(){const k=toolbar.dataset.key, p=page(),f=freeItem(p,k);snapshot();if(f){f.rot=0;f.scale=1}else{p.offsets[k]={dx:0,dy:0,scale:1,rot:0,opacity:1}}refreshAll()};
  toolbar.querySelector('[data-close]').onclick=function(){selected=null;toolbar.classList.add('hidden');activeKey=null;document.activeElement?.blur();queueRender()};
@@ -660,9 +660,22 @@ function bindProjectActions(){
 }
 function addV2Controls(){
  const textTab=$('#tab-texts');if(textTab){const b=document.createElement('button');b.className='btn flat';b.style.width='100%';b.textContent='＋ Aggiungi casella di testo';b.onclick=addFreeText;textTab.insertBefore(b,textTab.firstElementChild.nextElementSibling)}
- const fontBox=$('#fontStatus');if(fontBox){const info=document.createElement('div');info.className='kura-font-alert';info.innerHTML='Il font predefinito dei minititoli è Caveat Brush (Google Fonts, licenza OFL). Kaushan Script resta disponibile come alternativa. Entrambi funzionano anche nell’esportazione PNG.';fontBox.after(info)}
+ const fontBox=$('#fontStatus');if(fontBox){const info=document.createElement('div');info.className='kura-font-alert';info.innerHTML='Font KURA originale (Feeling Passionate): seleziona un testo nella tavola, poi imposta glifi base/alternativi e spessore Regular, Bold o ExtraBold.';fontBox.after(info)}
 }
-async function checkHostedFont(){try{await Promise.all([document.fonts.load('39px "Kaushan Script"'),document.fonts.load('39px "Caveat Brush"')]);const box=$('#fontStatus');if(box)box.innerHTML='<b>Kaushan Script <span class="pill ok">Integrato ✓</span></b><p>Google Fonts OFL, salvato nel sito. Caveat Brush disponibile come alternativa. Il font è utilizzato anche nei PNG.</p>';queueRender()}catch(err){console.warn('KURA font',err)}}
+async function checkHostedFont(){
+ const box=$('#fontStatus');
+ try{
+  const families=['KURA Brush2','KURA Brush Alt 1','KURA Brush Alt 2'];
+  await Promise.all(families.map(f=>document.fonts.load('42px "'+f+'"')));
+  const missing=families.filter(f=>!document.fonts.check('42px "'+f+'"'));
+  if(missing.length)throw Error('Varianti non caricate: '+missing.join(', '));
+  if(box)box.innerHTML='<b>KURA Brush originale <span class="pill ok">3 varianti ✓</span></b><p>Feeling Passionate: glifi base, ss01, ss02. Regular nativo; Bold ed ExtraBold simulati ispessendo il tratto, anche nel PNG esportato.</p>';
+  queueRender();
+ }catch(err){
+  if(box)box.textContent='KURA Brush: errore di caricamento. '+String(err.message||err);
+  console.warn('KURA font',err)
+ }
+}
 function assertPage(op){const p=op.pageId?pages.find(x=>x.id===op.pageId):pages[Number.isInteger(op.pageIndex)?op.pageIndex:current];if(!p)throw Error('Pagina non trovata');return ensurePage(p)}
 function safeStylePatch(style){const out={};if(!style||typeof style!=='object')return out;if(style.fontSize!==undefined)out.fontSize=safeNumber(style.fontSize,10,200,30);if(['Montserrat','Kaushan Script','Caveat Brush','KURA Brush2','KURA Brush Alt 1','KURA Brush Alt 2','Feeling Passionate','Caveat'].includes(style.family))out.family=style.family==='Feeling Passionate'?'KURA Brush2':style.family;if(typeof style.bold==='boolean')out.bold=style.bold;if([400,700,800].includes(Number(style.fontWeight)))out.fontWeight=Number(style.fontWeight);if(/^#[0-9a-fA-F]{6}$/.test(style.color||''))out.color=style.color;if(style.lineHeight!==undefined)out.lineHeight=safeNumber(style.lineHeight,.8,2.5,1.2);return out}
 window.KURA_MCP=Object.freeze({
@@ -811,7 +824,7 @@ window.KURA_PROJECTS=Object.freeze({
   return{source:'github',id}
  }
 });
-window.KURA_V2={version:'3.6.0',drawKuraBackground:drawKuraBackground,paintEditable:paintEditable,paintFreeTexts:paintFreeTexts,commonBodyFontSize:commonBodyFontSize};
+window.KURA_V2={version:'4.1.0',drawKuraBackground:drawKuraBackground,paintEditable:paintEditable,paintFreeTexts:paintFreeTexts,commonBodyFontSize:commonBodyFontSize};
 addV2Controls();initOverlay();initVisualTransform();bindBackgroundControls();bindProjectActions();
 (function(){
  const top=document.querySelector('.top-actions');
