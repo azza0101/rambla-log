@@ -428,7 +428,7 @@ function initVisualTransform(){
 }
 // KURA multi-selection and non-destructive groups.
 // Group membership lives in page.groups so it survives GitHub and JSON saves.
-let kuraMulti=new Set(),kuraGroupBox=null,kuraGroupMenu=null,kuraGroupPage=null;
+let kuraMulti=new Set(),kuraGroupBox=null,kuraGroupLayer=null,kuraGroupMenu=null,kuraGroupPage=null;
 function kuraGroupFor(id,p=page()){return (p?.groups||[]).find(g=>g.members?.includes(id))||null}
 function kuraMemberGeometry(id,p=page()){
  if(!p)return null;
@@ -505,6 +505,13 @@ function kuraMembersTransform(before,ids,bounds,dx,dy,sx,sy,angle){
     obj.w=Math.max(30,r.w*sx);obj.h=Math.max(20,r.h*sy)
    }
    obj.rot=(m.model.rot||0)+angle;
+   const k=id.slice(5);
+   // Scale live typography, not only the invisible text box.
+   if(sx===sy&&Math.abs(sx-1)>.005){
+    p.textStyles[k]??={};
+    const baseline=Number(m.style?.fontSize)||styleFor(p,k).fontSize;
+    p.textStyles[k].fontSize=Math.max(10,Math.min(200,baseline*sx));
+   }
   }else{
    const model=elementById(id)?.model;if(!model)continue;
    model.x=m.model.x+target.x-origCenter.x;model.y=m.model.y+target.y-origCenter.y;
@@ -520,6 +527,7 @@ function kuraUpdateGroupBox(){
  const grouped=ids.length>1||ids.length===1&&!!kuraGroupFor(ids[0]);
  const bounds=grouped?kuraBounds(ids):null;
  kuraGroupBox.style.display=bounds?'block':'none';
+ if(kuraGroupLayer)kuraGroupLayer.style.transform='scale('+(canvas.getBoundingClientRect().width/W||1)+')';
  if(!bounds)return;
  const scale=canvas.getBoundingClientRect().width/W||1;
  kuraGroupBox.style.left=bounds.x+'px';kuraGroupBox.style.top=bounds.y+'px';
@@ -532,7 +540,7 @@ function kuraGroupGesture(e,action){
  if(!kuraMulti.size)return;e.preventDefault();e.stopPropagation();
  const ids=kuraSelectedIds(),bounds=kuraBounds(ids);if(!bounds)return;
  const before={};for(const id of ids){const model=id.startsWith('text:')?deepClone(offsetFor(page(),id.slice(5))):deepClone(elementById(id)?.model);
-  before[id]={model,rect:kuraMemberGeometry(id)}}
+  before[id]={model,rect:kuraMemberGeometry(id),style:id.startsWith('text:')?deepClone(page().textStyles?.[id.slice(5)]||{}):null}}
  const start=xyFromPointer(e),prior=JSON.stringify({pages,current});
  let changed=false;const button=e.currentTarget;button.setPointerCapture(e.pointerId);
  const move=ev=>{
@@ -561,7 +569,8 @@ function kuraInitGroups(){
  const stage=document.querySelector('.stage-inner');if(!stage)return;
  kuraGroupBox=document.createElement('div');kuraGroupBox.className='kura-group-box';kuraGroupBox.style.display='none';
  kuraGroupBox.innerHTML='<span class="kura-group-count">Gruppo</span><button type="button" data-action="move" title="Sposta gruppo">⠿</button><button type="button" data-action="rotate" title="Ruota gruppo">↻</button><button type="button" data-action="resize" title="Scala gruppo">⤡</button><button type="button" data-action="width" title="Larghezza gruppo">↔</button><button type="button" data-action="height" title="Altezza gruppo">↕</button>';
- stage.appendChild(kuraGroupBox);
+ kuraGroupLayer=document.createElement('div');kuraGroupLayer.className='kura-group-layer';
+ kuraGroupLayer.appendChild(kuraGroupBox);stage.appendChild(kuraGroupLayer);
  for(const button of kuraGroupBox.querySelectorAll('button'))button.addEventListener('pointerdown',e=>kuraGroupGesture(e,button.dataset.action));
  const bar=document.querySelector('.stage-head .compact-actions');
  if(bar){
