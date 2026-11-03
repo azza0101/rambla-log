@@ -500,12 +500,13 @@ function kuraMembersTransform(before,ids,bounds,dx,dy,sx,sy,angle){
   if(id.startsWith('text:')){
    const k=id.slice(5),free=freeItem(p,k),obj=free||(p.offsets[k]??={});
    if(free){
-    free.x=m.model.x+target.x-origCenter.x;free.y=m.model.y+target.y-origCenter.y;
-    free.w=Math.max(30,(m.model.w||r.w)*sx);free.h=Math.max(18,(m.model.h||r.h)*sy)
+    free.w=Math.max(30,(m.model.w||r.w)*sx);free.h=Math.max(18,(m.model.h||r.h)*sy);
+    free.x=target.x-r.w*sx/2;free.y=target.y-r.h*sy/2;
    }else{
-    obj.dx=(m.model.dx||0)+(target.x-origCenter.x);
-    obj.dy=(m.model.dy||0)+(target.y-origCenter.y);
-    obj.w=Math.max(30,r.w*sx);obj.h=Math.max(20,r.h*sy)
+    const newW=Math.max(30,r.w*sx),newH=Math.max(20,r.h*sy);
+    obj.dx=(m.model.dx||0)+(target.x-origCenter.x)-(newW-r.w)/2;
+    obj.dy=(m.model.dy||0)+(target.y-origCenter.y)-(newH-r.h)/2;
+    obj.w=newW;obj.h=newH
    }
    obj.rot=(m.model.rot||0)+angle;
    // Scale live typography, not only the invisible text box.
@@ -516,8 +517,8 @@ function kuraMembersTransform(before,ids,bounds,dx,dy,sx,sy,angle){
    }
   }else{
    const model=elementById(id)?.model;if(!model)continue;
-   model.x=m.model.x+target.x-origCenter.x;model.y=m.model.y+target.y-origCenter.y;
    model.scaleX=(m.model.scaleX||1)*sx;model.scaleY=(m.model.scaleY||1)*sy;
+   model.x=target.x-r.w*sx/2;model.y=target.y-r.h*sy/2;
    model.rot=(m.model.rot||0)+angle
   }
  }
