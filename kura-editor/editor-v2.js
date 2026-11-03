@@ -505,7 +505,6 @@ function kuraMembersTransform(before,ids,bounds,dx,dy,sx,sy,angle){
     obj.w=Math.max(30,r.w*sx);obj.h=Math.max(20,r.h*sy)
    }
    obj.rot=(m.model.rot||0)+angle;
-   const k=id.slice(5);
    // Scale live typography, not only the invisible text box.
    if(sx===sy&&Math.abs(sx-1)>.005){
     p.textStyles[k]??={};
