@@ -104,11 +104,42 @@
  }
  function ensureSyncStatus(){
   if(document.getElementById('kuraSharedSyncStatus'))return;
-  const el=document.createElement('span');
-  el.id='kuraSharedSyncStatus';el.className='kura-shared-sync-status';
-  el.setAttribute('role','status');el.textContent='Cloud: non ancora sincronizzato';
-  document.querySelector('.stage-head')?.appendChild(el)
+  const heading=document.querySelector('.stage-head');
+  if(!heading)return;
+  const strip=document.createElement('div');
+  strip.className='kura-shared-status-strip';
+  strip.innerHTML='<span id="kuraSharedSyncStatus" role="status" data-kind="info">Cloud: controlla le revisioni condivise</span><details id="kuraSharedChanges" hidden><summary>Modifiche del collaboratore</summary><ul></ul></details>';
+  heading.after(strip);
+  const save=document.getElementById('topSaveProject');
+  if(save&&!document.getElementById('topBackupJSON')){
+   const backup=document.createElement('button');
+   backup.id='topBackupJSON';backup.className='btn ghost';backup.type='button';
+   backup.textContent='⤓ Backup JSON';backup.title='Scarica una copia di sicurezza delle modifiche locali';
+   save.after(backup);
+   backup.onclick=async()=>{
+    try{
+     const pkg=await bridge().snapshot();
+     const blob=new Blob([JSON.stringify(pkg,null,2)],{type:'application/json'});
+     const url=URL.createObjectURL(blob),link=document.createElement('a');
+     link.href=url;link.download='KURA_BACKUP_'+(pkg.projectName||pkg.projectId||'progetto').replace(/[^a-zA-Z0-9_-]/g,'_').slice(0,64)+'.json';
+     document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
+     toast('Backup locale esportato ✓');
+    }catch(error){toast('Backup JSON: '+error.message)}
+   }
+  }
  }
+ function showChangeDetails(summary,author){
+  const details=document.getElementById('kuraSharedChanges');if(!details)return;
+  const items=String(summary||'').split('; ').filter(Boolean);
+  details.hidden=!items.length;
+  const title=details.querySelector('summary');
+  if(title)title.textContent=(author||'Collaboratore')+': '+items.length+' modifiche rilevate';
+  const list=details.querySelector('ul');if(!list)return;
+  list.replaceChildren(...items.map(text=>{
+   const li=document.createElement('li');li.textContent=text;return li
+  }))
+ }
+
  function encodeBase64(text){
   const bytes=new TextEncoder().encode(text);
   let binary='';
@@ -161,6 +192,7 @@
   const local=await workingCopy(id);
   const localHash=local?await digest(local):null;
   const remoteHash=await digest(cloud.data);
+  if(local&&localHash!==remoteHash)showChangeDetails(changedSummary(local,cloud.data),cloud.data.githubSavedBy);
   if(localHash===remoteHash){
    await rememberBaseline(id,cloud.sha,local);syncStatus('✓ Il progetto è già aggiornato','ok');
    return{updated:false,upToDate:true}
@@ -197,6 +229,7 @@
   const local=await bridge().snapshot(),localHash=await digest(local);
   const remoteHash=await digest(cloud.data);
   const baseline=await baselineFor(id);
+  if(localHash!==remoteHash)showChangeDetails(changedSummary(local,cloud.data),cloud.data.githubSavedBy);
   if(localHash===remoteHash){
    await rememberBaseline(id,cloud.sha,local);
    syncStatus('✓ Versione locale e GitHub corrispondono','ok');
@@ -252,7 +285,7 @@
   return{projectId:id,commit:saved.commit.sha,link:cloudLink(id)}
  }
  async function normalSave(){
-  if(busy)return;
+  if(busy){toast('Salvataggio GitHub già in corso…');return}
   busy=true;
   const btn=document.getElementById('topSaveProject');if(btn)btn.disabled=true;
   try{
@@ -407,6 +440,7 @@
     lastNotified=metadata.sha;
     const cloud=await readCloudVersion(id),local=await bridge().snapshot();
     const detail=changedSummary(local,cloud.data);
+    showChangeDetails(detail,cloud.data.githubSavedBy);
     syncStatus('● '+(cloud.data.githubSavedBy||'Collaboratore')+' ha aggiornato: '+(detail||'il progetto')+'. La tua bozza è conservata.','warning');
     toast('Novità sul progetto: '+(detail||'modifiche disponibili'));
     if(toolbarSync)toolbarSync.style.outline='2px solid #cf7931';
