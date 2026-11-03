@@ -98,3 +98,24 @@ html[data-kura-theme="dark"] .kura-color-custom input[type=text]{background:#112
 @media(max-width:1380px) and (min-width:1081px){.shell{grid-template-columns:minmax(160px,183px) minmax(264px,296px) minmax(300px,1fr) minmax(178px,203px);gap:9px;padding:10px}}
 @media(max-width:1080px) and (min-width:761px){.shell{grid-template-columns:160px minmax(240px,310px) minmax(260px,1fr)}}
 @media(max-width:760px){.shell{padding:8px;gap:10px}.topbar{padding:8px 10px}.top-actions .btn{font-size:10px;min-height:35px}.kura-selection-toolbar{gap:4px!important}.kura-color-popover{max-width:calc(100vw - 20px)}}
+
+/* KURA group editing — large hit-targets, independent of artwork export. */
+.kura-group-layer{position:absolute;inset:0 auto auto 0;width:1080px;height:1350px;transform-origin:top left;pointer-events:none;z-index:19}
+.kura-group-box{box-sizing:border-box;position:absolute;border:3px dashed #d68e48;background:rgba(222,157,86,.055);outline:1px solid #fff8e6;outline-offset:2px;pointer-events:none;transform-origin:center}
+.kura-group-count{position:absolute;left:0;top:-32px;background:#d7a774;color:#173527;border-radius:6px;padding:5px 10px;font:800 14px Montserrat,sans-serif;white-space:nowrap;pointer-events:none}
+.kura-group-box button{position:absolute;pointer-events:auto;display:grid;place-items:center;width:40px;height:40px;border:2px solid #d1813f;border-radius:10px;background:#fff8ec;color:#173d2d;box-shadow:0 3px 10px #102b2330;font:900 21px Arial,sans-serif;touch-action:none;cursor:grab;transform-origin:center}
+.kura-group-box button[data-action="move"]{left:0;top:0}
+.kura-group-box button[data-action="rotate"]{right:0;top:0}
+.kura-group-box button[data-action="resize"]{right:0;bottom:0;cursor:nwse-resize}
+.kura-group-box button[data-action="width"]{right:0;top:50%;cursor:ew-resize}
+.kura-group-box button[data-action="height"]{left:50%;bottom:0;cursor:ns-resize}
+.kura-group-context{position:fixed;z-index:3000;padding:7px;min-width:190px;max-width:240px;background:#fffdf7;border:1px solid #dae4d8;border-radius:12px;box-shadow:0 12px 32px #0004;display:flex;flex-direction:column;gap:3px}
+.kura-group-context button{background:transparent;border:0;border-radius:7px;padding:11px 12px;font:700 12px Montserrat,sans-serif;color:#183c2b;text-align:left;cursor:pointer}
+.kura-group-context button:hover:not(:disabled){background:#eaf0e7}
+.kura-group-context button:disabled{opacity:.43;cursor:not-allowed}
+html[data-kura-theme="dark"] .kura-group-context{background:#1b3729;border-color:#52725a}
+html[data-kura-theme="dark"] .kura-group-context button{color:#e9f2e8}
+html[data-kura-theme="dark"] .kura-group-context button:hover:not(:disabled){background:#345340}
+html[data-kura-theme="dark"] .kura-group-box{border-color:#e0ad70;background:#e1af7014}
+html[data-kura-theme="dark"] .kura-group-count{background:#d3a572;color:#163626}
+@media(max-width:760px){.stage-head .compact-actions{flex-wrap:wrap;gap:5px}.stage-head .compact-actions .btn{font-size:10px;min-height:30px;padding:5px 8px}}
