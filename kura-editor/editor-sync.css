@@ -1,0 +1,16 @@
+/* KURA Editor 4.5 — shared state feedback and safe backup actions. */
+.kura-shared-status-strip{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:8px 12px;background:#edf4e9;border:1px solid #dbe9d9;border-radius:10px;width:100%;box-sizing:border-box;font-size:11px;line-height:1.5;color:#2a543b}
+.kura-shared-status-strip #kuraSharedSyncStatus{font-weight:750;flex:1;min-width:140px;overflow-wrap:anywhere}
+.kura-shared-status-strip #kuraSharedSyncStatus[data-kind=warning]{color:#975a29}
+.kura-shared-status-strip #kuraSharedSyncStatus[data-kind=ok]{color:#225b3b}
+#kuraSharedChanges{max-width:100%;min-width:min(200px,100%);flex:0 1 auto}
+#kuraSharedChanges[hidden]{display:none!important}
+#kuraSharedChanges summary{cursor:pointer;user-select:none;font-size:10px;color:#956034;font-weight:800}
+#kuraSharedChanges ul{margin:7px 0 2px;padding-left:17px;max-height:180px;overflow:auto}
+#kuraSharedChanges li{padding:2px 0;overflow-wrap:anywhere}
+#topBackupJSON{white-space:nowrap}
+html[data-kura-theme="dark"] .kura-shared-status-strip{background:#1b382a;border-color:#355543;color:#c6e3cd}
+html[data-kura-theme="dark"] .kura-shared-status-strip #kuraSharedSyncStatus[data-kind=warning]{color:#edbd83}
+html[data-kura-theme="dark"] .kura-shared-status-strip #kuraSharedSyncStatus[data-kind=ok]{color:#afe4b8}
+html[data-kura-theme="dark"] #kuraSharedChanges summary{color:#e6bc84}
+@media(max-width:760px){.kura-shared-status-strip{padding:8px 10px;font-size:10px}#kuraSharedChanges{flex-basis:100%}}
