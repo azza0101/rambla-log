@@ -90,6 +90,33 @@
     <label for="f-note-title">Scritta del post-it (modificabile)</label>
     <input id="f-note-title" data-text="note_title" maxlength="100" placeholder="INFO DI VIAGGIO"/>
     <label style="display:flex;align-items:center;gap:8px;margin-top:7px"><input id="noteTitleEditable" type="checkbox" style="width:18px;height:18px"/> Usa il titolo modificabile al posto del PNG</label>
+    <div class="kura-note-title-options" style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px">
+     <label style="font-size:11px">Font
+      <select id="noteTitleFont" style="width:100%">
+       <option value="KURA Brush2">KURA Brush originale</option>
+       <option value="Caveat Brush">Caveat Brush</option>
+       <option value="Kaushan Script">Kaushan Script</option>
+       <option value="Montserrat">Montserrat</option>
+      </select>
+     </label>
+     <label style="font-size:11px">Glifi
+      <select id="noteTitleGlyph" style="width:100%">
+       <option value="0">Originali</option>
+       <option value="1">Alternativi 01</option>
+       <option value="2">Alternativi 02</option>
+      </select>
+     </label>
+     <label style="font-size:11px">Spessore
+      <select id="noteTitleWeight" style="width:100%">
+       <option value="400">Regular</option>
+       <option value="700">Bold</option>
+       <option value="800">ExtraBold</option>
+      </select>
+     </label>
+     <label style="font-size:11px">Dimensione
+      <input id="noteTitleSize" type="number" min="20" max="160" value="52" step="1" style="width:100%"/>
+     </label>
+    </div>
     <p class="hint">Seleziona il titolo nella tavola per scegliere KURA Brush, glifi Base/01/02 e peso Regular/Bold/ExtraBold. Puoi tornare al PNG originale quando vuoi.</p>
    </div>
    <div class="dual"><div class="field" data-field="base"><label>Base</label><input data-text="base"/></div><div class="field" data-field="duration"><label>Durata</label><input data-text="duration"/></div></div>
@@ -211,7 +238,15 @@ function applyLayout(i){if(!page())return;snapshot();const p=page();const old=LA
 function applySeed(seed,random=false){snapshot();const p=page();p.seed=String(seed||Math.floor(Math.random()*100000));const rand=rng(p.seed);p.background=Math.floor(rand()*16);p.note=0;p.visuals.note.rot=Math.round(rand()*6-3);p.visuals.postcard.rot=Math.round(rand()*12-6);p.visuals.note.x=LAYOUTS[p.layout].note[0]+Math.round((rand()-.5)*22);p.visuals.note.y=LAYOUTS[p.layout].note[1]+Math.round((rand()-.5)*14);regenerateDecorations(true);refreshAll();emitToast('Seed '+p.seed+' applicato')}
 function regenerateDecorations(addNew){const p=page(),r=rng(p.seed+'decor');if(!p.stickers.length||addNew){p.stickers=[];for(let j=0;j<2;j++){let names=['olive','berries','monstera','map','stamp','compass'];let n=names[Math.floor(r()*names.length)];let zone=j===0?{x:0,y:0}:{x:750,y:1000};let x=zone.x+Math.round(r()*140),y=zone.y+Math.round(r()*140);p.stickers.push({id:uuid(),key:'sticker_'+n,x,y,w:100+Math.round(r()*100),h:0,rot:Math.round((r()-.5)*26),scale:1,opacity:.8+Math.round(r()*15)/100})}}}
 function setTab(s){$$('.tab').forEach(n=>n.classList.toggle('active',n.dataset.tab===s));$$('.tabpane').forEach(n=>n.classList.toggle('active',n.id==='tab-'+s))}
-function updateTextControls(){for(const el of $$('[data-text]')){const k=el.dataset.text;if(document.activeElement!==el)el.value=page().fields[k]??''} $('#seedField').value=page().seed;$('#bodyScale').value=Math.round(page().bodyScale*100);$('#bodyScaleLabel').textContent=$('#bodyScale').value+'%';$('#noteScale').value=Math.round(page().noteScale*100);$('#noteScaleLabel').textContent=$('#noteScale').value+'%';if($('#noteTextShift')){$('#noteTextShift').value=page().noteTextShift||0;$('#noteTextShiftLabel').textContent=(page().noteTextShift||0)+' px'}if($('#noteTitleEditable'))$('#noteTitleEditable').checked=page().noteTitleMode==='text';$('#stageName').textContent=formatName(page());$('#stageMeta').textContent=' · pagina '+(current+1)+' di '+pages.length+' · 1080 × 1350';if(typeof updateBulkScope==='function')updateBulkScope()}
+function updateTextControls(){for(const el of $$('[data-text]')){const k=el.dataset.text;if(document.activeElement!==el)el.value=page().fields[k]??''} $('#seedField').value=page().seed;$('#bodyScale').value=Math.round(page().bodyScale*100);$('#bodyScaleLabel').textContent=$('#bodyScale').value+'%';$('#noteScale').value=Math.round(page().noteScale*100);$('#noteScaleLabel').textContent=$('#noteScale').value+'%';if($('#noteTextShift')){$('#noteTextShift').value=page().noteTextShift||0;$('#noteTextShiftLabel').textContent=(page().noteTextShift||0)+' px'}if($('#noteTitleEditable'))$('#noteTitleEditable').checked=page().noteTitleMode==='text';
+if($('#noteTitleFont')){
+ const titleStyle=page().textStyles?.note_title||{},family=titleStyle.family||'KURA Brush2',kura=family.startsWith('KURA Brush');
+ $('#noteTitleFont').value=kura?'KURA Brush2':family;
+ $('#noteTitleGlyph').value=family==='KURA Brush Alt 1'?'1':family==='KURA Brush Alt 2'?'2':'0';
+ $('#noteTitleGlyph').disabled=!kura;
+ $('#noteTitleWeight').value=String(titleStyle.fontWeight||400);
+ $('#noteTitleSize').value=String(titleStyle.fontSize||52);
+}$('#stageName').textContent=formatName(page());$('#stageMeta').textContent=' · pagina '+(current+1)+' di '+pages.length+' · 1080 × 1350';if(typeof updateBulkScope==='function')updateBulkScope()}
 function refreshGalleries(){
  const bg=$('#bgGallery');bg.innerHTML='';
  for(let i=0;i<4;i++){const btn=document.createElement('button');btn.className='thumb '+(page().background===i?'active':'');btn.innerHTML='<img src="'+ASSETS['sfondo_'+(i+1)]+'" alt="Sfondo '+(i+1)+'"/><small>Variante '+(i+1)+'</small>';btn.onclick=()=>{snapshot();page().background=i;refreshGalleries();queueRender()};bg.appendChild(btn)}
@@ -485,6 +520,21 @@ for(const key of ['bodyScale','noteScale']){
  $('#'+key+'Plus').onclick=()=>{snapshot();applyBulkTypeScale(key,+slider.value+5)};
 }
 $('#noteTitleEditable').onchange=e=>{snapshot();page().noteTitleMode=e.target.checked?'text':'image';queueRender();scheduleSave()};
+
+function updateNoteTitleControls(){
+ const p=page();p.textStyles??={};p.textStyles.note_title??={};
+ const font=$('#noteTitleFont').value,glyph=$('#noteTitleGlyph').value,weight=Number($('#noteTitleWeight').value);
+ const kura=font==='KURA Brush2';
+ p.textStyles.note_title.family=kura?(glyph==='1'?'KURA Brush Alt 1':glyph==='2'?'KURA Brush Alt 2':'KURA Brush2'):font;
+ p.textStyles.note_title.fontWeight=weight;
+ p.textStyles.note_title.bold=weight>400;
+ p.textStyles.note_title.fontSize=Math.max(20,Math.min(160,Number($('#noteTitleSize').value)||52));
+ p.noteTitleMode='text';$('#noteTitleEditable').checked=true;$('#noteTitleGlyph').disabled=!kura;
+ queueRender();scheduleSave()
+}
+for(const id of ['noteTitleFont','noteTitleGlyph','noteTitleWeight','noteTitleSize'])
+ $('#'+id).onchange=()=>{snapshot();updateNoteTitleControls()};
+
 $('#noteTextShift').oninput=e=>{for(const p of fontScaleTargets())p.noteTextShift=+e.target.value;$('#noteTextShiftLabel').textContent=e.target.value+' px';queueRender();scheduleSave()};
 $('#bulkAllPages').onchange=()=>updateBulkScope();
 $('#bulkFontReset').onclick=()=>{snapshot();for(const p of fontScaleTargets()){p.bodyScale=1;p.noteScale=1}updateTextControls();updateBulkScope();queueRender();scheduleSave()};
