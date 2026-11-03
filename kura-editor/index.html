@@ -86,6 +86,12 @@
    <div class="field" data-field="head2"><label for="f-head2">Minititolo 2 · KURA Brush2</label><input id="f-head2" data-text="head2" placeholder="Clima e consigli"/></div>
    <div class="field" data-field="body2"><label for="f-body2">Secondo testo</label><textarea id="f-body2" data-text="body2" rows="5"></textarea></div>
    <div class="section-title">Post-it · Info di viaggio</div>
+   <div class="field" data-field="note_title">
+    <label for="f-note-title">Scritta del post-it (modificabile)</label>
+    <input id="f-note-title" data-text="note_title" maxlength="100" placeholder="INFO DI VIAGGIO"/>
+    <label style="display:flex;align-items:center;gap:8px;margin-top:7px"><input id="noteTitleEditable" type="checkbox" style="width:18px;height:18px"/> Usa il titolo modificabile al posto del PNG</label>
+    <p class="hint">Seleziona il titolo nella tavola per scegliere KURA Brush, glifi Base/01/02 e peso Regular/Bold/ExtraBold. Puoi tornare al PNG originale quando vuoi.</p>
+   </div>
    <div class="dual"><div class="field" data-field="base"><label>Base</label><input data-text="base"/></div><div class="field" data-field="duration"><label>Durata</label><input data-text="duration"/></div></div>
    <div class="field" data-field="highlight"><label>Da non perdere</label><textarea data-text="highlight" rows="3"></textarea></div>
    <div class="field" data-field="tips"><label>Da sapere</label><textarea data-text="tips" rows="3"></textarea></div>
@@ -205,7 +211,7 @@ function applyLayout(i){if(!page())return;snapshot();const p=page();const old=LA
 function applySeed(seed,random=false){snapshot();const p=page();p.seed=String(seed||Math.floor(Math.random()*100000));const rand=rng(p.seed);p.background=Math.floor(rand()*16);p.note=0;p.visuals.note.rot=Math.round(rand()*6-3);p.visuals.postcard.rot=Math.round(rand()*12-6);p.visuals.note.x=LAYOUTS[p.layout].note[0]+Math.round((rand()-.5)*22);p.visuals.note.y=LAYOUTS[p.layout].note[1]+Math.round((rand()-.5)*14);regenerateDecorations(true);refreshAll();emitToast('Seed '+p.seed+' applicato')}
 function regenerateDecorations(addNew){const p=page(),r=rng(p.seed+'decor');if(!p.stickers.length||addNew){p.stickers=[];for(let j=0;j<2;j++){let names=['olive','berries','monstera','map','stamp','compass'];let n=names[Math.floor(r()*names.length)];let zone=j===0?{x:0,y:0}:{x:750,y:1000};let x=zone.x+Math.round(r()*140),y=zone.y+Math.round(r()*140);p.stickers.push({id:uuid(),key:'sticker_'+n,x,y,w:100+Math.round(r()*100),h:0,rot:Math.round((r()-.5)*26),scale:1,opacity:.8+Math.round(r()*15)/100})}}}
 function setTab(s){$$('.tab').forEach(n=>n.classList.toggle('active',n.dataset.tab===s));$$('.tabpane').forEach(n=>n.classList.toggle('active',n.id==='tab-'+s))}
-function updateTextControls(){for(const el of $$('[data-text]')){const k=el.dataset.text;if(document.activeElement!==el)el.value=page().fields[k]??''} $('#seedField').value=page().seed;$('#bodyScale').value=Math.round(page().bodyScale*100);$('#bodyScaleLabel').textContent=$('#bodyScale').value+'%';$('#noteScale').value=Math.round(page().noteScale*100);$('#noteScaleLabel').textContent=$('#noteScale').value+'%';if($('#noteTextShift')){$('#noteTextShift').value=page().noteTextShift||0;$('#noteTextShiftLabel').textContent=(page().noteTextShift||0)+' px'}$('#stageName').textContent=formatName(page());$('#stageMeta').textContent=' · pagina '+(current+1)+' di '+pages.length+' · 1080 × 1350';if(typeof updateBulkScope==='function')updateBulkScope()}
+function updateTextControls(){for(const el of $$('[data-text]')){const k=el.dataset.text;if(document.activeElement!==el)el.value=page().fields[k]??''} $('#seedField').value=page().seed;$('#bodyScale').value=Math.round(page().bodyScale*100);$('#bodyScaleLabel').textContent=$('#bodyScale').value+'%';$('#noteScale').value=Math.round(page().noteScale*100);$('#noteScaleLabel').textContent=$('#noteScale').value+'%';if($('#noteTextShift')){$('#noteTextShift').value=page().noteTextShift||0;$('#noteTextShiftLabel').textContent=(page().noteTextShift||0)+' px'}if($('#noteTitleEditable'))$('#noteTitleEditable').checked=page().noteTitleMode==='text';$('#stageName').textContent=formatName(page());$('#stageMeta').textContent=' · pagina '+(current+1)+' di '+pages.length+' · 1080 × 1350';if(typeof updateBulkScope==='function')updateBulkScope()}
 function refreshGalleries(){
  const bg=$('#bgGallery');bg.innerHTML='';
  for(let i=0;i<4;i++){const btn=document.createElement('button');btn.className='thumb '+(page().background===i?'active':'');btn.innerHTML='<img src="'+ASSETS['sfondo_'+(i+1)]+'" alt="Sfondo '+(i+1)+'"/><small>Variante '+(i+1)+'</small>';btn.onclick=()=>{snapshot();page().background=i;refreshGalleries();queueRender()};bg.appendChild(btn)}
@@ -315,7 +321,7 @@ function drawKuraInkContain(c,img,x,y,w,h){
  const dw=img.naturalWidth*ratio,dh=img.naturalHeight*ratio;
  c.drawImage(img,x+(w-dw)/2,y+(h-dh)/2,dw,dh);
 }
-function noteDrawSegments(c,unused,L){
+function noteDrawSegments(c,p,L){
  const w=L.w,h=L.totalH;
  const shadow=kuraNoteSprite('shadow');
  if(shadow?.complete&&shadow.naturalWidth){
@@ -326,7 +332,7 @@ function noteDrawSegments(c,unused,L){
  kuraNotePaper(c,w,h);
  const title=kuraNoteSprite('title');
  // Printed heading has a dedicated fixed-area inset: it cannot collide with "Base".
- if(title?.complete&&title.naturalWidth){
+ if(p?.noteTitleMode!=='text'&&title?.complete&&title.naturalWidth){
   const headingWidth=Math.min(358,w-38), headingHeight=96;
   drawKuraInkContain(c,title,(w-headingWidth)/2,24,headingWidth,headingHeight);
  }
@@ -360,7 +366,7 @@ function drawAdaptiveNote(c,im,note,p){
  c.save();c.translate(note.x+L.w/2,note.y+L.totalH/2);
  c.rotate((note.rot||0)*Math.PI/180);c.scale(note.flipX?-1:1,note.flipY?-1:1);
  c.globalAlpha=note.opacity??1;c.translate(-L.w/2,-L.totalH/2);
- noteDrawSegments(c,im,L);c.restore();return L;
+ noteDrawSegments(c,p,L);c.restore();return L;
 }
 function noteBlocks(note,p){
  const L=noteAutoLayout(note,p),f=getFields(p),s=p.noteScale||1;
@@ -387,6 +393,7 @@ function render(p=page(),dest=ctx,selectedDraw=true){if(!p)return;const c=dest;i
  if(note.visible){const L=drawAdaptiveNote(c,null,note,p);hitboxes.push({id:'note',x:note.x,y:note.y,w:L.w,h:L.totalH})}
  for(const s of p.stickers){const im=assetImage(s.key);let w=s.w*s.scale*(s.scaleX||1),h=(s.h||s.w*(im?.naturalHeight||1)/(im?.naturalWidth||1))*s.scale*(s.scaleY||1);drawImageFit(c,im,s.x,s.y,w,h,s.rot,s.opacity??1,false,s.flipX,s.flipY);hitboxes.push({id:'sticker:'+s.id,x:s.x,y:s.y,w,h})}
  // Editable note text. The note image owns only paper, heading and icons; labels & values are drawn live.
+ if(note.visible&&p.noteTitleMode==='text')window.KURA_V2.paintEditable(c,p,'note_title',p.fields.note_title||'INFO DI VIAGGIO',null,{});
  if(note.visible){for(const item of noteBlocks(note,p)){const k='label_'+item.key,lab={x:item.x,y:item.top,w:item.w,h:item.labelHeight};window.KURA_V2.paintEditable(c,p,k,p.fields[k]??item.label,lab,{fontSize:item.labSize,bold:true,lineHeight:1.12});const val={x:item.x,y:item.top+item.valueOffset,w:item.w,h:item.height};window.KURA_V2.paintEditable(c,p,item.key,item.value,val,{fontSize:item.valueSize,lineHeight:1.18})}}
  // Eyebrow
  const eyebrow=box(lay.eyebrow,p,'eyebrow'),h1=box(lay.head1,p,'head1'),h2=box(lay.head2,p,'head2'),b1=box(lay.body1,p,'body1'),b2=box(lay.body2,p,'body2');
@@ -429,7 +436,7 @@ $('#elementOpacity').addEventListener('input',e=>{setSelectedProperty('opacity',
 $('#layerFront').onclick=()=>moveLayer(selected,1);$('#layerBack').onclick=()=>moveLayer(selected,-1);$('#deleteElement').onclick=deleteSelected;
 $('#resetPosBtn').onclick=()=>{if(selected?.startsWith('text:')){snapshot();page().offsets[selected.slice(5)]={dx:0,dy:0,scale:1,rot:0,opacity:1};refreshInspector();queueRender()}else if(['scene','postcard','note'].includes(selected)){snapshot();const z=LAYOUTS[page().layout][selected];Object.assign(page().visuals[selected],{x:z[0],y:z[1],w:z[2],h:z[3],rot:z[4]||0,scale:1,opacity:1});refreshInspector();queueRender()}};
 $('#undoBtn').onclick=undo;$('#redoBtn').onclick=redo;
-for(const el of $$('[data-text]')){el.addEventListener('focus',()=>{selected='text:'+el.dataset.text;refreshInspector();queueRender()});el.addEventListener('input',()=>{const oldBase=page().fields.base;page().fields[el.dataset.text]=el.value;if(el.dataset.text==='base'&&el.value!==oldBase){if(page().imageKeys.scene==='giulia_kanazawa')page().visuals.scene.visible=false;if(page().imageKeys.postcard==='cartolina_kenrokuen')page().visuals.postcard.visible=false;}page().name=page().fields.base||'Nuova destinazione';$('#stageName').textContent=formatName(page());queueRender();scheduleSave()})}
+for(const el of $$('[data-text]')){el.addEventListener('focus',()=>{selected='text:'+el.dataset.text;refreshInspector();queueRender()});el.addEventListener('input',()=>{const oldBase=page().fields.base;page().fields[el.dataset.text]=el.value;if(el.dataset.text==='note_title'){page().noteTitleMode='text';$('#noteTitleEditable').checked=true}if(el.dataset.text==='base'&&el.value!==oldBase){if(page().imageKeys.scene==='giulia_kanazawa')page().visuals.scene.visible=false;if(page().imageKeys.postcard==='cartolina_kenrokuen')page().visuals.postcard.visible=false;}page().name=page().fields.base||'Nuova destinazione';$('#stageName').textContent=formatName(page());queueRender();scheduleSave()})}
 $$('.tab').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
 $('#topNew').onclick=()=>addPage((page().layout+1)%4);$('#addPage').onclick=()=>addPage((page().layout+1)%4);$('#duplicatePage').onclick=duplicate;
 $('#seedApply').onclick=()=>applySeed($('#seedField').value);$('#seedRandom').onclick=()=>applySeed(Math.floor(Math.random()*999999));$('#topSeed').onclick=()=>applySeed(Math.floor(Math.random()*999999));
@@ -466,6 +473,7 @@ for(const key of ['bodyScale','noteScale']){
  $('#'+key+'Minus').onclick=()=>{snapshot();applyBulkTypeScale(key,+slider.value-5)};
  $('#'+key+'Plus').onclick=()=>{snapshot();applyBulkTypeScale(key,+slider.value+5)};
 }
+$('#noteTitleEditable').onchange=e=>{snapshot();page().noteTitleMode=e.target.checked?'text':'image';queueRender();scheduleSave()};
 $('#noteTextShift').oninput=e=>{for(const p of fontScaleTargets())p.noteTextShift=+e.target.value;$('#noteTextShiftLabel').textContent=e.target.value+' px';queueRender();scheduleSave()};
 $('#bulkAllPages').onchange=()=>updateBulkScope();
 $('#bulkFontReset').onclick=()=>{snapshot();for(const p of fontScaleTargets()){p.bodyScale=1;p.noteScale=1}updateTextControls();updateBulkScope();queueRender();scheduleSave()};
