@@ -130,3 +130,11 @@ html[data-kura-theme="dark"] .kura-context-menu button:hover{background:#31513e}
  .stage-head{flex-wrap:wrap}
  #kuraPasteTop{padding:6px 8px}
 }
+
+/* Keep cloud collaboration dialog comfortable in dark mode as well. */
+html[data-kura-theme="dark"] #kuraGithubDialog{background:#152d22!important;color:#e5efe5!important;border-color:#4a6a52!important;box-shadow:0 18px 65px #0009!important}
+html[data-kura-theme="dark"] #kuraGithubDialog input{background:#09241a!important;color:#f3f5ea!important;border-color:#66806a!important}
+html[data-kura-theme="dark"] #kuraGithubDialog p{color:#c7d8c7!important}
+html[data-kura-theme="dark"] #kuraGithubDialog a{color:#e3b781!important}
+html[data-kura-theme="dark"] .kura-project-panel .kura-project-row button,
+html[data-kura-theme="dark"] .kura-element-clipboard button{color:#e8f2e5}
