@@ -567,7 +567,7 @@ async function newProject(){
 function projectPanel(){
  const tab=$('#tab-pages'),reference=$('#pageList');if(!tab||!reference)return;
  const panel=document.createElement('div');panel.className='kura-project-panel';panel.innerHTML='<div class="section-title">Progetti nel browser</div><div class="kura-project-row"><select id="kuraProjectSelect" aria-label="Scegli progetto"></select><button class="btn flat small" id="kuraProjectNew">＋ Nuovo</button></div><div class="kura-project-row"><button class="btn flat small" id="kuraProjectRename">Rinomina</button><button class="btn flat small" id="kuraProjectDuplicate">Duplica</button><button class="btn flat small danger" id="kuraProjectDelete">Elimina</button><button class="btn flat small" id="kuraProjectExport">↓ Esporta progetto</button></div><p class="hint">Salvataggio automatico locale. Per passare a un altro dispositivo esporta il progetto JSON e riaprilo lì.</p>';
- tab.insertBefore(panel,reference.previousElementSibling);
+ reference.after(panel);
  $('#kuraProjectSelect').onchange=function(e){switchProject(e.target.value)};
  $('#kuraProjectNew').onclick=newProject;
  $('#kuraProjectRename').onclick=async function(){const item=pIndex.find(x=>x.id===currentProjectId);if(!item)return;const next=prompt('Nome progetto',item.name);if(!next?.trim())return;item.name=next.trim().slice(0,80);showProjectOptions();scheduleSave()};
@@ -782,8 +782,8 @@ function kuraElementPayload(){
   if(!free&&!Object.prototype.hasOwnProperty.call(p.fields,key))throw Error('Testo non disponibile');
   const r=textRect(p,key),o=offsetFor(p,key);
   clip.kind='text';
-  clip.payload={text:free?free.text:p.fields[key],style:deepClone(p.textStyles?.[key]||{}),
-   rect:deepClone(r||{x:170,y:430,w:430,h:110}),rot:o.rot||0,opacity:o.opacity??1};
+  clip.payload={text:free?free.text:p.fields[key],style:deepClone(styleFor(p,key)),
+   rect:deepClone(r||{x:170,y:430,w:430,h:110}),rot:(o.rot||0)+(KURA_NOTE_KEYS.has(key)?(p.visuals.note?.rot||0):0),opacity:o.opacity??1};
  }else if(['scene','postcard'].includes(id)){
   clip.kind=id;clip.payload={visual:deepClone(p.visuals[id]),assetKey:p.imageKeys?.[id]||null};
  }else if(id==='note'){
