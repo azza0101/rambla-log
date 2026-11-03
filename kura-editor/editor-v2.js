@@ -787,6 +787,8 @@ scheduleSave=function(){
 async function switchProject(id){
  if(!pIndex.some(x=>x.id===id))return;
  clearTimeout(saveTimer);await persistNow();
+ // A pending shared edit should be published before leaving its project.
+ try{await window.KURA_GITHUB?.flushBeforeSwitch?.()}catch(error){console.warn('KURA previous project sync:',error.message)}
  let pkg=await dbGet('kura:v2:project:'+id);
  if(!pkg?.pages?.length){emitToast('Progetto non disponibile nel browser');return}
  currentProjectId=id;currentProjectMeta=deepClone(pkg.meta||{});
@@ -1130,12 +1132,15 @@ window.KURA_PROJECTS=Object.freeze({
   const record=pIndex.find(x=>x.id===id);
   if(record)record.name=label;
   else pIndex.push({id,name:label,updatedAt:Date.now()});
+  const previousPageId=pages[current]?.id,previousIndex=current;
   currentProjectId=id;currentProjectMeta=deepClone(data.meta||{});
   pages=data.pages.map(normalizePage).map(ensurePage);
   for(const[k,v]of Object.entries(data.customAssets||{})){
    if(k.startsWith('custom_')&&typeof v==='string'&&v.startsWith('data:image/')){ASSETS[k]=v;imageCache.delete(k);assetImage(k)}
   }
-  current=0;selected=null;activeKey=null;shownPage=null;history=[];future=[];updateHistory();
+  const keepPage=previousPageId?pages.findIndex(p=>p.id===previousPageId):-1;
+  current=keepPage>=0?keepPage:Math.min(previousIndex,pages.length-1);
+  selected=null;activeKey=null;shownPage=null;history=[];future=[];updateHistory();
   refreshAll();showProjectOptions();await persistNow();
   return{source:'cloud',id,pages:pages.length};
  },
